@@ -1,0 +1,24 @@
+data:
+  cache_dir: data/cache/diffusion_v2_notes_constrained
+
+autoencoder:
+  type: kl
+  chart_channels: 2
+  latent_channels: 16
+  base_channels: 64
+  dropout: 0.0
+  scale: 1.0
+
+training:
+  seed: 20260625
+  batch_size: 64
+  epochs: 12
+  learning_rate: 0.0003
+  weight_decay: 0.00001
+  checkpoint_dir: checkpoints/autoencoder_kl_v8
+  log_dir: logs/autoencoder_kl_v8
+  num_workers: 0
+  positive_loss_weight: 4.0
+  count_loss_weight: 0.25
+  latent_l2_weight: 0.0
+  kl_weight: 0.000001

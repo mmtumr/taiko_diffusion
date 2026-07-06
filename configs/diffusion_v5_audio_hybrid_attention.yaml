@@ -1,0 +1,39 @@
+data:
+  cache_dir: data/cache/diffusion_v2_notes_constrained
+  audio_cache_dir: data/cache/audio_v0
+
+model:
+  chart_channels: 2
+  cond_dim: 11
+  audio_channels: 66
+  audio_fusion: add_cross_attention
+  audio_multiscale: true
+  audio_context_dim: 128
+  audio_context_tokens: 128
+  audio_attention_heads: 4
+  base_channels: 64
+  channel_mults:
+    - 1
+    - 2
+    - 4
+  dropout: 0.1
+
+diffusion:
+  timesteps: 200
+  beta_start: 0.0001
+  beta_end: 0.02
+
+training:
+  seed: 20260625
+  batch_size: 8
+  epochs: 8
+  learning_rate: 0.0001
+  weight_decay: 0.00001
+  checkpoint_dir: checkpoints/diffusion_v5_audio_hybrid_attention
+  log_dir: logs/diffusion_v5_audio_hybrid_attention
+  num_workers: 0
+  positive_loss_weight: 2.0
+  x0_loss_weight: 0.5
+  count_loss_weight: 0.25
+  onset_loss_weight: 0.3
+  onset_weight_scale: 2.5

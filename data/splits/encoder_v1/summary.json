@@ -1,0 +1,21 @@
+{
+  "index": "data\\cache\\encoder_v1\\index.csv",
+  "output_dir": "data\\splits\\encoder_v1",
+  "rows": 1272,
+  "train": 1017,
+  "val": 127,
+  "test": 128,
+  "label_names": [
+    "const",
+    "complex",
+    "avg_density",
+    "peak_density",
+    "note_type",
+    "bpm_change",
+    "hs_change",
+    "rhythm",
+    "combo",
+    "roll_time",
+    "balloon_num"
+  ]
+}

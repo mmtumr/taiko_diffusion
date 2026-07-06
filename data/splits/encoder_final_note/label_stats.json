@@ -1,0 +1,26 @@
+{
+  "label_names": [
+    "note_type"
+  ],
+  "transforms": {
+    "note_type": "log1p"
+  },
+  "mean": [
+    2.2298736572265625
+  ],
+  "std": [
+    1.4272757768630981
+  ],
+  "raw_min": [
+    0.0
+  ],
+  "raw_max": [
+    100.0
+  ],
+  "split": {
+    "seed": 20260619,
+    "train": 1017,
+    "val": 127,
+    "test": 128
+  }
+}

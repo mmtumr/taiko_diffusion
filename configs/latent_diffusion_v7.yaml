@@ -1,0 +1,37 @@
+data:
+  cache_dir: data/cache/diffusion_v2_notes_constrained
+  audio_cache_dir: data/cache/audio_v0
+
+autoencoder:
+  checkpoint: checkpoints/autoencoder_v7/best.pt
+
+model:
+  latent_channels: 16
+  cond_dim: 11
+  audio_channels: 66
+  base_channels: 128
+  channel_mults:
+    - 1
+    - 2
+    - 2
+  dropout: 0.1
+  audio_context_dim: 128
+  audio_context_tokens: 128
+  audio_attention_heads: 4
+
+diffusion:
+  timesteps: 200
+  beta_start: 0.0001
+  beta_end: 0.02
+
+training:
+  seed: 20260625
+  batch_size: 16
+  epochs: 12
+  learning_rate: 0.0002
+  weight_decay: 0.00001
+  checkpoint_dir: checkpoints/latent_diffusion_v7
+  log_dir: logs/latent_diffusion_v7
+  num_workers: 0
+  condition_dropout: 0.1
+  audio_dropout: 0.1

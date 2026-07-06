@@ -1,0 +1,7 @@
+numpy
+openpyxl
+pillow
+pyyaml
+tqdm
+
+# Install PyTorch and torchaudio separately for your CUDA/driver setup before training.

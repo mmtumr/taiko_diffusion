@@ -1,0 +1,24 @@
+data:
+  cache_dir: data/cache/diffusion_v9_donka
+
+autoencoder:
+  type: kl
+  chart_channels: 2
+  latent_channels: 16
+  base_channels: 64
+  dropout: 0.0
+  scale: 1.0
+
+training:
+  seed: 20260625
+  batch_size: 64
+  epochs: 8
+  learning_rate: 0.0003
+  weight_decay: 0.00001
+  checkpoint_dir: checkpoints/autoencoder_kl_v9_donka
+  log_dir: logs/autoencoder_kl_v9_donka
+  num_workers: 0
+  positive_loss_weight: 4.0
+  count_loss_weight: 0.25
+  latent_l2_weight: 0.0
+  kl_weight: 0.000001

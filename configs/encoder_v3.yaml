@@ -1,0 +1,89 @@
+data:
+  manifest: data/manifests/strict_matched_dataset.csv
+  frame_ms: 46.4399
+  max_frames: 8192
+  discard_branch: true
+  target_columns:
+    - const
+    - complex
+    - avg_density
+    - peak_density
+    - note_type
+    - bpm_change
+    - hs_change
+    - rhythm
+    - combo
+    - roll_time
+    - balloon_num
+
+chart_grid:
+  channels:
+    - don
+    - ka
+    - big_don
+    - big_ka
+    - roll_start
+    - roll_body
+    - roll_end
+    - balloon_start
+    - balloon_body
+    - balloon_end
+    - gogo
+    - barline
+    - bpm
+    - bpm_change_event
+    - bpm_delta
+    - scroll
+    - scroll_change_event
+    - scroll_delta
+    - measure
+    - active
+
+model:
+  name: taiko_encoder_v3
+  sparse_heads: true
+  sparse_targets: bpm_change,hs_change
+  latent_dim: 256
+  conv_channels: 128
+  downsample_layers: 4
+  transformer_layers: 3
+  transformer_heads: 8
+  dropout: 0.1
+
+training:
+  batch_size: 4
+  epochs: 100
+  learning_rate: 0.0003
+  weight_decay: 0.0001
+  seed: 20260619
+  split_dir: data/splits/encoder_v1
+  stats_path: data/splits/encoder_v1/label_stats.json
+  cache_dir: data/cache/encoder_v1
+  checkpoint_dir: checkpoints/encoder_v3
+  positive_loss_threshold: 0.0
+  sparse_class_loss_weight: 0.35
+  sparse_regression_weight: 1.0
+  loss_weights:
+    const: 1.0
+    complex: 1.0
+    avg_density: 1.0
+    peak_density: 1.0
+    note_type: 1.2
+    bpm_change: 1.4
+    hs_change: 1.4
+    rhythm: 1.2
+    combo: 1.0
+    roll_time: 1.0
+    balloon_num: 1.0
+  positive_loss_weights:
+    note_type: 1.0
+    bpm_change: 1.0
+    hs_change: 1.0
+    rhythm: 1.0
+  sparse_pos_weights:
+    bpm_change: 1.9
+    hs_change: 1.0
+
+eval:
+  sparse_eval_mode: prob_scale
+  sparse_threshold: 0.5

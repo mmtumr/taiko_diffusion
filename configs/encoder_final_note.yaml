@@ -1,0 +1,104 @@
+data:
+  manifest: data/manifests/strict_matched_dataset.csv
+  frame_ms: 46.4399
+  max_frames: 8192
+  discard_branch: true
+  target_columns:
+    - note_type
+  log1p_labels:
+    - note_type
+
+chart_grid:
+  channels:
+    - don
+    - ka
+    - roll_start
+    - roll_body
+    - roll_end
+    - balloon_start
+    - balloon_body
+    - balloon_end
+    - gogo
+    - barline
+    - bpm
+    - bpm_change_event
+    - bpm_delta
+    - scroll
+    - scroll_change_event
+    - scroll_delta
+    - measure
+    - active
+    - bpm_abs_delta
+    - bpm_event_local_density
+    - bpm_event_cumsum
+    - scroll_abs_delta
+    - scroll_event_local_density
+    - scroll_event_cumsum
+    - note_density_short
+    - note_density_long
+    - color_change_event
+    - color_change_density
+    - prev_note_interval
+    - next_note_interval
+    - bar_phase
+    - left_hand_note
+    - right_hand_note
+    - left_hand_change_event
+    - right_hand_change_event
+    - left_hand_change_density
+    - right_hand_change_density
+    - hand_change_total_density
+    - hand_change_imbalance
+    - half_left_hand_note
+    - half_right_hand_note
+    - half_left_hand_change_event
+    - half_right_hand_change_event
+    - half_left_hand_change_density
+    - half_right_hand_change_density
+    - half_hand_change_total_density
+    - half_hand_change_imbalance
+    - hand_change_irregularity
+    - hand_change_burstiness
+    - half_hand_change_irregularity
+    - half_hand_change_burstiness
+
+derived_grid:
+  collapse_big_notes: true
+  add_event_tracks: true
+  add_pattern_tracks: true
+  add_alternating_hand_tracks: true
+  add_half_alternating_hand_tracks: true
+  add_hand_timing_tracks: true
+
+model:
+  name: taiko_encoder_final_note
+  branched_sparse: true
+  core_targets: note_type
+  sparse_targets:
+  latent_dim: 192
+  conv_channels: 96
+  shared_downsample_layers: 2
+  branch_downsample_layers: 2
+  core_transformer_layers: 2
+  event_transformer_layers: 1
+  transformer_heads: 8
+  dropout: 0.12
+
+training:
+  batch_size: 6
+  epochs: 60
+  learning_rate: 0.00025
+  weight_decay: 0.00015
+  seed: 20260619
+  split_dir: data/splits/encoder_final_note
+  stats_path: data/splits/encoder_final_note/label_stats.json
+  cache_dir: data/cache/encoder_final_note
+  checkpoint_dir: checkpoints/encoder_final_note
+  early_stop_patience: 8
+  early_stop_min_delta: 0.001
+  loss_weights:
+    note_type: 1.0
+
+eval:
+  sparse_eval_mode: prob_scale
+  sparse_threshold: 0.5

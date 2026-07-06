@@ -1,0 +1,14 @@
+audio:
+  source_index: data/cache/encoder_v1/index.csv
+  chunk_cache_dir: data/cache/diffusion_v2_notes_constrained
+  output_dir: data/cache/audio_v0
+  sample_rate: 22050
+  frame_ms: 46.4399
+  n_fft: 2048
+  n_mels: 64
+  f_min: 30.0
+  f_max: 11025.0
+  splits:
+    - train
+    - val
+    - test

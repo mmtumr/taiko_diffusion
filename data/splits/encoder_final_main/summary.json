@@ -1,0 +1,14 @@
+{
+  "index": "data\\cache\\encoder_final_main\\index.csv",
+  "output_dir": "data\\splits\\encoder_final_main",
+  "rows": 1272,
+  "train": 1017,
+  "val": 127,
+  "test": 128,
+  "label_names": [
+    "const",
+    "complex",
+    "hs_change",
+    "bpm_rhythm_bin"
+  ]
+}

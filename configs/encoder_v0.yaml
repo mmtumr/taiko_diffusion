@@ -1,0 +1,55 @@
+data:
+  manifest: data/manifests/strict_matched_dataset.csv
+  frame_ms: 46.4399
+  max_frames: 8192
+  discard_branch: true
+  target_columns:
+    - const
+    - complex
+    - avg_density
+    - peak_density
+    - bpm_change
+    - hs_change
+    - rhythm
+    - combo
+    - roll_time
+    - balloon_num
+
+chart_grid:
+  channels:
+    - don
+    - ka
+    - big_don
+    - big_ka
+    - roll_start
+    - roll_body
+    - roll_end
+    - balloon_start
+    - balloon_body
+    - balloon_end
+    - gogo
+    - barline
+    - bpm
+    - scroll
+    - measure
+    - active
+
+model:
+  name: taiko_encoder_v0
+  latent_dim: 256
+  conv_channels: 128
+  downsample_layers: 4
+  transformer_layers: 3
+  transformer_heads: 8
+  dropout: 0.1
+
+training:
+  batch_size: 4
+  epochs: 100
+  learning_rate: 0.0003
+  weight_decay: 0.0001
+  seed: 20260619
+  split_dir: data/splits/encoder_v0
+  stats_path: data/splits/encoder_v0/label_stats.json
+  cache_dir: data/cache/encoder_v0
+  checkpoint_dir: checkpoints/encoder_v0

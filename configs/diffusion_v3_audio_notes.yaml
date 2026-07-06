@@ -1,0 +1,32 @@
+data:
+  cache_dir: data/cache/diffusion_v2_notes_constrained
+  audio_cache_dir: data/cache/audio_v0
+
+model:
+  chart_channels: 2
+  cond_dim: 11
+  audio_channels: 66
+  base_channels: 64
+  channel_mults:
+    - 1
+    - 2
+    - 4
+  dropout: 0.1
+
+diffusion:
+  timesteps: 200
+  beta_start: 0.0001
+  beta_end: 0.02
+
+training:
+  seed: 20260625
+  batch_size: 16
+  epochs: 20
+  learning_rate: 0.0002
+  weight_decay: 0.00001
+  checkpoint_dir: checkpoints/diffusion_v3_audio_notes
+  log_dir: logs/diffusion_v3_audio_notes
+  num_workers: 0
+  positive_loss_weight: 2.0
+  x0_loss_weight: 0.5
+  count_loss_weight: 0.25

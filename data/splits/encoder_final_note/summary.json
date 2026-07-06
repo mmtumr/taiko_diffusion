@@ -1,0 +1,11 @@
+{
+  "index": "data\\cache\\encoder_final_note\\index.csv",
+  "output_dir": "data\\splits\\encoder_final_note",
+  "rows": 1272,
+  "train": 1017,
+  "val": 127,
+  "test": 128,
+  "label_names": [
+    "note_type"
+  ]
+}

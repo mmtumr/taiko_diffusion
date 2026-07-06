@@ -1,0 +1,110 @@
+data:
+  manifest: data/manifests/strict_matched_dataset.csv
+  frame_ms: 46.4399
+  max_frames: 8192
+  discard_branch: true
+  target_columns:
+    - const
+    - complex
+    - hs_change
+    - bpm_rhythm_bin
+    - note_type
+  log1p_labels:
+    - note_type
+
+chart_grid:
+  channels:
+    - don
+    - ka
+    - roll_start
+    - roll_body
+    - roll_end
+    - balloon_start
+    - balloon_body
+    - balloon_end
+    - gogo
+    - barline
+    - bpm
+    - bpm_change_event
+    - bpm_delta
+    - scroll
+    - scroll_change_event
+    - scroll_delta
+    - measure
+    - active
+    - bpm_abs_delta
+    - bpm_event_local_density
+    - bpm_event_cumsum
+    - scroll_abs_delta
+    - scroll_event_local_density
+    - scroll_event_cumsum
+    - note_density_short
+    - note_density_long
+    - color_change_event
+    - color_change_density
+    - prev_note_interval
+    - next_note_interval
+    - bar_phase
+    - left_hand_note
+    - right_hand_note
+    - left_hand_change_event
+    - right_hand_change_event
+    - left_hand_change_density
+    - right_hand_change_density
+    - hand_change_total_density
+    - hand_change_imbalance
+
+derived_grid:
+  collapse_big_notes: true
+  add_event_tracks: true
+  add_pattern_tracks: true
+  add_alternating_hand_tracks: true
+
+model:
+  name: taiko_encoder_v8_note_type_log1p_hand_multitask_detach
+  branched_sparse: true
+  core_targets: const,complex,bpm_rhythm_bin,note_type
+  sparse_targets: hs_change
+  class_targets: bpm_rhythm_bin
+  class_dims:
+    bpm_rhythm_bin: 3
+  class_detach: true
+  latent_dim: 192
+  conv_channels: 96
+  shared_downsample_layers: 2
+  branch_downsample_layers: 2
+  core_transformer_layers: 2
+  event_transformer_layers: 1
+  transformer_heads: 8
+  dropout: 0.12
+
+training:
+  batch_size: 6
+  epochs: 60
+  learning_rate: 0.00025
+  weight_decay: 0.00015
+  seed: 20260619
+  split_dir: data/splits/encoder_v8_note_type_log1p_hand_multitask_detach
+  stats_path: data/splits/encoder_v8_note_type_log1p_hand_multitask_detach/label_stats.json
+  cache_dir: data/cache/encoder_v8_note_type_log1p_hand_multitask_detach
+  checkpoint_dir: checkpoints/encoder_v8_note_type_log1p_hand_multitask_detach
+  early_stop_patience: 8
+  early_stop_min_delta: 0.001
+  positive_loss_threshold: 0.0
+  sparse_class_loss_weight: 0.35
+  sparse_regression_weight: 1.0
+  class_loss_weight: 1.0
+  loss_weights:
+    const: 1.0
+    complex: 1.3
+    hs_change: 1.3
+    bpm_rhythm_bin: 0.0
+    note_type: 1.0
+  positive_loss_weights:
+    hs_change: 1.0
+  sparse_pos_weights:
+    hs_change: 1.0
+
+eval:
+  sparse_eval_mode: prob_scale
+  sparse_threshold: 0.5

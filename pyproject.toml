@@ -1,0 +1,15 @@
+[project]
+name = "taiko-diffusion"
+version = "0.1.0"
+description = "Taiko chart encoder and generation experiments."
+requires-python = ">=3.10"
+dependencies = [
+  "numpy",
+  "openpyxl",
+  "pillow",
+  "pyyaml",
+  "tqdm",
+]
+
+[tool.setuptools.packages.find]
+include = ["taiko_diffusion*"]

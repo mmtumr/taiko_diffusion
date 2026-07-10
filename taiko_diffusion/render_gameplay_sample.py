@@ -114,6 +114,7 @@ def draw_frame(
     fps: int,
     approach_sec: float,
     frame_ms: float,
+    condition_text: str,
 ) -> None:
     width, height = 1600, 900
     t = frame_index / fps
@@ -186,6 +187,7 @@ def draw_frame(
     shown_title = title if title else "Generated Taiko Chart"
     draw.text((72, 54), shown_title, font=title_font, fill=WHITE)
     draw.text((74, 104), "Taiko Diffusion v9 generated play preview", font=small_font, fill=MUTED)
+    draw.text((74, 142), condition_text, font=small_font, fill=(190, 198, 210))
     draw.text((1220, 62), f"{t:05.2f}s / {duration_sec:05.2f}s", font=count_font, fill=WHITE)
 
     combo = int((np.concatenate([don_times, ka_times]) <= t).sum()) if near_hits.size else 0
@@ -254,6 +256,12 @@ def main() -> None:
     don_times = frame_times[don]
     ka_times = frame_times[ka]
     title = str(sample["source_title"][0]) if "source_title" in sample.files else str(sample["source_chunk_id"][0])
+    conditions = condition_map(sample)
+    condition_text = (
+        f"const {conditions.get('const', 0):.1f} | complex {conditions.get('complex_bin', 0):.0f} | "
+        f"note {conditions.get('note_type_bin', 0):.0f} | density {conditions.get('avg_density_bin', 0):.0f} | "
+        f"peak {conditions.get('peak_density_bin', 0):.0f} | ka {conditions.get('ka_ratio', 0):.2f}"
+    )
 
     args.output.parent.mkdir(parents=True, exist_ok=True)
     frames_dir = args.output.with_suffix("").parent / f"{args.output.stem}_frames"
@@ -274,6 +282,7 @@ def main() -> None:
             int(args.fps),
             float(args.approach_sec),
             float(args.frame_ms),
+            condition_text,
         )
         if index == 0 or (index + 1) % 120 == 0 or index + 1 == total_video_frames:
             print(json.dumps({"frame": index + 1, "total": total_video_frames}, ensure_ascii=False), flush=True)

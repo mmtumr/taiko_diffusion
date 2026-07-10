@@ -1,0 +1,69 @@
+data:
+  cache_dir: data/cache/diffusion_v10_binned_donka
+  audio_cache_dir: data/cache/audio_v0
+
+autoencoder:
+  checkpoint: checkpoints/autoencoder_kl_v9_donka/best.pt
+  latent_stats: checkpoints/autoencoder_kl_v9_donka/latent_stats.json
+
+model:
+  latent_channels: 16
+  cond_dim: 10
+  audio_channels: 67
+  use_legal_mask_channel: true
+  audio_fusion: mug_scale
+  audio_scale_blocks: 2
+  base_channels: 128
+  channel_mults:
+    - 1
+    - 2
+    - 2
+  dropout: 0.0
+  audio_context_dim: 128
+  audio_context_tokens: 128
+  audio_attention_heads: 4
+
+diffusion:
+  timesteps: 200
+  beta_start: 0.0001
+  beta_end: 0.02
+
+training:
+  seed: 20260625
+  batch_size: 12
+  epochs: 3
+  learning_rate: 0.00005
+  weight_decay: 0.00001
+  checkpoint_dir: checkpoints/latent_diffusion_v10_grid_constrained_short
+  log_dir: logs/latent_diffusion_v10_grid_constrained_short
+  num_workers: 0
+  condition_dropout: 0.1
+  audio_dropout: 0.1
+  decoded_x0_loss_weight: 0.25
+  decoded_onset_loss_weight: 0.25
+  decoded_positive_loss_weight: 2.0
+  onset_weight_scale: 2.5
+  init_checkpoint: checkpoints/latent_diffusion_v9_audio_pretrained_finetune/best.pt
+  condition_names:
+    - const
+    - complex_bin
+    - hs_change_bin
+    - bpm_rhythm_bin
+    - note_type_bin
+    - avg_density_bin
+    - peak_density_bin
+    - big_note_ratio
+    - balloon_roll_ratio
+    - ka_ratio
+  init_condition_names:
+    - const
+    - complex
+    - hs_change
+    - bpm_rhythm_bin
+    - note_type
+    - note_type_high
+    - avg_density
+    - peak_density
+    - big_note_ratio
+    - balloon_roll_ratio
+    - ka_ratio

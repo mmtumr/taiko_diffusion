@@ -45,9 +45,9 @@ def sample_variants(
 
 
 def intervention_values(name: str, base: float, mean: float, std: float) -> tuple[float, float]:
-    if name == "bpm_rhythm_bin":
+    if name in {"complex_bin", "bpm_rhythm_bin", "note_type_bin", "avg_density_bin", "peak_density_bin"}:
         return 0.0, 2.0
-    if name == "note_type_high":
+    if name in {"hs_change_bin", "note_type_high"}:
         return 0.0, 1.0
     low = mean - std
     high = mean + std
@@ -59,16 +59,26 @@ def intervention_values(name: str, base: float, mean: float, std: float) -> tupl
     return float(low), float(high)
 
 
-def probability_metrics(probability: np.ndarray, fixed_note_count: int) -> dict[str, float | int]:
-    note_score = probability.max(axis=0)
+def probability_metrics(
+    probability: np.ndarray,
+    fixed_note_count: int,
+    legal_mask: np.ndarray | None = None,
+) -> dict[str, float | int]:
+    raw_note_score = probability.max(axis=0)
+    note_score = raw_note_score.copy()
+    valid = np.ones(note_score.shape[0], dtype=bool)
+    if legal_mask is not None:
+        valid = legal_mask > 0.5
+        note_score = np.where(valid, note_score, -np.inf)
+        fixed_note_count = min(fixed_note_count, int(valid.sum()))
     fixed_note_count = min(max(int(fixed_note_count), 1), note_score.size)
     selected = np.argpartition(note_score, -fixed_note_count)[-fixed_note_count:]
     selected_ka = probability[1, selected] > probability[0, selected]
     return {
         "don_probability_mean": float(probability[0].mean()),
         "ka_probability_mean": float(probability[1].mean()),
-        "note_probability_mean": float(note_score.mean()),
-        "threshold_note_count": int((note_score >= 0.5).sum()),
+        "note_probability_mean": float(raw_note_score[valid].mean()) if valid.any() else 0.0,
+        "threshold_note_count": int((raw_note_score[valid] >= 0.5).sum()),
         "fixed_count_ka_ratio": float(selected_ka.mean()),
     }
 
@@ -119,6 +129,7 @@ def main() -> None:
         item = dataset[sample_index]
         base_raw = item["condition_raw"].numpy().astype(np.float32)
         audio = item["audio"].unsqueeze(0).to(device)
+        legal_masks = item.get("legal_masks")
         fixed_note_count = int((item["chart"].max(dim=0).values > 0.5).sum())
         initial_noise = torch.randn((1, latent_shape[0], latent_shape[1]), device=device)
         for name in selected_names:
@@ -134,6 +145,16 @@ def main() -> None:
             normalized = (raw_variants - condition_mean) / condition_std
             condition = torch.from_numpy(normalized).to(device)
             audio_batch = audio.expand(3, -1, -1)
+            variant_legal_masks = None
+            if legal_masks is not None:
+                if "complex_bin" in names:
+                    complex_index = names.index("complex_bin")
+                    bins = np.rint(raw_variants[:, complex_index]).astype(np.int64).clip(0, 2)
+                    variant_legal_masks = torch.stack([legal_masks[int(value)] for value in bins])
+                else:
+                    variant_legal_masks = legal_masks[-1].unsqueeze(0).expand(3, -1)
+                if bool(config["model"].get("use_legal_mask_channel", False)):
+                    audio_batch = torch.cat([audio_batch, variant_legal_masks.to(device).unsqueeze(1)], dim=1)
             latent = sample_variants(
                 model,
                 condition,
@@ -147,7 +168,14 @@ def main() -> None:
             if latent_mean is not None and latent_std is not None:
                 latent = latent * latent_std + latent_mean
             probability = torch.sigmoid(autoencoder.decode(latent)).cpu().numpy()
-            metrics = [probability_metrics(value, fixed_note_count) for value in probability]
+            metrics = [
+                probability_metrics(
+                    value,
+                    fixed_note_count,
+                    variant_legal_masks[index].numpy() if variant_legal_masks is not None else None,
+                )
+                for index, value in enumerate(probability)
+            ]
             records.append(
                 {
                     "chunk_id": str(item["chunk_id"]),

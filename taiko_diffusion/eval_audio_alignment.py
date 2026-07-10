@@ -26,6 +26,7 @@ def generated_note_mask(
     onset: np.ndarray | None = None,
     onset_mix: float = 0.0,
     channel_names: list[str] | None = None,
+    legal_mask: np.ndarray | None = None,
 ) -> np.ndarray:
     note_count = int(round(max(condition.get("avg_density", 0.0), 0.0) * probability.shape[0] * frame_ms / 1000.0))
     note_count = max(0, min(note_count, probability.shape[0]))
@@ -38,6 +39,9 @@ def generated_note_mask(
             score = np.maximum(probability[:, channel["don"]], probability[:, channel["ka"]])
         else:
             score = probability[:, 0]
+        if legal_mask is not None:
+            score = np.where(legal_mask > 0.5, score, -np.inf)
+            note_count = min(note_count, int((legal_mask > 0.5).sum()))
         if onset is not None and onset_mix > 0.0:
             onset_score = onset
             if onset_score.shape[0] != score.shape[0]:
@@ -47,7 +51,8 @@ def generated_note_mask(
             onset_score = onset_score - float(onset_score.min())
             onset_score = onset_score / max(float(onset_score.max()), 1e-6)
             score = score + float(onset_mix) * onset_score
-        mask[np.argpartition(score, -note_count)[-note_count:]] = True
+        if note_count > 0:
+            mask[np.argpartition(score, -note_count)[-note_count:]] = True
     return mask
 
 

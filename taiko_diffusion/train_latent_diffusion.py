@@ -79,6 +79,51 @@ def make_model(config: dict) -> LatentUNet1D:
     )
 
 
+def load_init_model(model: LatentUNet1D, checkpoint: dict, config: dict) -> dict[str, list[str]]:
+    source = checkpoint["model"]
+    target = model.state_dict()
+    compatible = {name: value for name, value in source.items() if name in target and value.shape == target[name].shape}
+    target.update(compatible)
+    for name, target_value in target.items():
+        source_value = source.get(name)
+        if (
+            source_value is not None
+            and source_value.ndim == 3
+            and target_value.ndim == 3
+            and target_value.shape[0] == source_value.shape[0]
+            and target_value.shape[1] == source_value.shape[1] + 1
+            and target_value.shape[2] == source_value.shape[2]
+        ):
+            expanded = target_value.clone()
+            expanded[:, : source_value.shape[1], :] = source_value
+            expanded[:, source_value.shape[1] :, :] = 0.0
+            target[name] = expanded
+            compatible[name] = expanded
+    condition_weight = "cond_embed.0.weight"
+    source_names = config["training"].get("init_condition_names")
+    target_names = config["training"].get("condition_names")
+    if source_names and target_names and condition_weight in source and condition_weight in target:
+        aliases = {
+            "complex_bin": "complex",
+            "hs_change_bin": "hs_change",
+            "note_type_bin": "note_type",
+            "avg_density_bin": "avg_density",
+            "peak_density_bin": "peak_density",
+        }
+        remapped = target[condition_weight].clone()
+        for target_index, target_name in enumerate(target_names):
+            source_name = aliases.get(target_name, target_name)
+            if source_name in source_names:
+                remapped[:, target_index] = source[condition_weight][:, source_names.index(source_name)]
+        target[condition_weight] = remapped
+        compatible[condition_weight] = remapped
+    model.load_state_dict(target)
+    return {
+        "loaded": sorted(compatible),
+        "skipped": sorted(name for name in source if name not in compatible),
+    }
+
+
 def make_loader(data_cfg: dict, split: str, batch_size: int, num_workers: int, shuffle: bool) -> DataLoader:
     cache_dir = Path(data_cfg["cache_dir"])
     audio_cache_dir = Path(data_cfg["audio_cache_dir"])
@@ -126,6 +171,7 @@ def run_epoch(
     decoded_onset_loss_weight: float,
     decoded_positive_loss_weight: float,
     onset_weight_scale: float,
+    use_legal_mask_channel: bool,
     device: torch.device,
     optimizer: torch.optim.Optimizer | None = None,
 ) -> float:
@@ -137,6 +183,8 @@ def run_epoch(
         chart = batch["chart"].to(device, non_blocking=True)
         condition = batch["condition"].to(device, non_blocking=True)
         audio = batch["audio"].to(device, non_blocking=True)
+        legal_mask = batch.get("legal_mask")
+        legal_mask = legal_mask.to(device, non_blocking=True) if legal_mask is not None else None
         raw_onset = batch.get("raw_onset")
         raw_onset = raw_onset.to(device, non_blocking=True) if raw_onset is not None else None
         with torch.no_grad():
@@ -154,6 +202,10 @@ def run_epoch(
             condition_dropout if is_train else 0.0,
             audio_dropout if is_train else 0.0,
         )
+        if use_legal_mask_channel:
+            if legal_mask is None:
+                raise ValueError("Model requires legal_mask but the cache does not contain it")
+            audio_in = torch.cat([audio_in, legal_mask.unsqueeze(1)], dim=1)
         with torch.set_grad_enabled(is_train):
             pred = model(xt, t, condition_in, audio_in)
             loss = torch.nn.functional.mse_loss(pred, noise)
@@ -232,8 +284,18 @@ def main() -> None:
         best_val = float(checkpoint.get("val_loss", best_val))
     elif init_checkpoint is not None:
         checkpoint = torch.load(init_checkpoint, map_location="cpu", weights_only=False)
-        model.load_state_dict(checkpoint["model"])
-        print(json.dumps({"init_checkpoint": str(init_checkpoint)}, ensure_ascii=False), flush=True)
+        init_result = load_init_model(model, checkpoint, config)
+        print(
+            json.dumps(
+                {
+                    "init_checkpoint": str(init_checkpoint),
+                    "loaded_parameters": len(init_result["loaded"]),
+                    "skipped_parameters": init_result["skipped"],
+                },
+                ensure_ascii=False,
+            ),
+            flush=True,
+        )
     if args.resume_checkpoint is None and audio_encoder_checkpoint is not None:
         if model.audio_scale_encoder is None:
             raise ValueError("Audio encoder pretraining requires model.audio_fusion=mug_scale")
@@ -259,6 +321,7 @@ def main() -> None:
     decoded_onset_loss_weight = float(training.get("decoded_onset_loss_weight", 0.0))
     decoded_positive_loss_weight = float(training.get("decoded_positive_loss_weight", 2.0))
     onset_weight_scale = float(training.get("onset_weight_scale", 2.0))
+    use_legal_mask_channel = bool(config["model"].get("use_legal_mask_channel", False))
     for epoch in range(resume_epoch + 1, epochs + 1):
         train_loss = run_epoch(
             model,
@@ -274,6 +337,7 @@ def main() -> None:
             decoded_onset_loss_weight,
             decoded_positive_loss_weight,
             onset_weight_scale,
+            use_legal_mask_channel,
             device,
             optimizer,
         )
@@ -291,6 +355,7 @@ def main() -> None:
             decoded_onset_loss_weight,
             decoded_positive_loss_weight,
             onset_weight_scale,
+            use_legal_mask_channel,
             device,
         )
         record = {"epoch": epoch, "train_loss": train_loss, "val_loss": val_loss}

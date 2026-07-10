@@ -1,0 +1,22 @@
+data:
+  source_index: data/cache/encoder_v1/index.csv
+  source_split_dir: data/splits/encoder_final_main
+  cache_dir: data/cache/diffusion_v10_binned_donka
+  frame_ms: 46.4399
+  window_frames: 512
+  stride_frames: 256
+  min_events_per_window: 1
+  target_channels:
+    - don
+    - ka
+  condition_names:
+    - const
+    - complex_bin
+    - hs_change_bin
+    - bpm_rhythm_bin
+    - note_type_bin
+    - avg_density_bin
+    - peak_density_bin
+    - big_note_ratio
+    - balloon_roll_ratio
+    - ka_ratio

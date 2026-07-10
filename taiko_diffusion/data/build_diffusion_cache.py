@@ -10,6 +10,17 @@ import numpy as np
 from taiko_diffusion.config import load_config
 from taiko_diffusion.data.build_v5_cache import load_label_map
 from taiko_diffusion.data.build_v8_cache import direct_features
+from taiko_diffusion.data.diffusion_dataset import local_path
+
+
+BINNED_V10_NAMES = {
+    "complex_bin",
+    "hs_change_bin",
+    "bpm_rhythm_bin",
+    "note_type_bin",
+    "avg_density_bin",
+    "peak_density_bin",
+}
 
 
 def read_rows(path: Path) -> list[dict[str, str]]:
@@ -54,12 +65,36 @@ def target_grid(source_x: np.ndarray, channels: list[str], target_channels: list
     return np.stack([values[name] for name in target_channels], axis=1).astype(np.float32)
 
 
+def legal_grid_masks(source_x: np.ndarray, channels: list[str], frame_ms: float) -> np.ndarray:
+    channel_index = {name: index for index, name in enumerate(channels)}
+    bpm = np.maximum(source_x[:, channel_index["bpm"]] * 300.0, 1e-6)
+    active = source_x[:, channel_index["active"]] > 0.5
+    beats_per_frame = bpm * (frame_ms / 1000.0) / 60.0
+    beat_position = np.concatenate([np.zeros(1, dtype=np.float32), np.cumsum(beats_per_frame[:-1])])
+    tolerance = beats_per_frame * 0.55
+
+    def division_mask(divisions: list[int]) -> np.ndarray:
+        allowed = np.zeros(source_x.shape[0], dtype=bool)
+        for division in divisions:
+            step = 4.0 / float(division)
+            remainder = np.mod(beat_position, step)
+            distance = np.minimum(remainder, step - remainder)
+            allowed |= distance <= tolerance
+        return allowed & active
+
+    return np.stack(
+        [division_mask([8, 16]), division_mask([8, 12, 16, 24, 32]), active],
+        axis=0,
+    ).astype(np.float32)
+
+
 def condition_values(
     source_x: np.ndarray,
     channels: list[str],
     labels: dict[str, float],
     condition_names: list[str],
     frame_ms: float,
+    bin_thresholds: dict[str, list[float]] | None = None,
 ) -> np.ndarray:
     channel_index = {name: index for index, name in enumerate(channels)}
     don = np.clip(source_x[:, channel_index["don"]] + source_x[:, channel_index["big_don"]], 0.0, 1.0)
@@ -70,7 +105,47 @@ def condition_values(
     values["bpm_rhythm_bin"] = float(np.searchsorted([1e-6, 25.0], labels["bpm_change"], side="right"))
     values["note_type_high"] = float(labels["note_type"] >= 25.0)
     values["ka_ratio"] = float(ka.sum() / note_count)
+    if bin_thresholds is not None:
+        values["complex_bin"] = float(np.searchsorted(bin_thresholds["complex_bin"], values["complex"], side="right"))
+        values["hs_change_bin"] = float(values["hs_change"] > 0.0)
+        values["note_type_bin"] = float(np.searchsorted(bin_thresholds["note_type_bin"], values["note_type"], side="right"))
+        values["avg_density_bin"] = float(
+            np.searchsorted(bin_thresholds["avg_density_bin"], values["avg_density"], side="right")
+        )
+        peak_ratio = values["peak_density"] / max(values["avg_density"], 1e-6)
+        values["peak_density_bin"] = float(
+            np.searchsorted(bin_thresholds["peak_density_bin"], peak_ratio, side="right")
+        )
     return np.asarray([float(values[name]) for name in condition_names], dtype=np.float32)
+
+
+def compute_bin_thresholds(
+    train_rows: list[dict[str, str]],
+    source_rows: dict[str, dict[str, str]],
+    frame_ms: float,
+) -> tuple[dict[str, list[float]], dict[str, list[float]]]:
+    collected = {"complex_bin": [], "note_type_bin": [], "avg_density_bin": [], "peak_density_bin": []}
+    for row in train_rows:
+        source_path = local_path(source_rows[row["sample_id"]]["npz_path"])
+        source = np.load(source_path, allow_pickle=False)
+        source_x = source["x"].astype(np.float32)
+        channels = [str(name) for name in source["channels"]]
+        labels = load_label_map(source_path)
+        direct = direct_features(source_x, channels, labels, frame_ms)
+        collected["complex_bin"].append(float(labels["complex"]))
+        collected["note_type_bin"].append(float(labels["note_type"]))
+        collected["avg_density_bin"].append(float(direct["avg_density"]))
+        collected["peak_density_bin"].append(float(direct["peak_density"] / max(direct["avg_density"], 1e-6)))
+    thresholds = {
+        name: np.quantile(np.asarray(values, dtype=np.float32), [1.0 / 3.0, 2.0 / 3.0]).astype(float).tolist()
+        for name, values in collected.items()
+    }
+    representatives = {}
+    for name, values in collected.items():
+        array = np.asarray(values, dtype=np.float32)
+        bins = np.searchsorted(thresholds[name], array, side="right")
+        representatives[name] = [float(array[bins == index].mean()) for index in range(3)]
+    return thresholds, representatives
 
 
 def chunk_starts(duration_frames: int, window_frames: int, stride_frames: int) -> list[int]:
@@ -94,6 +169,7 @@ def make_split(
     window_frames: int,
     stride_frames: int,
     min_events: int,
+    bin_thresholds: dict[str, list[float]] | None = None,
 ) -> tuple[list[dict[str, object]], list[np.ndarray]]:
     rows: list[dict[str, object]] = []
     conditions: list[np.ndarray] = []
@@ -103,14 +179,16 @@ def make_split(
     for split_row in split_rows:
         sample_id = split_row["sample_id"]
         source_row = source_rows[sample_id]
-        source_path = Path(source_row["npz_path"])
+        source_path = local_path(source_row["npz_path"])
         source = np.load(source_path, allow_pickle=False)
         source_x = source["x"].astype(np.float32)
         channels = [str(name) for name in source["channels"]]
         labels = load_label_map(source_path)
         duration_frames = int(source["duration_frames"][0])
         target = target_grid(source_x, channels, target_channels)
-        cond = condition_values(source_x, channels, labels, condition_names, frame_ms)
+        cond = condition_values(source_x, channels, labels, condition_names, frame_ms, bin_thresholds)
+        all_legal_masks = legal_grid_masks(source_x, channels, frame_ms) if "complex_bin" in condition_names else None
+        complex_bin = int(round(float(cond[condition_names.index("complex_bin")]))) if all_legal_masks is not None else 2
 
         for start in chunk_starts(duration_frames, window_frames, stride_frames):
             end = start + window_frames
@@ -118,6 +196,11 @@ def make_split(
             available = max(0, min(end, target.shape[0]) - start)
             if available > 0:
                 chunk[:available] = target[start : start + available]
+            legal_masks = np.ones((3, window_frames), dtype=np.float32)
+            if all_legal_masks is not None and available > 0:
+                legal_masks[:, :available] = all_legal_masks[:, start : start + available]
+                legal_masks[:, available:] = 0.0
+                chunk *= legal_masks[max(0, min(complex_bin, 2)), :, None]
             event_indices = [
                 index
                 for index, name in enumerate(target_channels)
@@ -138,6 +221,8 @@ def make_split(
                 title=np.asarray([split_row.get("title", "")]),
                 start_frame=np.asarray([start], dtype=np.int32),
                 duration_frames=np.asarray([duration_frames], dtype=np.int32),
+                legal_masks=legal_masks,
+                legal_mask=legal_masks[max(0, min(complex_bin, 2))],
             )
             rows.append(
                 {
@@ -173,6 +258,12 @@ def main() -> None:
 
     source_rows = source_by_sample(source_index)
     output_dir.mkdir(parents=True, exist_ok=True)
+    train_rows = read_rows(source_split_dir / "train.csv")
+    use_binned_v10 = any(name in BINNED_V10_NAMES - {"bpm_rhythm_bin"} for name in condition_names)
+    if use_binned_v10:
+        bin_thresholds, bin_representatives = compute_bin_thresholds(train_rows, source_rows, frame_ms)
+    else:
+        bin_thresholds, bin_representatives = None, None
     all_train_conditions: list[np.ndarray] = []
     split_summaries: dict[str, int] = {}
 
@@ -189,6 +280,7 @@ def main() -> None:
             window_frames,
             stride_frames,
             min_events,
+            bin_thresholds,
         )
         write_rows(output_dir / f"{split_name}.csv", chunk_rows)
         split_summaries[split_name] = len(chunk_rows)
@@ -208,6 +300,9 @@ def main() -> None:
         "frame_ms": frame_ms,
         "splits": split_summaries,
     }
+    if bin_thresholds is not None:
+        stats["bin_thresholds"] = bin_thresholds
+        stats["bin_representatives"] = bin_representatives
     (output_dir / "stats.json").write_text(json.dumps(stats, ensure_ascii=False, indent=2), encoding="utf-8")
     print(json.dumps({"output_dir": str(output_dir), **split_summaries}, ensure_ascii=False, indent=2))
 

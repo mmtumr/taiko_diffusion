@@ -115,6 +115,11 @@ def main() -> None:
     for batch_index, batch in enumerate(loader, start=1):
         condition = batch["condition"].to(device)
         audio = batch["audio"].to(device)
+        legal_mask = batch.get("legal_mask")
+        if bool(config["model"].get("use_legal_mask_channel", False)):
+            if legal_mask is None:
+                raise ValueError("Model requires legal_mask but the cache does not contain it")
+            audio = torch.cat([audio, legal_mask.to(device).unsqueeze(1)], dim=1)
         latent = ddim_sample_batch(
             model,
             condition,
@@ -136,6 +141,11 @@ def main() -> None:
                 name: float(raw_condition[index, condition_index])
                 for condition_index, name in enumerate(condition_names)
             }
+            if "avg_density" not in condition_map and "avg_density_bin" in condition_map:
+                representatives = stats.get("bin_representatives", {}).get("avg_density_bin")
+                if representatives:
+                    density_bin = int(round(condition_map["avg_density_bin"]))
+                    condition_map["avg_density"] = float(representatives[max(0, min(density_bin, 2))])
             onset = load_raw_onset(str(batch["audio_npz_path"][index]))
             generated_mask = generated_note_mask(
                 probability[index],
@@ -144,6 +154,7 @@ def main() -> None:
                 onset=onset,
                 onset_mix=float(args.onset_mix),
                 channel_names=target_channels,
+                legal_mask=legal_mask[index].numpy() if legal_mask is not None else None,
             )
             if "note_event" in target_channels:
                 target_note = target[index, :, target_channels.index("note_event")] > 0.5
@@ -162,6 +173,7 @@ def main() -> None:
             generated_ka = generated_ka_mask(probability[index], generated_mask, target_channels)
             generated_summary = summarize(generated_mask, onset)
             target_summary = summarize(target_note, onset)
+            sample_legal_mask = legal_mask[index].numpy() > 0.5 if legal_mask is not None else np.ones_like(generated_mask)
             records.append(
                 {
                     "chunk_id": str(batch["chunk_id"][index]),
@@ -173,6 +185,7 @@ def main() -> None:
                     "target_onset_mean": target_summary["onset_mean_at_notes"],
                     "generated_top25_hit": generated_summary["onset_top25_hit_rate"],
                     "target_top25_hit": target_summary["onset_top25_hit_rate"],
+                    "generated_legal_rate": float(sample_legal_mask[generated_mask].mean()) if generated_mask.any() else 1.0,
                 }
             )
         if batch_index == 1 or batch_index % 10 == 0 or batch_index == len(loader):
@@ -217,6 +230,7 @@ def main() -> None:
         "target_onset_mean": float(np.mean([record["target_onset_mean"] for record in records])),
         "generated_top25_hit": float(np.mean([record["generated_top25_hit"] for record in records])),
         "target_top25_hit": float(np.mean([record["target_top25_hit"] for record in records])),
+        "generated_legal_rate": float(np.mean([record["generated_legal_rate"] for record in records])),
         "records": records,
     }
     args.output.parent.mkdir(parents=True, exist_ok=True)

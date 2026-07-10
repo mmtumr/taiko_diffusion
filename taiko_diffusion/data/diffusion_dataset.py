@@ -35,7 +35,7 @@ class TaikoDiffusionDataset(Dataset):
         chart = data["chart"].astype(np.float32)
         condition_raw = data["condition"].astype(np.float32)
         condition = (condition_raw - self.condition_mean) / self.condition_std
-        return {
+        item = {
             "chart": torch.from_numpy(chart.transpose(1, 0)),
             "condition": torch.from_numpy(condition),
             "condition_raw": torch.from_numpy(condition_raw),
@@ -43,6 +43,11 @@ class TaikoDiffusionDataset(Dataset):
             "sample_id": row["sample_id"],
             "title": row.get("title", ""),
         }
+        if "legal_mask" in data.files:
+            item["legal_mask"] = torch.from_numpy(data["legal_mask"].astype(np.float32))
+        if "legal_masks" in data.files:
+            item["legal_masks"] = torch.from_numpy(data["legal_masks"].astype(np.float32))
+        return item
 
 
 class TaikoAudioDiffusionDataset(TaikoDiffusionDataset):

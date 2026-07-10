@@ -10,6 +10,7 @@ import numpy as np
 import torch
 
 from taiko_diffusion.models.latent_diffusion import ChartAutoencoder1D, encode_chart_latent
+from taiko_diffusion.data.diffusion_dataset import local_path
 from taiko_diffusion.sample_diffusion import load_audio_from_row, load_condition_from_row, read_selected_row
 from taiko_diffusion.train_diffusion import diffusion_schedule
 from taiko_diffusion.train_latent_diffusion import load_autoencoder, load_latent_stats, make_model
@@ -102,6 +103,7 @@ def main() -> None:
     parser.add_argument("--seed", type=int, default=None)
     parser.add_argument("--row-index", type=int, default=0)
     parser.add_argument("--chunk-id", type=str, default=None)
+    parser.add_argument("--set-condition", action="append", default=[], metavar="NAME=VALUE")
     parser.add_argument("--device", type=str, default="auto")
     args = parser.parse_args()
 
@@ -111,6 +113,15 @@ def main() -> None:
     stats = json.loads(args.stats.read_text(encoding="utf-8"))
     row = read_selected_row(args.split, int(args.row_index), args.chunk_id)
     condition_np, raw_condition = load_condition_from_row(row, stats)
+    for assignment in args.set_condition:
+        name, separator, value = assignment.partition("=")
+        if not separator or name not in raw_condition:
+            raise ValueError(f"Invalid condition override: {assignment}")
+        raw_condition[name] = float(value)
+    condition_raw = np.asarray([raw_condition[name] for name in stats["condition_names"]], dtype=np.float32)
+    condition_np = (
+        condition_raw - np.asarray(stats["condition_mean"], dtype=np.float32)
+    ) / np.asarray(stats["condition_std"], dtype=np.float32)
     audio_np = load_audio_from_row(row, args.audio_split, args.audio_stats)
     device = torch.device(
         "cuda" if args.device == "auto" and torch.cuda.is_available() else ("cpu" if args.device == "auto" else args.device)
@@ -123,7 +134,22 @@ def main() -> None:
     model.eval()
     schedule = diffusion_schedule(config["diffusion"], device)
     condition = torch.from_numpy(condition_np).unsqueeze(0).to(device)
+    legal_mask = None
+    source_data = np.load(local_path(row["npz_path"]), allow_pickle=False)
+    if "legal_masks" in source_data.files:
+        complex_bin = int(round(raw_condition.get("complex_bin", 2.0)))
+        legal_mask = source_data["legal_masks"][max(0, min(complex_bin, 2))].astype(np.float32)
+    if bool(config["model"].get("use_legal_mask_channel", False)):
+        if legal_mask is None:
+            raise ValueError("Model requires legal_masks but the selected cache sample does not contain them")
+        audio_np = np.concatenate([audio_np, legal_mask[None, :]], axis=0)
     audio = torch.from_numpy(audio_np).unsqueeze(0).to(device)
+    decode_avg_density = raw_condition.get("avg_density")
+    if decode_avg_density is None and "avg_density_bin" in raw_condition:
+        representatives = stats.get("bin_representatives", {}).get("avg_density_bin")
+        if representatives:
+            density_bin = max(0, min(int(round(raw_condition["avg_density_bin"])), 2))
+            decode_avg_density = float(representatives[density_bin])
     latent_shape = infer_latent_shape(
         autoencoder,
         len(stats["target_channels"]),
@@ -152,8 +178,10 @@ def main() -> None:
         binary=(probability >= 0.5).astype(np.float32),
         target_channels=np.asarray(stats["target_channels"]),
         condition_names=np.asarray(stats["condition_names"]),
-        raw_condition=np.asarray([raw_condition[name] for name in stats["condition_names"]], dtype=np.float32),
+        raw_condition=condition_raw,
         audio=audio_np,
+        legal_mask=legal_mask if legal_mask is not None else np.asarray([], dtype=np.float32),
+        decode_avg_density=np.asarray([decode_avg_density if decode_avg_density is not None else 0.0], dtype=np.float32),
         source_chunk_id=np.asarray([row["chunk_id"]]),
         source_sample_id=np.asarray([row["sample_id"]]),
         source_title=np.asarray([row.get("title", "")]),

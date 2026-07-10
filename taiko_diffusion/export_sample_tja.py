@@ -41,6 +41,8 @@ def density_topk_binary(
     condition_names = [str(name) for name in data["condition_names"]]
     raw_condition = data["raw_condition"].astype(np.float32)
     condition = {name: float(raw_condition[index]) for index, name in enumerate(condition_names)}
+    if "avg_density" not in condition and "decode_avg_density" in data.files:
+        condition["avg_density"] = float(data["decode_avg_density"][0])
     avg_density = max(condition.get("avg_density", 0.0), 0.0)
     window_seconds = probability.shape[0] * frame_ms / 1000.0
     note_count = int(round(avg_density * window_seconds))
@@ -63,6 +65,10 @@ def density_topk_binary(
         onset = onset / max(float(onset.max()), 1e-6)
         note_score = note_score + float(onset_mix) * onset
     note_count = max(0, min(note_count, probability.shape[0]))
+    legal_mask = data["legal_mask"].astype(np.float32) if "legal_mask" in data.files and data["legal_mask"].size else None
+    if legal_mask is not None:
+        note_score = np.where(legal_mask > 0.5, note_score, -np.inf)
+        note_count = min(note_count, int((legal_mask > 0.5).sum()))
     selected = np.zeros(probability.shape[0], dtype=bool)
     if note_count > 0:
         selected[np.argpartition(note_score, -note_count)[-note_count:]] = True

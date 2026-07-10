@@ -60,7 +60,10 @@ def load_font(size: int) -> ImageFont.FreeTypeFont | ImageFont.ImageFont:
 def condition_map(sample: np.lib.npyio.NpzFile) -> dict[str, float]:
     names = [str(name) for name in sample["condition_names"]]
     values = sample["raw_condition"].astype(np.float32)
-    return {name: float(values[index]) for index, name in enumerate(names)}
+    condition = {name: float(values[index]) for index, name in enumerate(names)}
+    if "avg_density" not in condition and "decode_avg_density" in sample.files:
+        condition["avg_density"] = float(sample["decode_avg_density"][0])
+    return condition
 
 
 def masks_from_sample(
@@ -84,6 +87,7 @@ def masks_from_sample(
         onset=onset,
         onset_mix=onset_mix,
         channel_names=channel_names,
+        legal_mask=(sample["legal_mask"].astype(np.float32) if "legal_mask" in sample.files and sample["legal_mask"].size else None),
     )
     ka = generated_ka_mask(probability, note, channel_names)
     don = note & ~ka

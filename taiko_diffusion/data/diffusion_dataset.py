@@ -9,6 +9,13 @@ import torch
 from torch.utils.data import Dataset
 
 
+def local_path(value: str) -> Path:
+    path = Path(value)
+    if path.exists() or "\\" not in value:
+        return path
+    return Path(value.replace("\\", "/"))
+
+
 class TaikoDiffusionDataset(Dataset):
     def __init__(self, split_csv: str | Path, stats_path: str | Path):
         self.split_csv = Path(split_csv)
@@ -24,7 +31,7 @@ class TaikoDiffusionDataset(Dataset):
 
     def __getitem__(self, index: int) -> dict[str, torch.Tensor | str]:
         row = self.rows[index]
-        data = np.load(row["npz_path"], allow_pickle=False)
+        data = np.load(local_path(row["npz_path"]), allow_pickle=False)
         chart = data["chart"].astype(np.float32)
         condition_raw = data["condition"].astype(np.float32)
         condition = (condition_raw - self.condition_mean) / self.condition_std
@@ -61,10 +68,11 @@ class TaikoAudioDiffusionDataset(TaikoDiffusionDataset):
         item = super().__getitem__(index)
         chunk_id = str(item["chunk_id"])
         audio_row = self.audio_by_chunk[chunk_id]
-        data = np.load(audio_row["audio_npz_path"], allow_pickle=False)
+        audio_path = local_path(audio_row["audio_npz_path"])
+        data = np.load(audio_path, allow_pickle=False)
         audio = data["audio"].astype(np.float32)
         item["raw_onset"] = torch.from_numpy(audio[:, -2].copy())
         audio = (audio - self.audio_mean) / self.audio_std
         item["audio"] = torch.from_numpy(audio.transpose(1, 0))
-        item["audio_npz_path"] = audio_row["audio_npz_path"]
+        item["audio_npz_path"] = str(audio_path)
         return item

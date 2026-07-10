@@ -204,6 +204,46 @@ class MugStyleAudioScaleEncoder1D(nn.Module):
         return outputs
 
 
+class AudioNoteEventPretrainer(nn.Module):
+    def __init__(
+        self,
+        audio_channels: int,
+        base_channels: int,
+        channel_mults: list[int],
+        num_res_blocks: int = 2,
+        dropout: float = 0.0,
+        head_channels: int = 64,
+    ):
+        super().__init__()
+        self.audio_scale_encoder = MugStyleAudioScaleEncoder1D(
+            audio_channels,
+            base_channels,
+            channel_mults,
+            num_res_blocks=num_res_blocks,
+            dropout=dropout,
+        )
+        self.scale_projections = nn.ModuleList(
+            nn.Conv1d(base_channels * mult, head_channels, kernel_size=1) for mult in channel_mults
+        )
+        self.head = nn.Sequential(
+            PlainResBlock1D(head_channels, dropout),
+            nn.GroupNorm(group_count(head_channels), head_channels),
+            nn.SiLU(),
+            nn.Conv1d(head_channels, 1, kernel_size=1),
+        )
+
+    def forward(self, audio: torch.Tensor) -> torch.Tensor:
+        scales = self.audio_scale_encoder(audio)
+        target_length = audio.shape[-1]
+        projected = []
+        for scale, projection in zip(scales, self.scale_projections):
+            value = projection(scale)
+            if value.shape[-1] != target_length:
+                value = torch.nn.functional.interpolate(value, size=target_length, mode="linear", align_corners=False)
+            projected.append(value)
+        return self.head(torch.stack(projected).mean(dim=0)).squeeze(1)
+
+
 class LatentUNet1D(nn.Module):
     def __init__(
         self,

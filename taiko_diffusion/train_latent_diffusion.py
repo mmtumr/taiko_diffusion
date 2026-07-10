@@ -198,6 +198,7 @@ def main() -> None:
     parser.add_argument("--batch-size", type=int, default=None)
     parser.add_argument("--resume-checkpoint", type=Path, default=None)
     parser.add_argument("--init-checkpoint", type=Path, default=None)
+    parser.add_argument("--audio-encoder-checkpoint", type=Path, default=None)
     parser.add_argument("--device", type=str, default="auto")
     args = parser.parse_args()
 
@@ -218,15 +219,27 @@ def main() -> None:
     model = make_model(config).to(device)
     resume_epoch = 0
     best_val = float("inf")
+    init_checkpoint = args.init_checkpoint or (
+        Path(training["init_checkpoint"]) if training.get("init_checkpoint") else None
+    )
+    audio_encoder_checkpoint = args.audio_encoder_checkpoint or (
+        Path(training["audio_encoder_checkpoint"]) if training.get("audio_encoder_checkpoint") else None
+    )
     if args.resume_checkpoint is not None:
         checkpoint = torch.load(args.resume_checkpoint, map_location="cpu", weights_only=False)
         model.load_state_dict(checkpoint["model"])
         resume_epoch = int(checkpoint.get("epoch", 0))
         best_val = float(checkpoint.get("val_loss", best_val))
-    elif args.init_checkpoint is not None:
-        checkpoint = torch.load(args.init_checkpoint, map_location="cpu", weights_only=False)
+    elif init_checkpoint is not None:
+        checkpoint = torch.load(init_checkpoint, map_location="cpu", weights_only=False)
         model.load_state_dict(checkpoint["model"])
-        print(json.dumps({"init_checkpoint": str(args.init_checkpoint)}, ensure_ascii=False), flush=True)
+        print(json.dumps({"init_checkpoint": str(init_checkpoint)}, ensure_ascii=False), flush=True)
+    if args.resume_checkpoint is None and audio_encoder_checkpoint is not None:
+        if model.audio_scale_encoder is None:
+            raise ValueError("Audio encoder pretraining requires model.audio_fusion=mug_scale")
+        audio_checkpoint = torch.load(audio_encoder_checkpoint, map_location="cpu", weights_only=False)
+        model.audio_scale_encoder.load_state_dict(audio_checkpoint["audio_scale_encoder"])
+        print(json.dumps({"audio_encoder_checkpoint": str(audio_encoder_checkpoint)}, ensure_ascii=False), flush=True)
     optimizer = torch.optim.AdamW(
         model.parameters(),
         lr=float(training["learning_rate"]),
@@ -292,6 +305,10 @@ def main() -> None:
                     "epoch": epoch,
                     "val_loss": val_loss,
                     "autoencoder_checkpoint": str(config["autoencoder"]["checkpoint"]),
+                    "init_checkpoint": str(init_checkpoint) if init_checkpoint is not None else None,
+                    "audio_encoder_checkpoint": (
+                        str(audio_encoder_checkpoint) if audio_encoder_checkpoint is not None else None
+                    ),
                 },
                 checkpoint_dir / "best.pt",
             )

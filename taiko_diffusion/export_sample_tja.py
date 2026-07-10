@@ -13,6 +13,10 @@ def frame_to_char(values: np.ndarray, names: list[str]) -> str:
             return "0"
         ka_value = values[channel["ka_probability"]] if "ka_probability" in channel else 0.0
         return "2" if ka_value > 0.5 else "1"
+    if "roll_end" not in channel and "balloon_end" not in channel:
+        if values[channel["ka"]] > 0.5 and values[channel["ka"]] >= values[channel["don"]]:
+            return "2"
+        return "1" if values[channel["don"]] > 0.5 else "0"
     if values[channel["roll_end"]] > 0.5 or values[channel["balloon_end"]] > 0.5:
         return "8"
     if values[channel["balloon_start"]] > 0.5:

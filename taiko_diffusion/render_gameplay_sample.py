@@ -11,6 +11,7 @@ from pathlib import Path
 import numpy as np
 from PIL import Image, ImageDraw, ImageFont
 
+from taiko_diffusion.data.diffusion_dataset import local_path
 from taiko_diffusion.eval_audio_alignment import generated_ka_mask, generated_note_mask
 
 
@@ -28,6 +29,20 @@ HIT_RING = (250, 238, 210)
 def read_rows_by_chunk(path: Path) -> dict[str, dict[str, str]]:
     with path.open("r", encoding="utf-8-sig", newline="") as file:
         return {row["chunk_id"]: row for row in csv.DictReader(file)}
+
+
+def local_audio_path(value: str) -> Path:
+    path = local_path(value)
+    if path.exists():
+        return path
+    marker = "ESE-master/ese/"
+    normalized = value.replace("\\", "/")
+    if marker in normalized:
+        relative = normalized.split(marker, 1)[1]
+        candidate = Path(__file__).resolve().parents[2] / "ESE-master_extracted" / "ese" / relative
+        if candidate.exists():
+            return candidate
+    raise FileNotFoundError(f"Audio file not found: {value}")
 
 
 def load_font(size: int) -> ImageFont.FreeTypeFont | ImageFont.ImageFont:
@@ -57,7 +72,7 @@ def masks_from_sample(
     chunk_id = str(sample["source_chunk_id"][0])
     audio_rows = read_rows_by_chunk(audio_split)
     audio_row = audio_rows[chunk_id]
-    audio_data = np.load(audio_row["audio_npz_path"], allow_pickle=False)
+    audio_data = np.load(local_path(audio_row["audio_npz_path"]), allow_pickle=False)
     onset = audio_data["audio"].astype(np.float32)[:, -2]
 
     probability = sample["probability"].astype(np.float32)
@@ -201,7 +216,7 @@ def run_ffmpeg(frames_dir: Path, output: Path, fps: int, audio_row: dict[str, st
         "-t",
         f"{duration_sec:.6f}",
         "-i",
-        audio_row["audio_path"],
+        str(local_audio_path(audio_row["audio_path"])),
         "-c:v",
         "libx264",
         "-pix_fmt",

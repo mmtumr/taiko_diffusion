@@ -1,0 +1,26 @@
+data:
+  cache_dir: data/cache/diffusion_v9_donka
+  audio_cache_dir: data/cache/audio_v0
+
+model:
+  audio_channels: 66
+  base_channels: 128
+  channel_mults:
+    - 1
+    - 1
+    - 2
+    - 2
+  audio_scale_blocks: 2
+  dropout: 0.0
+  head_channels: 64
+
+training:
+  seed: 20260625
+  batch_size: 12
+  epochs: 8
+  learning_rate: 0.0002
+  weight_decay: 0.00001
+  positive_loss_weight: 8.0
+  checkpoint_dir: checkpoints/audio_encoder_pretrain_v0
+  log_dir: logs/audio_encoder_pretrain_v0
+  num_workers: 0

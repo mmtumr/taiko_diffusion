@@ -8,6 +8,7 @@ from pathlib import Path
 import numpy as np
 import torch
 
+from taiko_diffusion.data.diffusion_dataset import local_path
 from taiko_diffusion.train_diffusion import diffusion_schedule, make_model
 
 
@@ -30,7 +31,7 @@ def read_selected_row(path: Path, row_index: int = 0, chunk_id: str | None = Non
 
 
 def load_condition_from_row(row: dict[str, str], stats: dict) -> tuple[np.ndarray, dict[str, float]]:
-    data = np.load(row["npz_path"], allow_pickle=False)
+    data = np.load(local_path(row["npz_path"]), allow_pickle=False)
     raw = data["condition"].astype(np.float32)
     mean = np.asarray(stats["condition_mean"], dtype=np.float32)
     std = np.asarray(stats["condition_std"], dtype=np.float32)
@@ -50,7 +51,7 @@ def load_audio_from_row(row: dict[str, str], audio_csv: Path, audio_stats_path: 
     audio_stats = json.loads(audio_stats_path.read_text(encoding="utf-8"))
     mean = np.asarray(audio_stats["feature_mean"], dtype=np.float32)
     std = np.asarray(audio_stats["feature_std"], dtype=np.float32)
-    data = np.load(audio_row["audio_npz_path"], allow_pickle=False)
+    data = np.load(local_path(audio_row["audio_npz_path"]), allow_pickle=False)
     audio = data["audio"].astype(np.float32)
     audio = (audio - mean) / std
     return audio.transpose(1, 0).astype(np.float32)

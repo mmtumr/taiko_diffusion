@@ -34,8 +34,8 @@ training:
   epochs: 3
   learning_rate: 0.00005
   weight_decay: 0.00001
-  checkpoint_dir: checkpoints/latent_diffusion_v10_grid_constrained_short
-  log_dir: logs/latent_diffusion_v10_grid_constrained_short
+  checkpoint_dir: checkpoints/latent_diffusion_v10_exact_grid_short
+  log_dir: logs/latent_diffusion_v10_exact_grid_short
   num_workers: 0
   condition_dropout: 0.1
   audio_dropout: 0.1

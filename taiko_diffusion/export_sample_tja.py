@@ -120,17 +120,39 @@ def main() -> None:
         )
     else:
         binary = (probability >= float(args.threshold)).astype(np.float32)
-    frames_per_measure = max(1, int(round((4.0 * 60000.0 / float(args.bpm)) / float(args.frame_ms))))
-    chars = [frame_to_char(binary[index], names) for index in range(binary.shape[0])]
-    measures = [
-        "".join(chars[start : start + frames_per_measure]) + ","
-        for start in range(0, len(chars), frames_per_measure)
-    ]
+    strict_slots = "measure_indices" in data.files and data["measure_indices"].size > 0
+    bpm = float(data["bpm_track"][0]) if "bpm_track" in data.files and data["bpm_track"].size else float(args.bpm)
+    if strict_slots:
+        measure_indices = data["measure_indices"].astype(np.int32)
+        slot_indices = data["slot_indices"].astype(np.int32)
+        condition_names = [str(name) for name in data["condition_names"]]
+        raw_condition = data["raw_condition"].astype(np.float32)
+        condition = {name: float(raw_condition[index]) for index, name in enumerate(condition_names)}
+        complex_bin = int(round(condition.get("complex_bin", 2.0)))
+        slots_per_measure = 16 if complex_bin == 0 else 96
+        measures = []
+        for measure_index in sorted(set(int(value) for value in measure_indices if value >= 0)):
+            chars = ["0"] * slots_per_measure
+            frames = np.flatnonzero((measure_indices == measure_index) & (slot_indices >= 0))
+            for frame in frames:
+                common_slot = int(slot_indices[frame])
+                output_slot = common_slot // 6 if slots_per_measure == 16 else common_slot
+                if output_slot < slots_per_measure:
+                    chars[output_slot] = frame_to_char(binary[frame], names)
+            measures.append("".join(chars) + ",")
+        frames_per_measure = slots_per_measure
+    else:
+        frames_per_measure = max(1, int(round((4.0 * 60000.0 / bpm) / float(args.frame_ms))))
+        chars = [frame_to_char(binary[index], names) for index in range(binary.shape[0])]
+        measures = [
+            "".join(chars[start : start + frames_per_measure]) + ","
+            for start in range(0, len(chars), frames_per_measure)
+        ]
     title = str(data["source_title"][0]) if "source_title" in data.files else "diffusion_v0_sample"
     text = "\n".join(
         [
             f"TITLE:{title} diffusion_sample",
-            f"BPM:{float(args.bpm):.6g}",
+            f"BPM:{bpm:.6g}",
             "COURSE:Oni",
             "LEVEL:10",
             "#START",

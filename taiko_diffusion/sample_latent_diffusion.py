@@ -135,10 +135,15 @@ def main() -> None:
     schedule = diffusion_schedule(config["diffusion"], device)
     condition = torch.from_numpy(condition_np).unsqueeze(0).to(device)
     legal_mask = None
+    measure_indices = None
+    slot_indices = None
     source_data = np.load(local_path(row["npz_path"]), allow_pickle=False)
     if "legal_masks" in source_data.files:
         complex_bin = int(round(raw_condition.get("complex_bin", 2.0)))
-        legal_mask = source_data["legal_masks"][max(0, min(complex_bin, 2))].astype(np.float32)
+        selected_bin = max(0, min(complex_bin, 2))
+        legal_mask = source_data["legal_masks"][selected_bin].astype(np.float32)
+        measure_indices = source_data["measure_indices"][selected_bin].astype(np.int32)
+        slot_indices = source_data["slot_indices"][selected_bin].astype(np.int32)
     if bool(config["model"].get("use_legal_mask_channel", False)):
         if legal_mask is None:
             raise ValueError("Model requires legal_masks but the selected cache sample does not contain them")
@@ -181,6 +186,12 @@ def main() -> None:
         raw_condition=condition_raw,
         audio=audio_np,
         legal_mask=legal_mask if legal_mask is not None else np.asarray([], dtype=np.float32),
+        measure_indices=measure_indices if measure_indices is not None else np.asarray([], dtype=np.int32),
+        slot_indices=slot_indices if slot_indices is not None else np.asarray([], dtype=np.int32),
+        bpm_track=source_data["bpm_track"] if "bpm_track" in source_data.files else np.asarray([], dtype=np.float32),
+        measure_track=(
+            source_data["measure_track"] if "measure_track" in source_data.files else np.asarray([], dtype=np.float32)
+        ),
         decode_avg_density=np.asarray([decode_avg_density if decode_avg_density is not None else 0.0], dtype=np.float32),
         source_chunk_id=np.asarray([row["chunk_id"]]),
         source_sample_id=np.asarray([row["sample_id"]]),

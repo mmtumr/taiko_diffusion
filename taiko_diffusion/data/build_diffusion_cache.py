@@ -65,27 +65,47 @@ def target_grid(source_x: np.ndarray, channels: list[str], target_channels: list
     return np.stack([values[name] for name in target_channels], axis=1).astype(np.float32)
 
 
-def legal_grid_masks(source_x: np.ndarray, channels: list[str], frame_ms: float) -> np.ndarray:
+def exact_grid_metadata(
+    source_x: np.ndarray,
+    channels: list[str],
+    duration_frames: int,
+) -> tuple[np.ndarray, np.ndarray, np.ndarray]:
     channel_index = {name: index for index, name in enumerate(channels)}
-    bpm = np.maximum(source_x[:, channel_index["bpm"]] * 300.0, 1e-6)
     active = source_x[:, channel_index["active"]] > 0.5
-    beats_per_frame = bpm * (frame_ms / 1000.0) / 60.0
-    beat_position = np.concatenate([np.zeros(1, dtype=np.float32), np.cumsum(beats_per_frame[:-1])])
-    tolerance = beats_per_frame * 0.55
+    barlines = np.flatnonzero(source_x[:duration_frames, channel_index["barline"]] > 0.5).tolist()
+    if not barlines or barlines[0] != 0:
+        barlines.insert(0, 0)
+    boundaries = sorted(set([*barlines, duration_frames]))
+    masks = np.zeros((3, source_x.shape[0]), dtype=np.float32)
+    measure_indices = np.full((3, source_x.shape[0]), -1, dtype=np.int32)
+    slot_indices = np.full((3, source_x.shape[0]), -1, dtype=np.int32)
+    medium_slots = sorted(
+        set().union(*(range(0, 96, 96 // division) for division in [8, 12, 16, 24, 32]))
+    )
+    slots_by_bin = [list(range(0, 96, 6)), medium_slots]
+    for measure_index, (start, end) in enumerate(zip(boundaries[:-1], boundaries[1:])):
+        length = max(end - start, 1)
+        for bin_index, slots in enumerate(slots_by_bin):
+            for slot in slots:
+                frame = min(end - 1, start + int(round(slot * length / 96.0)))
+                if frame < 0 or frame >= source_x.shape[0] or not active[frame]:
+                    continue
+                masks[bin_index, frame] = 1.0
+                measure_indices[bin_index, frame] = measure_index
+                slot_indices[bin_index, frame] = slot
+    masks[2] = active.astype(np.float32)
+    return masks, measure_indices, slot_indices
 
-    def division_mask(divisions: list[int]) -> np.ndarray:
-        allowed = np.zeros(source_x.shape[0], dtype=bool)
-        for division in divisions:
-            step = 4.0 / float(division)
-            remainder = np.mod(beat_position, step)
-            distance = np.minimum(remainder, step - remainder)
-            allowed |= distance <= tolerance
-        return allowed & active
 
-    return np.stack(
-        [division_mask([8, 16]), division_mask([8, 12, 16, 24, 32]), active],
-        axis=0,
-    ).astype(np.float32)
+def snap_target_to_grid(target: np.ndarray, legal_mask: np.ndarray) -> np.ndarray:
+    legal_indices = np.flatnonzero(legal_mask > 0.5)
+    if legal_indices.size == 0:
+        return np.zeros_like(target)
+    snapped = np.zeros_like(target)
+    for source_frame in np.flatnonzero(target.max(axis=1) > 0.5):
+        nearest = int(legal_indices[np.argmin(np.abs(legal_indices - source_frame))])
+        snapped[nearest] = np.maximum(snapped[nearest], target[source_frame])
+    return snapped
 
 
 def condition_values(
@@ -130,6 +150,7 @@ def compute_bin_thresholds(
         source = np.load(source_path, allow_pickle=False)
         source_x = source["x"].astype(np.float32)
         channels = [str(name) for name in source["channels"]]
+        channel_index = {name: index for index, name in enumerate(channels)}
         labels = load_label_map(source_path)
         direct = direct_features(source_x, channels, labels, frame_ms)
         collected["complex_bin"].append(float(labels["complex"]))
@@ -183,12 +204,20 @@ def make_split(
         source = np.load(source_path, allow_pickle=False)
         source_x = source["x"].astype(np.float32)
         channels = [str(name) for name in source["channels"]]
+        channel_index = {name: index for index, name in enumerate(channels)}
         labels = load_label_map(source_path)
         duration_frames = int(source["duration_frames"][0])
         target = target_grid(source_x, channels, target_channels)
         cond = condition_values(source_x, channels, labels, condition_names, frame_ms, bin_thresholds)
-        all_legal_masks = legal_grid_masks(source_x, channels, frame_ms) if "complex_bin" in condition_names else None
+        if "complex_bin" in condition_names:
+            all_legal_masks, all_measure_indices, all_slot_indices = exact_grid_metadata(
+                source_x, channels, duration_frames
+            )
+        else:
+            all_legal_masks = all_measure_indices = all_slot_indices = None
         complex_bin = int(round(float(cond[condition_names.index("complex_bin")]))) if all_legal_masks is not None else 2
+        if all_legal_masks is not None and complex_bin < 2:
+            target = snap_target_to_grid(target, all_legal_masks[max(0, complex_bin)])
 
         for start in chunk_starts(duration_frames, window_frames, stride_frames):
             end = start + window_frames
@@ -197,10 +226,17 @@ def make_split(
             if available > 0:
                 chunk[:available] = target[start : start + available]
             legal_masks = np.ones((3, window_frames), dtype=np.float32)
+            measure_indices = np.full((3, window_frames), -1, dtype=np.int32)
+            slot_indices = np.full((3, window_frames), -1, dtype=np.int32)
+            bpm_track = np.zeros(window_frames, dtype=np.float32)
+            measure_track = np.zeros(window_frames, dtype=np.float32)
             if all_legal_masks is not None and available > 0:
                 legal_masks[:, :available] = all_legal_masks[:, start : start + available]
                 legal_masks[:, available:] = 0.0
-                chunk *= legal_masks[max(0, min(complex_bin, 2)), :, None]
+                measure_indices[:, :available] = all_measure_indices[:, start : start + available]
+                slot_indices[:, :available] = all_slot_indices[:, start : start + available]
+                bpm_track[:available] = source_x[start : start + available, channel_index["bpm"]] * 300.0
+                measure_track[:available] = source_x[start : start + available, channel_index["measure"]]
             event_indices = [
                 index
                 for index, name in enumerate(target_channels)
@@ -223,6 +259,10 @@ def make_split(
                 duration_frames=np.asarray([duration_frames], dtype=np.int32),
                 legal_masks=legal_masks,
                 legal_mask=legal_masks[max(0, min(complex_bin, 2))],
+                measure_indices=measure_indices,
+                slot_indices=slot_indices,
+                bpm_track=bpm_track,
+                measure_track=measure_track,
             )
             rows.append(
                 {

@@ -1,0 +1,47 @@
+data:
+  cache_dir: data/cache/diffusion_v13_mug_holds
+  audio_cache_dir: data/cache/audio_v0
+
+autoencoder:
+  checkpoint: checkpoints/autoencoder_kl_v13_mug_holds/best.pt
+  latent_stats: checkpoints/autoencoder_kl_v13_mug_holds/latent_stats.json
+
+model:
+  latent_channels: 16
+  cond_dim: 11
+  audio_channels: 67
+  use_legal_mask_channel: true
+  audio_fusion: mug_scale
+  audio_scale_blocks: 2
+  base_channels: 128
+  channel_mults: [1, 2, 2]
+  dropout: 0.0
+  audio_context_dim: 128
+  audio_context_tokens: 128
+  audio_attention_heads: 4
+
+diffusion:
+  timesteps: 200
+  beta_start: 0.0001
+  beta_end: 0.02
+
+training:
+  seed: 20260712
+  batch_size: 10
+  epochs: 12
+  learning_rate: 0.00005
+  weight_decay: 0.00001
+  checkpoint_dir: checkpoints/latent_diffusion_v13_mug_holds_bce
+  log_dir: logs/latent_diffusion_v13_mug_holds_bce
+  num_workers: 0
+  condition_dropout: 0.1
+  audio_dropout: 0.1
+  decoded_x0_loss_weight: 0.4
+  decoded_loss_type: bce
+  decoded_onset_loss_weight: 0.25
+  decoded_positive_loss_weight: 4.0
+  decoded_channel_positive_weights: [4.0, 4.0, 8.0, 8.0, 24.0, 10.0, 24.0, 16.0, 1.0, 16.0, 1.0]
+  onset_weight_scale: 2.5
+  init_checkpoint: checkpoints/latent_diffusion_v13_mug_holds/best.pt
+  condition_names: [const, complex_bin, subdivision_bin, hs_change_bin, bpm_rhythm_bin, note_type_bin, avg_density_bin, peak_density_bin, big_note_ratio, balloon_roll_ratio, ka_ratio]
+  init_condition_names: [const, complex_bin, subdivision_bin, hs_change_bin, bpm_rhythm_bin, note_type_bin, avg_density_bin, peak_density_bin, big_note_ratio, balloon_roll_ratio, ka_ratio]

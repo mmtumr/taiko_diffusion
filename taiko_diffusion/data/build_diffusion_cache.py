@@ -59,6 +59,15 @@ def target_grid(source_x: np.ndarray, channels: list[str], target_channels: list
     values["big_ka"] = source_x[:, channel_index["big_ka"]]
     values["note_event"] = note
     values["ka_probability"] = ka
+    values["hold_start"] = np.clip(
+        source_x[:, channel_index["roll_start"]] + source_x[:, channel_index["balloon_start"]], 0.0, 1.0
+    )
+    values["hold_body"] = np.clip(
+        source_x[:, channel_index["roll_body"]] + source_x[:, channel_index["balloon_body"]], 0.0, 1.0
+    )
+    values["hold_end"] = np.clip(
+        source_x[:, channel_index["roll_end"]] + source_x[:, channel_index["balloon_end"]], 0.0, 1.0
+    )
     for name in [
         "roll_start",
         "roll_body",
@@ -158,6 +167,9 @@ def condition_values(
     values["bpm_rhythm_bin"] = float(np.searchsorted([1e-6, 25.0], labels["bpm_change"], side="right"))
     values["note_type_high"] = float(labels["note_type"] >= 25.0)
     values["ka_ratio"] = float(ka.sum() / note_count)
+    roll_count = float(source_x[:, channel_index["roll_start"]].sum())
+    balloon_count = float(source_x[:, channel_index["balloon_start"]].sum())
+    values["balloon_roll_ratio"] = balloon_count / max(roll_count + balloon_count, 1.0)
     values["subdivision_bin"] = 2.0
     if bin_thresholds is not None:
         values["complex_bin"] = float(np.searchsorted(bin_thresholds["complex_bin"], values["complex"], side="right"))

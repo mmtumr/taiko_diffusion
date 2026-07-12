@@ -1,0 +1,25 @@
+data:
+  cache_dir: data/cache/diffusion_v13_mug_holds
+
+autoencoder:
+  type: kl
+  chart_channels: 11
+  latent_channels: 16
+  base_channels: 64
+  dropout: 0.0
+  scale: 1.0
+
+training:
+  seed: 20260712
+  batch_size: 32
+  epochs: 8
+  learning_rate: 0.0003
+  weight_decay: 0.00001
+  checkpoint_dir: checkpoints/autoencoder_kl_v13_mug_holds
+  log_dir: logs/autoencoder_kl_v13_mug_holds
+  num_workers: 0
+  positive_loss_weight: 6.0
+  channel_positive_weights: [4.0, 4.0, 8.0, 8.0, 16.0, 4.0, 16.0, 16.0, 1.0, 16.0, 1.0]
+  count_loss_weight: 0.25
+  latent_l2_weight: 0.0
+  kl_weight: 0.000001

@@ -171,6 +171,8 @@ def run_epoch(
     decoded_x0_loss_weight: float,
     decoded_onset_loss_weight: float,
     decoded_positive_loss_weight: float,
+    decoded_channel_positive_weights: torch.Tensor | None,
+    decoded_loss_type: str,
     onset_weight_scale: float,
     use_legal_mask_channel: bool,
     device: torch.device,
@@ -215,9 +217,20 @@ def run_epoch(
                 decode_latent = pred_x0
                 if latent_mean is not None and latent_std is not None:
                     decode_latent = decode_latent * latent_std + latent_mean
-                decoded_prob = torch.sigmoid(autoencoder.decode(decode_latent))
-                event_weight = torch.where(chart > 0.5, decoded_positive_loss_weight, 1.0)
-                decoded_loss = torch.nn.functional.mse_loss(decoded_prob, chart, reduction="none")
+                decoded_logits = autoencoder.decode(decode_latent)
+                decoded_prob = torch.sigmoid(decoded_logits)
+                positive_weight = (
+                    decoded_channel_positive_weights
+                    if decoded_channel_positive_weights is not None
+                    else torch.full((1, chart.shape[1], 1), decoded_positive_loss_weight, device=device)
+                )
+                event_weight = torch.where(chart > 0.5, positive_weight, 1.0)
+                if decoded_loss_type == "bce":
+                    decoded_loss = torch.nn.functional.binary_cross_entropy_with_logits(
+                        decoded_logits, chart, reduction="none"
+                    )
+                else:
+                    decoded_loss = torch.nn.functional.mse_loss(decoded_prob, chart, reduction="none")
                 if decoded_x0_loss_weight > 0.0:
                     loss = loss + decoded_x0_loss_weight * (decoded_loss * event_weight).mean()
                 if decoded_onset_loss_weight > 0.0 and raw_onset is not None:
@@ -321,6 +334,17 @@ def main() -> None:
     decoded_x0_loss_weight = float(training.get("decoded_x0_loss_weight", 0.0))
     decoded_onset_loss_weight = float(training.get("decoded_onset_loss_weight", 0.0))
     decoded_positive_loss_weight = float(training.get("decoded_positive_loss_weight", 2.0))
+    decoded_loss_type = str(training.get("decoded_loss_type", "mse"))
+    if decoded_loss_type not in {"mse", "bce"}:
+        raise ValueError("decoded_loss_type must be mse or bce")
+    channel_weights = training.get("decoded_channel_positive_weights")
+    decoded_channel_positive_weights = (
+        torch.as_tensor(channel_weights, dtype=torch.float32, device=device).view(1, -1, 1)
+        if channel_weights is not None
+        else None
+    )
+    if decoded_channel_positive_weights is not None and decoded_channel_positive_weights.shape[1] != autoencoder.chart_channels:
+        raise ValueError("decoded_channel_positive_weights must match autoencoder chart_channels")
     onset_weight_scale = float(training.get("onset_weight_scale", 2.0))
     use_legal_mask_channel = bool(config["model"].get("use_legal_mask_channel", False))
     for epoch in range(resume_epoch + 1, epochs + 1):
@@ -337,6 +361,8 @@ def main() -> None:
             decoded_x0_loss_weight,
             decoded_onset_loss_weight,
             decoded_positive_loss_weight,
+            decoded_channel_positive_weights,
+            decoded_loss_type,
             onset_weight_scale,
             use_legal_mask_channel,
             device,
@@ -355,6 +381,8 @@ def main() -> None:
             decoded_x0_loss_weight,
             decoded_onset_loss_weight,
             decoded_positive_loss_weight,
+            decoded_channel_positive_weights,
+            decoded_loss_type,
             onset_weight_scale,
             use_legal_mask_channel,
             device,

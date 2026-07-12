@@ -8,6 +8,10 @@ import numpy as np
 
 def frame_to_char(values: np.ndarray, names: list[str]) -> str:
     channel = {name: index for index, name in enumerate(names)}
+    if "hold_end" in channel and values[channel["hold_end"]] > 0.5:
+        return "8"
+    if "hold_start" in channel and values[channel["hold_start"]] > 0.5:
+        return "5"
     if "note_event" in channel:
         if values[channel["note_event"]] <= 0.5:
             return "0"
@@ -172,7 +176,44 @@ def density_topk_binary(
                 binary[start + 1 : end, channel[f"{prefix}_body"]] = 1.0
                 binary[end, channel[f"{prefix}_end"]] = 1.0
                 occupied[max(0, start - 1) : min(probability.shape[0], end + 2)] = True
+        elif all(name in channel for name in ["hold_start", "hold_body", "hold_end"]):
+            starts = probability[:, channel["hold_start"]] > 0.5
+            holding = probability[:, channel["hold_body"]] > 0.5
+            for start in np.flatnonzero(starts):
+                end = int(start)
+                cursor = int(start) + 1
+                while cursor < probability.shape[0] and holding[cursor] and not starts[cursor]:
+                    end = cursor
+                    cursor += 1
+                if end == start:
+                    continue
+                binary[start : end + 1] = 0.0
+                binary[start, channel["hold_start"]] = 1.0
+                binary[start + 1 : end + 1, channel["hold_body"]] = 1.0
+                binary[end, channel["hold_body"]] = 0.0
+                binary[end, channel["hold_end"]] = 1.0
     return binary
+
+
+def hold_spans(binary: np.ndarray, names: list[str]) -> list[tuple[int, int]]:
+    channel = {name: index for index, name in enumerate(names)}
+    if "hold_start" not in channel or "hold_end" not in channel:
+        return []
+    starts = np.flatnonzero(binary[:, channel["hold_start"]] > 0.5)
+    ends = np.flatnonzero(binary[:, channel["hold_end"]] > 0.5)
+    spans = []
+    for start in starts:
+        later = ends[ends > start]
+        if later.size:
+            spans.append((int(start), int(later[0])))
+    return spans
+
+
+def balloon_span_indices(span_count: int, ratio: float) -> set[int]:
+    balloon_count = min(span_count, max(0, int(round(span_count * min(max(ratio, 0.0), 1.0)))))
+    if balloon_count == 0:
+        return set()
+    return set(np.linspace(0, span_count - 1, num=balloon_count, dtype=np.int32).tolist())
 
 
 def main() -> None:
@@ -201,14 +242,26 @@ def main() -> None:
         )
     else:
         binary = (probability >= float(args.threshold)).astype(np.float32)
-    strict_slots = "measure_indices" in data.files and data["measure_indices"].size > 0
+    strict_slots = (
+        "measure_indices" in data.files
+        and "slot_indices" in data.files
+        and np.any(data["measure_indices"] >= 0)
+        and np.any(data["slot_indices"] >= 0)
+    )
     bpm = float(data["bpm_track"][0]) if "bpm_track" in data.files and data["bpm_track"].size else float(args.bpm)
+    condition_names = [str(name) for name in data["condition_names"]]
+    raw_condition = data["raw_condition"].astype(np.float32)
+    condition = {name: float(raw_condition[index]) for index, name in enumerate(condition_names)}
+    spans = hold_spans(binary, names)
+    balloon_indices = balloon_span_indices(len(spans), condition.get("balloon_roll_ratio", 0.0))
+    balloon_starts = {spans[index][0] for index in balloon_indices}
+    balloon_hits = [
+        max(1, int(np.floor((spans[index][1] - spans[index][0]) * float(args.frame_ms) / 1000.0 * 15.0)))
+        for index in sorted(balloon_indices)
+    ]
     if strict_slots:
         measure_indices = data["measure_indices"].astype(np.int32)
         slot_indices = data["slot_indices"].astype(np.int32)
-        condition_names = [str(name) for name in data["condition_names"]]
-        raw_condition = data["raw_condition"].astype(np.float32)
-        condition = {name: float(raw_condition[index]) for index, name in enumerate(condition_names)}
         subdivision_bin = int(round(condition.get("subdivision_bin", condition.get("complex_bin", 2.0))))
         slots_per_measure = 16 if subdivision_bin == 0 else 96
         measures = []
@@ -219,7 +272,8 @@ def main() -> None:
                 common_slot = int(slot_indices[frame])
                 output_slot = common_slot // 6 if slots_per_measure == 16 else common_slot
                 if output_slot < slots_per_measure:
-                    chars[output_slot] = frame_to_char(binary[frame], names)
+                    char = frame_to_char(binary[frame], names)
+                    chars[output_slot] = "7" if frame in balloon_starts and char == "5" else char
             commands = []
             channel = {name: index for index, name in enumerate(names)}
             if condition.get("bpm_rhythm_bin", 0.0) > 0.0 and "bpm_change_event" in channel and "bpm_value" in channel:
@@ -237,7 +291,10 @@ def main() -> None:
         frames_per_measure = slots_per_measure
     else:
         frames_per_measure = max(1, int(round((4.0 * 60000.0 / bpm) / float(args.frame_ms))))
-        chars = [frame_to_char(binary[index], names) for index in range(binary.shape[0])]
+        chars = []
+        for index in range(binary.shape[0]):
+            char = frame_to_char(binary[index], names)
+            chars.append("7" if index in balloon_starts and char == "5" else char)
         measures = [
             "".join(chars[start : start + frames_per_measure]) + ","
             for start in range(0, len(chars), frames_per_measure)
@@ -247,6 +304,7 @@ def main() -> None:
         [
             f"TITLE:{title} diffusion_sample",
             f"BPM:{bpm:.6g}",
+            *(["BALLOON:" + ",".join(str(value) for value in balloon_hits)] if balloon_hits else []),
             "COURSE:Oni",
             "LEVEL:10",
             "#START",

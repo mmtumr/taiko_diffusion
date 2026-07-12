@@ -13,7 +13,7 @@ from PIL import Image, ImageDraw, ImageFont
 
 from taiko_diffusion.data.diffusion_dataset import local_path
 from taiko_diffusion.eval_audio_alignment import generated_ka_mask, generated_note_mask
-from taiko_diffusion.export_sample_tja import density_topk_binary
+from taiko_diffusion.export_sample_tja import balloon_span_indices, density_topk_binary, hold_spans
 
 
 BG = (16, 18, 22)
@@ -97,6 +97,11 @@ def masks_from_sample(
             big |= binary[:, channel[name]] > 0.5
     don = note & ~ka
     spans = []
+    unified_spans = hold_spans(binary, channel_names)
+    balloon_indices = balloon_span_indices(
+        len(unified_spans), condition_map(sample).get("balloon_roll_ratio", 0.0)
+    )
+    spans.extend((start, end, index in balloon_indices) for index, (start, end) in enumerate(unified_spans))
     for prefix, is_balloon in [("roll", False), ("balloon", True)]:
         if f"{prefix}_start" not in channel or f"{prefix}_end" not in channel:
             continue

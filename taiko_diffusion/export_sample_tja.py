@@ -101,18 +101,29 @@ def density_topk_binary(
             if big_count > 0 and "measure_indices" in data.files and "slot_indices" in data.files:
                 measure_indices = data["measure_indices"].astype(np.int32)
                 slot_indices = data["slot_indices"].astype(np.int32)
-                eighth_indices = selected_indices[
-                    (measure_indices[selected_indices] >= 0)
-                    & (slot_indices[selected_indices] >= 0)
-                    & (slot_indices[selected_indices] % 12 == 0)
+                positioned = selected_indices[
+                    (measure_indices[selected_indices] >= 0) & (slot_indices[selected_indices] >= 0)
                 ]
+                positioned = sorted(
+                    positioned,
+                    key=lambda frame: int(measure_indices[frame]) * 96 + int(slot_indices[frame]),
+                )
+                absolute_slots = np.asarray(
+                    [int(measure_indices[frame]) * 96 + int(slot_indices[frame]) for frame in positioned],
+                    dtype=np.int32,
+                )
+                sparse_indices = []
+                for index, frame in enumerate(positioned):
+                    gap_before = absolute_slots[index] - absolute_slots[index - 1] if index > 0 else 12
+                    gap_after = absolute_slots[index + 1] - absolute_slots[index] if index + 1 < len(positioned) else 12
+                    if gap_before >= 12 and gap_after >= 12:
+                        sparse_indices.append(int(frame))
                 big_score = np.maximum(
                     probability[:, channel["big_don"]],
                     probability[:, channel["big_ka"]],
                 )
-                ordered = sorted(eighth_indices, key=lambda frame: (measure_indices[frame], slot_indices[frame]))
                 groups: list[list[int]] = []
-                for frame in ordered:
+                for frame in sparse_indices:
                     absolute_slot = int(measure_indices[frame]) * 96 + int(slot_indices[frame])
                     if groups:
                         previous = groups[-1][-1]

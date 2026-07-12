@@ -98,12 +98,39 @@ def density_topk_binary(
         if "big_don" in channel and "big_ka" in channel:
             selected_indices = np.flatnonzero(selected)
             big_count = int(round(len(selected_indices) * min(max(condition.get("big_note_ratio", 0.0), 0.0), 1.0)))
-            if big_count > 0:
+            if big_count > 0 and "measure_indices" in data.files and "slot_indices" in data.files:
+                measure_indices = data["measure_indices"].astype(np.int32)
+                slot_indices = data["slot_indices"].astype(np.int32)
+                eighth_indices = selected_indices[
+                    (measure_indices[selected_indices] >= 0)
+                    & (slot_indices[selected_indices] >= 0)
+                    & (slot_indices[selected_indices] % 12 == 0)
+                ]
                 big_score = np.maximum(
-                    probability[selected_indices, channel["big_don"]],
-                    probability[selected_indices, channel["big_ka"]],
+                    probability[:, channel["big_don"]],
+                    probability[:, channel["big_ka"]],
                 )
-                big_indices = selected_indices[np.argpartition(big_score, -big_count)[-big_count:]]
+                ordered = sorted(eighth_indices, key=lambda frame: (measure_indices[frame], slot_indices[frame]))
+                groups: list[list[int]] = []
+                for frame in ordered:
+                    absolute_slot = int(measure_indices[frame]) * 96 + int(slot_indices[frame])
+                    if groups:
+                        previous = groups[-1][-1]
+                        previous_slot = int(measure_indices[previous]) * 96 + int(slot_indices[previous])
+                    else:
+                        previous_slot = -100
+                    if absolute_slot == previous_slot + 12:
+                        groups[-1].append(int(frame))
+                    else:
+                        groups.append([int(frame)])
+                groups.sort(key=lambda group: float(np.mean(big_score[group])), reverse=True)
+                big_indices: list[int] = []
+                for group in groups:
+                    if big_indices and abs(big_count - len(big_indices)) < abs(big_count - len(big_indices) - len(group)):
+                        continue
+                    big_indices.extend(group)
+                    if len(big_indices) >= big_count:
+                        break
                 for frame in big_indices:
                     if binary[frame, channel["ka"]] > 0.5:
                         binary[frame, channel["ka"]] = 0.0

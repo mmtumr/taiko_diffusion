@@ -1,0 +1,7364 @@
+{
+  "checkpoint": "checkpoints/latent_diffusion_v13_mug_holds_bce/best.pt",
+  "samples": 24,
+  "seeds": 2,
+  "hold_start": {
+    "tp": 2,
+    "fp": 55,
+    "fn": 414,
+    "precision": 0.03508771929824561,
+    "recall": 0.004807692307692308,
+    "f1": 0.008456659619450317
+  },
+  "generated_hold_rate": 0.4791666666666667,
+  "generated_holds_mean": 0.8333333333333334,
+  "target_holds_mean": 8.166666666666666,
+  "hold_frame_count_mae": 122.52083333333333,
+  "bpm_event": {
+    "tp": 8,
+    "fp": 81,
+    "fn": 236,
+    "precision": 0.0898876404494382,
+    "recall": 0.03278688524590164,
+    "f1": 0.04804804804804805
+  },
+  "bpm_value_mae": 23.7732829281262,
+  "hs_event": {
+    "tp": 7,
+    "fp": 91,
+    "fn": 255,
+    "precision": 0.07142857142857142,
+    "recall": 0.026717557251908396,
+    "f1": 0.03888888888888889
+  },
+  "hs_value_mae": 0.685547606398662,
+  "condition_response": {
+    "base": {
+      "bpm_events_mean": 1.8541666666666667,
+      "hs_events_mean": 2.0416666666666665
+    },
+    "bpm_off": {
+      "bpm_events_mean": 1.1041666666666667,
+      "hs_events_mean": 1.625
+    },
+    "bpm_high": {
+      "bpm_events_mean": 2.7291666666666665,
+      "hs_events_mean": 2.5416666666666665
+    },
+    "hs_off": {
+      "bpm_events_mean": 1.0625,
+      "hs_events_mean": 1.1041666666666667
+    },
+    "hs_on": {
+      "bpm_events_mean": 1.875,
+      "hs_events_mean": 2.0833333333333335
+    }
+  },
+  "balloon_formula_valid": true,
+  "records": [
+    {
+      "row": 1158,
+      "seed": 0,
+      "variant": "base",
+      "hold_counts": [
+        0,
+        0,
+        48
+      ],
+      "generated_holds": 0,
+      "target_holds": 48,
+      "generated_hold_frames": 0,
+      "target_hold_frames": 204,
+      "balloons": 0,
+      "balloon_hits": [],
+      "bpm_counts": [
+        0,
+        0,
+        0
+      ],
+      "bpm_events": 0,
+      "bpm_value_mae": null,
+      "hs_counts": [
+        0,
+        0,
+        5
+      ],
+      "hs_events": 0,
+      "hs_value_mae": 1.4234658479690552
+    },
+    {
+      "row": 1158,
+      "seed": 0,
+      "variant": "bpm_off",
+      "hold_counts": [
+        0,
+        0,
+        48
+      ],
+      "generated_holds": 0,
+      "target_holds": 48,
+      "generated_hold_frames": 0,
+      "target_hold_frames": 204,
+      "balloons": 0,
+      "balloon_hits": [],
+      "bpm_counts": [
+        0,
+        0,
+        0
+      ],
+      "bpm_events": 0,
+      "bpm_value_mae": null,
+      "hs_counts": [
+        0,
+        0,
+        5
+      ],
+      "hs_events": 0,
+      "hs_value_mae": 1.4234658479690552
+    },
+    {
+      "row": 1158,
+      "seed": 0,
+      "variant": "bpm_high",
+      "hold_counts": [
+        0,
+        0,
+        48
+      ],
+      "generated_holds": 0,
+      "target_holds": 48,
+      "generated_hold_frames": 0,
+      "target_hold_frames": 204,
+      "balloons": 0,
+      "balloon_hits": [],
+      "bpm_counts": [
+        0,
+        0,
+        0
+      ],
+      "bpm_events": 0,
+      "bpm_value_mae": null,
+      "hs_counts": [
+        0,
+        0,
+        5
+      ],
+      "hs_events": 0,
+      "hs_value_mae": 1.3941844701766968
+    },
+    {
+      "row": 1158,
+      "seed": 0,
+      "variant": "hs_off",
+      "hold_counts": [
+        0,
+        0,
+        48
+      ],
+      "generated_holds": 0,
+      "target_holds": 48,
+      "generated_hold_frames": 0,
+      "target_hold_frames": 204,
+      "balloons": 0,
+      "balloon_hits": [],
+      "bpm_counts": [
+        0,
+        0,
+        0
+      ],
+      "bpm_events": 0,
+      "bpm_value_mae": null,
+      "hs_counts": [
+        0,
+        0,
+        5
+      ],
+      "hs_events": 0,
+      "hs_value_mae": 1.4563068151474
+    },
+    {
+      "row": 1158,
+      "seed": 0,
+      "variant": "hs_on",
+      "hold_counts": [
+        0,
+        0,
+        48
+      ],
+      "generated_holds": 0,
+      "target_holds": 48,
+      "generated_hold_frames": 0,
+      "target_hold_frames": 204,
+      "balloons": 0,
+      "balloon_hits": [],
+      "bpm_counts": [
+        0,
+        0,
+        0
+      ],
+      "bpm_events": 0,
+      "bpm_value_mae": null,
+      "hs_counts": [
+        0,
+        0,
+        5
+      ],
+      "hs_events": 0,
+      "hs_value_mae": 1.4234658479690552
+    },
+    {
+      "row": 1158,
+      "seed": 1,
+      "variant": "base",
+      "hold_counts": [
+        0,
+        1,
+        48
+      ],
+      "generated_holds": 1,
+      "target_holds": 48,
+      "generated_hold_frames": 4,
+      "target_hold_frames": 204,
+      "balloons": 1,
+      "balloon_hits": [
+        2
+      ],
+      "bpm_counts": [
+        0,
+        0,
+        0
+      ],
+      "bpm_events": 0,
+      "bpm_value_mae": null,
+      "hs_counts": [
+        0,
+        0,
+        5
+      ],
+      "hs_events": 0,
+      "hs_value_mae": 1.14119553565979
+    },
+    {
+      "row": 1158,
+      "seed": 1,
+      "variant": "bpm_off",
+      "hold_counts": [
+        0,
+        1,
+        48
+      ],
+      "generated_holds": 1,
+      "target_holds": 48,
+      "generated_hold_frames": 4,
+      "target_hold_frames": 204,
+      "balloons": 1,
+      "balloon_hits": [
+        2
+      ],
+      "bpm_counts": [
+        0,
+        0,
+        0
+      ],
+      "bpm_events": 0,
+      "bpm_value_mae": null,
+      "hs_counts": [
+        0,
+        0,
+        5
+      ],
+      "hs_events": 0,
+      "hs_value_mae": 1.14119553565979
+    },
+    {
+      "row": 1158,
+      "seed": 1,
+      "variant": "bpm_high",
+      "hold_counts": [
+        0,
+        1,
+        48
+      ],
+      "generated_holds": 1,
+      "target_holds": 48,
+      "generated_hold_frames": 7,
+      "target_hold_frames": 204,
+      "balloons": 1,
+      "balloon_hits": [
+        4
+      ],
+      "bpm_counts": [
+        0,
+        0,
+        0
+      ],
+      "bpm_events": 0,
+      "bpm_value_mae": null,
+      "hs_counts": [
+        0,
+        0,
+        5
+      ],
+      "hs_events": 0,
+      "hs_value_mae": 1.1381378173828125
+    },
+    {
+      "row": 1158,
+      "seed": 1,
+      "variant": "hs_off",
+      "hold_counts": [
+        0,
+        1,
+        48
+      ],
+      "generated_holds": 1,
+      "target_holds": 48,
+      "generated_hold_frames": 7,
+      "target_hold_frames": 204,
+      "balloons": 1,
+      "balloon_hits": [
+        4
+      ],
+      "bpm_counts": [
+        0,
+        0,
+        0
+      ],
+      "bpm_events": 0,
+      "bpm_value_mae": null,
+      "hs_counts": [
+        0,
+        0,
+        5
+      ],
+      "hs_events": 0,
+      "hs_value_mae": 1.167659878730774
+    },
+    {
+      "row": 1158,
+      "seed": 1,
+      "variant": "hs_on",
+      "hold_counts": [
+        0,
+        1,
+        48
+      ],
+      "generated_holds": 1,
+      "target_holds": 48,
+      "generated_hold_frames": 4,
+      "target_hold_frames": 204,
+      "balloons": 1,
+      "balloon_hits": [
+        2
+      ],
+      "bpm_counts": [
+        0,
+        0,
+        0
+      ],
+      "bpm_events": 0,
+      "bpm_value_mae": null,
+      "hs_counts": [
+        0,
+        0,
+        5
+      ],
+      "hs_events": 0,
+      "hs_value_mae": 1.14119553565979
+    },
+    {
+      "row": 1089,
+      "seed": 0,
+      "variant": "base",
+      "hold_counts": [
+        0,
+        4,
+        4
+      ],
+      "generated_holds": 4,
+      "target_holds": 4,
+      "generated_hold_frames": 12,
+      "target_hold_frames": 247,
+      "balloons": 1,
+      "balloon_hits": [
+        2
+      ],
+      "bpm_counts": [
+        0,
+        2,
+        2
+      ],
+      "bpm_events": 2,
+      "bpm_value_mae": 67.88253021240234,
+      "hs_counts": [
+        0,
+        3,
+        0
+      ],
+      "hs_events": 3,
+      "hs_value_mae": null
+    },
+    {
+      "row": 1089,
+      "seed": 0,
+      "variant": "bpm_off",
+      "hold_counts": [
+        0,
+        4,
+        4
+      ],
+      "generated_holds": 4,
+      "target_holds": 4,
+      "generated_hold_frames": 12,
+      "target_hold_frames": 247,
+      "balloons": 1,
+      "balloon_hits": [
+        2
+      ],
+      "bpm_counts": [
+        0,
+        0,
+        2
+      ],
+      "bpm_events": 0,
+      "bpm_value_mae": 69.87370300292969,
+      "hs_counts": [
+        0,
+        6,
+        0
+      ],
+      "hs_events": 6,
+      "hs_value_mae": null
+    },
+    {
+      "row": 1089,
+      "seed": 0,
+      "variant": "bpm_high",
+      "hold_counts": [
+        0,
+        4,
+        4
+      ],
+      "generated_holds": 4,
+      "target_holds": 4,
+      "generated_hold_frames": 12,
+      "target_hold_frames": 247,
+      "balloons": 1,
+      "balloon_hits": [
+        2
+      ],
+      "bpm_counts": [
+        0,
+        2,
+        2
+      ],
+      "bpm_events": 2,
+      "bpm_value_mae": 67.88253021240234,
+      "hs_counts": [
+        0,
+        3,
+        0
+      ],
+      "hs_events": 3,
+      "hs_value_mae": null
+    },
+    {
+      "row": 1089,
+      "seed": 0,
+      "variant": "hs_off",
+      "hold_counts": [
+        0,
+        4,
+        4
+      ],
+      "generated_holds": 4,
+      "target_holds": 4,
+      "generated_hold_frames": 12,
+      "target_hold_frames": 247,
+      "balloons": 1,
+      "balloon_hits": [
+        2
+      ],
+      "bpm_counts": [
+        0,
+        2,
+        2
+      ],
+      "bpm_events": 2,
+      "bpm_value_mae": 67.6717529296875,
+      "hs_counts": [
+        0,
+        3,
+        0
+      ],
+      "hs_events": 3,
+      "hs_value_mae": null
+    },
+    {
+      "row": 1089,
+      "seed": 0,
+      "variant": "hs_on",
+      "hold_counts": [
+        0,
+        4,
+        4
+      ],
+      "generated_holds": 4,
+      "target_holds": 4,
+      "generated_hold_frames": 12,
+      "target_hold_frames": 247,
+      "balloons": 1,
+      "balloon_hits": [
+        2
+      ],
+      "bpm_counts": [
+        0,
+        2,
+        2
+      ],
+      "bpm_events": 2,
+      "bpm_value_mae": 67.88253021240234,
+      "hs_counts": [
+        0,
+        3,
+        0
+      ],
+      "hs_events": 3,
+      "hs_value_mae": null
+    },
+    {
+      "row": 1089,
+      "seed": 1,
+      "variant": "base",
+      "hold_counts": [
+        0,
+        1,
+        4
+      ],
+      "generated_holds": 1,
+      "target_holds": 4,
+      "generated_hold_frames": 3,
+      "target_hold_frames": 247,
+      "balloons": 0,
+      "balloon_hits": [],
+      "bpm_counts": [
+        1,
+        1,
+        1
+      ],
+      "bpm_events": 2,
+      "bpm_value_mae": 76.99298858642578,
+      "hs_counts": [
+        0,
+        2,
+        0
+      ],
+      "hs_events": 2,
+      "hs_value_mae": null
+    },
+    {
+      "row": 1089,
+      "seed": 1,
+      "variant": "bpm_off",
+      "hold_counts": [
+        0,
+        0,
+        4
+      ],
+      "generated_holds": 0,
+      "target_holds": 4,
+      "generated_hold_frames": 0,
+      "target_hold_frames": 247,
+      "balloons": 0,
+      "balloon_hits": [],
+      "bpm_counts": [
+        1,
+        2,
+        1
+      ],
+      "bpm_events": 3,
+      "bpm_value_mae": 90.49812316894531,
+      "hs_counts": [
+        0,
+        0,
+        0
+      ],
+      "hs_events": 0,
+      "hs_value_mae": null
+    },
+    {
+      "row": 1089,
+      "seed": 1,
+      "variant": "bpm_high",
+      "hold_counts": [
+        0,
+        1,
+        4
+      ],
+      "generated_holds": 1,
+      "target_holds": 4,
+      "generated_hold_frames": 3,
+      "target_hold_frames": 247,
+      "balloons": 0,
+      "balloon_hits": [],
+      "bpm_counts": [
+        1,
+        1,
+        1
+      ],
+      "bpm_events": 2,
+      "bpm_value_mae": 76.99298858642578,
+      "hs_counts": [
+        0,
+        2,
+        0
+      ],
+      "hs_events": 2,
+      "hs_value_mae": null
+    },
+    {
+      "row": 1089,
+      "seed": 1,
+      "variant": "hs_off",
+      "hold_counts": [
+        0,
+        0,
+        4
+      ],
+      "generated_holds": 0,
+      "target_holds": 4,
+      "generated_hold_frames": 0,
+      "target_hold_frames": 247,
+      "balloons": 0,
+      "balloon_hits": [],
+      "bpm_counts": [
+        1,
+        2,
+        1
+      ],
+      "bpm_events": 3,
+      "bpm_value_mae": 78.13655853271484,
+      "hs_counts": [
+        0,
+        2,
+        0
+      ],
+      "hs_events": 2,
+      "hs_value_mae": null
+    },
+    {
+      "row": 1089,
+      "seed": 1,
+      "variant": "hs_on",
+      "hold_counts": [
+        0,
+        1,
+        4
+      ],
+      "generated_holds": 1,
+      "target_holds": 4,
+      "generated_hold_frames": 3,
+      "target_hold_frames": 247,
+      "balloons": 0,
+      "balloon_hits": [],
+      "bpm_counts": [
+        1,
+        1,
+        1
+      ],
+      "bpm_events": 2,
+      "bpm_value_mae": 76.99298858642578,
+      "hs_counts": [
+        0,
+        2,
+        0
+      ],
+      "hs_events": 2,
+      "hs_value_mae": null
+    },
+    {
+      "row": 1159,
+      "seed": 0,
+      "variant": "base",
+      "hold_counts": [
+        0,
+        1,
+        33
+      ],
+      "generated_holds": 1,
+      "target_holds": 33,
+      "generated_hold_frames": 3,
+      "target_hold_frames": 119,
+      "balloons": 1,
+      "balloon_hits": [
+        2
+      ],
+      "bpm_counts": [
+        0,
+        0,
+        0
+      ],
+      "bpm_events": 0,
+      "bpm_value_mae": null,
+      "hs_counts": [
+        0,
+        0,
+        3
+      ],
+      "hs_events": 0,
+      "hs_value_mae": 1.0232834815979004
+    },
+    {
+      "row": 1159,
+      "seed": 0,
+      "variant": "bpm_off",
+      "hold_counts": [
+        0,
+        1,
+        33
+      ],
+      "generated_holds": 1,
+      "target_holds": 33,
+      "generated_hold_frames": 3,
+      "target_hold_frames": 119,
+      "balloons": 1,
+      "balloon_hits": [
+        2
+      ],
+      "bpm_counts": [
+        0,
+        0,
+        0
+      ],
+      "bpm_events": 0,
+      "bpm_value_mae": null,
+      "hs_counts": [
+        0,
+        0,
+        3
+      ],
+      "hs_events": 0,
+      "hs_value_mae": 1.0232834815979004
+    },
+    {
+      "row": 1159,
+      "seed": 0,
+      "variant": "bpm_high",
+      "hold_counts": [
+        0,
+        2,
+        33
+      ],
+      "generated_holds": 1,
+      "target_holds": 33,
+      "generated_hold_frames": 3,
+      "target_hold_frames": 119,
+      "balloons": 1,
+      "balloon_hits": [
+        2
+      ],
+      "bpm_counts": [
+        0,
+        0,
+        0
+      ],
+      "bpm_events": 0,
+      "bpm_value_mae": null,
+      "hs_counts": [
+        0,
+        0,
+        3
+      ],
+      "hs_events": 0,
+      "hs_value_mae": 1.0123547315597534
+    },
+    {
+      "row": 1159,
+      "seed": 0,
+      "variant": "hs_off",
+      "hold_counts": [
+        0,
+        1,
+        33
+      ],
+      "generated_holds": 1,
+      "target_holds": 33,
+      "generated_hold_frames": 3,
+      "target_hold_frames": 119,
+      "balloons": 1,
+      "balloon_hits": [
+        2
+      ],
+      "bpm_counts": [
+        0,
+        0,
+        0
+      ],
+      "bpm_events": 0,
+      "bpm_value_mae": null,
+      "hs_counts": [
+        0,
+        0,
+        3
+      ],
+      "hs_events": 0,
+      "hs_value_mae": 1.0131100416183472
+    },
+    {
+      "row": 1159,
+      "seed": 0,
+      "variant": "hs_on",
+      "hold_counts": [
+        0,
+        1,
+        33
+      ],
+      "generated_holds": 1,
+      "target_holds": 33,
+      "generated_hold_frames": 3,
+      "target_hold_frames": 119,
+      "balloons": 1,
+      "balloon_hits": [
+        2
+      ],
+      "bpm_counts": [
+        0,
+        0,
+        0
+      ],
+      "bpm_events": 0,
+      "bpm_value_mae": null,
+      "hs_counts": [
+        0,
+        0,
+        3
+      ],
+      "hs_events": 0,
+      "hs_value_mae": 1.0232834815979004
+    },
+    {
+      "row": 1159,
+      "seed": 1,
+      "variant": "base",
+      "hold_counts": [
+        0,
+        0,
+        33
+      ],
+      "generated_holds": 0,
+      "target_holds": 33,
+      "generated_hold_frames": 0,
+      "target_hold_frames": 119,
+      "balloons": 0,
+      "balloon_hits": [],
+      "bpm_counts": [
+        0,
+        0,
+        0
+      ],
+      "bpm_events": 0,
+      "bpm_value_mae": null,
+      "hs_counts": [
+        0,
+        0,
+        3
+      ],
+      "hs_events": 0,
+      "hs_value_mae": 1.0045127868652344
+    },
+    {
+      "row": 1159,
+      "seed": 1,
+      "variant": "bpm_off",
+      "hold_counts": [
+        0,
+        0,
+        33
+      ],
+      "generated_holds": 0,
+      "target_holds": 33,
+      "generated_hold_frames": 0,
+      "target_hold_frames": 119,
+      "balloons": 0,
+      "balloon_hits": [],
+      "bpm_counts": [
+        0,
+        0,
+        0
+      ],
+      "bpm_events": 0,
+      "bpm_value_mae": null,
+      "hs_counts": [
+        0,
+        0,
+        3
+      ],
+      "hs_events": 0,
+      "hs_value_mae": 1.0045127868652344
+    },
+    {
+      "row": 1159,
+      "seed": 1,
+      "variant": "bpm_high",
+      "hold_counts": [
+        0,
+        1,
+        33
+      ],
+      "generated_holds": 0,
+      "target_holds": 33,
+      "generated_hold_frames": 0,
+      "target_hold_frames": 119,
+      "balloons": 0,
+      "balloon_hits": [],
+      "bpm_counts": [
+        0,
+        0,
+        0
+      ],
+      "bpm_events": 0,
+      "bpm_value_mae": null,
+      "hs_counts": [
+        0,
+        0,
+        3
+      ],
+      "hs_events": 0,
+      "hs_value_mae": 0.9943666458129883
+    },
+    {
+      "row": 1159,
+      "seed": 1,
+      "variant": "hs_off",
+      "hold_counts": [
+        0,
+        0,
+        33
+      ],
+      "generated_holds": 0,
+      "target_holds": 33,
+      "generated_hold_frames": 0,
+      "target_hold_frames": 119,
+      "balloons": 0,
+      "balloon_hits": [],
+      "bpm_counts": [
+        0,
+        0,
+        0
+      ],
+      "bpm_events": 0,
+      "bpm_value_mae": null,
+      "hs_counts": [
+        0,
+        0,
+        3
+      ],
+      "hs_events": 0,
+      "hs_value_mae": 1.0013855695724487
+    },
+    {
+      "row": 1159,
+      "seed": 1,
+      "variant": "hs_on",
+      "hold_counts": [
+        0,
+        0,
+        33
+      ],
+      "generated_holds": 0,
+      "target_holds": 33,
+      "generated_hold_frames": 0,
+      "target_hold_frames": 119,
+      "balloons": 0,
+      "balloon_hits": [],
+      "bpm_counts": [
+        0,
+        0,
+        0
+      ],
+      "bpm_events": 0,
+      "bpm_value_mae": null,
+      "hs_counts": [
+        0,
+        0,
+        3
+      ],
+      "hs_events": 0,
+      "hs_value_mae": 1.0045127868652344
+    },
+    {
+      "row": 426,
+      "seed": 0,
+      "variant": "base",
+      "hold_counts": [
+        0,
+        1,
+        2
+      ],
+      "generated_holds": 1,
+      "target_holds": 2,
+      "generated_hold_frames": 4,
+      "target_hold_frames": 113,
+      "balloons": 0,
+      "balloon_hits": [],
+      "bpm_counts": [
+        1,
+        6,
+        3
+      ],
+      "bpm_events": 7,
+      "bpm_value_mae": 24.398954391479492,
+      "hs_counts": [
+        1,
+        5,
+        37
+      ],
+      "hs_events": 6,
+      "hs_value_mae": 1.4531793594360352
+    },
+    {
+      "row": 426,
+      "seed": 0,
+      "variant": "bpm_off",
+      "hold_counts": [
+        0,
+        1,
+        2
+      ],
+      "generated_holds": 1,
+      "target_holds": 2,
+      "generated_hold_frames": 2,
+      "target_hold_frames": 113,
+      "balloons": 0,
+      "balloon_hits": [],
+      "bpm_counts": [
+        1,
+        6,
+        3
+      ],
+      "bpm_events": 7,
+      "bpm_value_mae": 23.30613136291504,
+      "hs_counts": [
+        1,
+        8,
+        37
+      ],
+      "hs_events": 9,
+      "hs_value_mae": 1.5201330184936523
+    },
+    {
+      "row": 426,
+      "seed": 0,
+      "variant": "bpm_high",
+      "hold_counts": [
+        0,
+        1,
+        2
+      ],
+      "generated_holds": 1,
+      "target_holds": 2,
+      "generated_hold_frames": 4,
+      "target_hold_frames": 113,
+      "balloons": 0,
+      "balloon_hits": [],
+      "bpm_counts": [
+        1,
+        6,
+        3
+      ],
+      "bpm_events": 7,
+      "bpm_value_mae": 24.409677505493164,
+      "hs_counts": [
+        2,
+        5,
+        36
+      ],
+      "hs_events": 7,
+      "hs_value_mae": 1.4576951265335083
+    },
+    {
+      "row": 426,
+      "seed": 0,
+      "variant": "hs_off",
+      "hold_counts": [
+        0,
+        1,
+        2
+      ],
+      "generated_holds": 1,
+      "target_holds": 2,
+      "generated_hold_frames": 4,
+      "target_hold_frames": 113,
+      "balloons": 0,
+      "balloon_hits": [],
+      "bpm_counts": [
+        1,
+        6,
+        3
+      ],
+      "bpm_events": 7,
+      "bpm_value_mae": 18.835647583007812,
+      "hs_counts": [
+        2,
+        4,
+        36
+      ],
+      "hs_events": 6,
+      "hs_value_mae": 1.4574964046478271
+    },
+    {
+      "row": 426,
+      "seed": 0,
+      "variant": "hs_on",
+      "hold_counts": [
+        0,
+        1,
+        2
+      ],
+      "generated_holds": 1,
+      "target_holds": 2,
+      "generated_hold_frames": 4,
+      "target_hold_frames": 113,
+      "balloons": 0,
+      "balloon_hits": [],
+      "bpm_counts": [
+        1,
+        6,
+        3
+      ],
+      "bpm_events": 7,
+      "bpm_value_mae": 24.398954391479492,
+      "hs_counts": [
+        1,
+        5,
+        37
+      ],
+      "hs_events": 6,
+      "hs_value_mae": 1.4531793594360352
+    },
+    {
+      "row": 426,
+      "seed": 1,
+      "variant": "base",
+      "hold_counts": [
+        0,
+        7,
+        2
+      ],
+      "generated_holds": 4,
+      "target_holds": 2,
+      "generated_hold_frames": 24,
+      "target_hold_frames": 113,
+      "balloons": 1,
+      "balloon_hits": [
+        2
+      ],
+      "bpm_counts": [
+        1,
+        8,
+        3
+      ],
+      "bpm_events": 9,
+      "bpm_value_mae": 27.42420768737793,
+      "hs_counts": [
+        3,
+        5,
+        35
+      ],
+      "hs_events": 8,
+      "hs_value_mae": 1.5313888788223267
+    },
+    {
+      "row": 426,
+      "seed": 1,
+      "variant": "bpm_off",
+      "hold_counts": [
+        0,
+        7,
+        2
+      ],
+      "generated_holds": 4,
+      "target_holds": 2,
+      "generated_hold_frames": 22,
+      "target_hold_frames": 113,
+      "balloons": 1,
+      "balloon_hits": [
+        2
+      ],
+      "bpm_counts": [
+        1,
+        5,
+        3
+      ],
+      "bpm_events": 6,
+      "bpm_value_mae": 27.6053524017334,
+      "hs_counts": [
+        3,
+        8,
+        35
+      ],
+      "hs_events": 11,
+      "hs_value_mae": 1.6300088167190552
+    },
+    {
+      "row": 426,
+      "seed": 1,
+      "variant": "bpm_high",
+      "hold_counts": [
+        0,
+        9,
+        2
+      ],
+      "generated_holds": 5,
+      "target_holds": 2,
+      "generated_hold_frames": 23,
+      "target_hold_frames": 113,
+      "balloons": 2,
+      "balloon_hits": [
+        2,
+        1
+      ],
+      "bpm_counts": [
+        1,
+        7,
+        3
+      ],
+      "bpm_events": 8,
+      "bpm_value_mae": 24.628808975219727,
+      "hs_counts": [
+        3,
+        8,
+        35
+      ],
+      "hs_events": 11,
+      "hs_value_mae": 1.464624047279358
+    },
+    {
+      "row": 426,
+      "seed": 1,
+      "variant": "hs_off",
+      "hold_counts": [
+        0,
+        4,
+        2
+      ],
+      "generated_holds": 2,
+      "target_holds": 2,
+      "generated_hold_frames": 29,
+      "target_hold_frames": 113,
+      "balloons": 1,
+      "balloon_hits": [
+        2
+      ],
+      "bpm_counts": [
+        1,
+        4,
+        3
+      ],
+      "bpm_events": 5,
+      "bpm_value_mae": 21.506668090820312,
+      "hs_counts": [
+        3,
+        2,
+        35
+      ],
+      "hs_events": 5,
+      "hs_value_mae": 1.4870898723602295
+    },
+    {
+      "row": 426,
+      "seed": 1,
+      "variant": "hs_on",
+      "hold_counts": [
+        0,
+        7,
+        2
+      ],
+      "generated_holds": 4,
+      "target_holds": 2,
+      "generated_hold_frames": 24,
+      "target_hold_frames": 113,
+      "balloons": 1,
+      "balloon_hits": [
+        2
+      ],
+      "bpm_counts": [
+        1,
+        8,
+        3
+      ],
+      "bpm_events": 9,
+      "bpm_value_mae": 27.42420768737793,
+      "hs_counts": [
+        3,
+        5,
+        35
+      ],
+      "hs_events": 8,
+      "hs_value_mae": 1.5313888788223267
+    },
+    {
+      "row": 504,
+      "seed": 0,
+      "variant": "base",
+      "hold_counts": [
+        0,
+        0,
+        9
+      ],
+      "generated_holds": 0,
+      "target_holds": 9,
+      "generated_hold_frames": 0,
+      "target_hold_frames": 154,
+      "balloons": 0,
+      "balloon_hits": [],
+      "bpm_counts": [
+        0,
+        0,
+        13
+      ],
+      "bpm_events": 0,
+      "bpm_value_mae": 8.583123207092285,
+      "hs_counts": [
+        0,
+        1,
+        0
+      ],
+      "hs_events": 1,
+      "hs_value_mae": null
+    },
+    {
+      "row": 504,
+      "seed": 0,
+      "variant": "bpm_off",
+      "hold_counts": [
+        0,
+        0,
+        9
+      ],
+      "generated_holds": 0,
+      "target_holds": 9,
+      "generated_hold_frames": 0,
+      "target_hold_frames": 154,
+      "balloons": 0,
+      "balloon_hits": [],
+      "bpm_counts": [
+        0,
+        0,
+        13
+      ],
+      "bpm_events": 0,
+      "bpm_value_mae": 5.602460861206055,
+      "hs_counts": [
+        0,
+        0,
+        0
+      ],
+      "hs_events": 0,
+      "hs_value_mae": null
+    },
+    {
+      "row": 504,
+      "seed": 0,
+      "variant": "bpm_high",
+      "hold_counts": [
+        0,
+        0,
+        9
+      ],
+      "generated_holds": 0,
+      "target_holds": 9,
+      "generated_hold_frames": 0,
+      "target_hold_frames": 154,
+      "balloons": 0,
+      "balloon_hits": [],
+      "bpm_counts": [
+        0,
+        0,
+        13
+      ],
+      "bpm_events": 0,
+      "bpm_value_mae": 8.583123207092285,
+      "hs_counts": [
+        0,
+        1,
+        0
+      ],
+      "hs_events": 1,
+      "hs_value_mae": null
+    },
+    {
+      "row": 504,
+      "seed": 0,
+      "variant": "hs_off",
+      "hold_counts": [
+        0,
+        0,
+        9
+      ],
+      "generated_holds": 0,
+      "target_holds": 9,
+      "generated_hold_frames": 0,
+      "target_hold_frames": 154,
+      "balloons": 0,
+      "balloon_hits": [],
+      "bpm_counts": [
+        0,
+        0,
+        13
+      ],
+      "bpm_events": 0,
+      "bpm_value_mae": 6.120833873748779,
+      "hs_counts": [
+        0,
+        0,
+        0
+      ],
+      "hs_events": 0,
+      "hs_value_mae": null
+    },
+    {
+      "row": 504,
+      "seed": 0,
+      "variant": "hs_on",
+      "hold_counts": [
+        0,
+        0,
+        9
+      ],
+      "generated_holds": 0,
+      "target_holds": 9,
+      "generated_hold_frames": 0,
+      "target_hold_frames": 154,
+      "balloons": 0,
+      "balloon_hits": [],
+      "bpm_counts": [
+        0,
+        0,
+        13
+      ],
+      "bpm_events": 0,
+      "bpm_value_mae": 8.583123207092285,
+      "hs_counts": [
+        0,
+        1,
+        0
+      ],
+      "hs_events": 1,
+      "hs_value_mae": null
+    },
+    {
+      "row": 504,
+      "seed": 1,
+      "variant": "base",
+      "hold_counts": [
+        0,
+        0,
+        9
+      ],
+      "generated_holds": 0,
+      "target_holds": 9,
+      "generated_hold_frames": 0,
+      "target_hold_frames": 154,
+      "balloons": 0,
+      "balloon_hits": [],
+      "bpm_counts": [
+        0,
+        2,
+        13
+      ],
+      "bpm_events": 2,
+      "bpm_value_mae": 10.080500602722168,
+      "hs_counts": [
+        0,
+        2,
+        0
+      ],
+      "hs_events": 2,
+      "hs_value_mae": null
+    },
+    {
+      "row": 504,
+      "seed": 1,
+      "variant": "bpm_off",
+      "hold_counts": [
+        0,
+        0,
+        9
+      ],
+      "generated_holds": 0,
+      "target_holds": 9,
+      "generated_hold_frames": 0,
+      "target_hold_frames": 154,
+      "balloons": 0,
+      "balloon_hits": [],
+      "bpm_counts": [
+        0,
+        1,
+        13
+      ],
+      "bpm_events": 1,
+      "bpm_value_mae": 8.503541946411133,
+      "hs_counts": [
+        0,
+        1,
+        0
+      ],
+      "hs_events": 1,
+      "hs_value_mae": null
+    },
+    {
+      "row": 504,
+      "seed": 1,
+      "variant": "bpm_high",
+      "hold_counts": [
+        0,
+        0,
+        9
+      ],
+      "generated_holds": 0,
+      "target_holds": 9,
+      "generated_hold_frames": 0,
+      "target_hold_frames": 154,
+      "balloons": 0,
+      "balloon_hits": [],
+      "bpm_counts": [
+        0,
+        2,
+        13
+      ],
+      "bpm_events": 2,
+      "bpm_value_mae": 10.080500602722168,
+      "hs_counts": [
+        0,
+        2,
+        0
+      ],
+      "hs_events": 2,
+      "hs_value_mae": null
+    },
+    {
+      "row": 504,
+      "seed": 1,
+      "variant": "hs_off",
+      "hold_counts": [
+        0,
+        0,
+        9
+      ],
+      "generated_holds": 0,
+      "target_holds": 9,
+      "generated_hold_frames": 0,
+      "target_hold_frames": 154,
+      "balloons": 0,
+      "balloon_hits": [],
+      "bpm_counts": [
+        0,
+        1,
+        13
+      ],
+      "bpm_events": 1,
+      "bpm_value_mae": 9.369837760925293,
+      "hs_counts": [
+        0,
+        2,
+        0
+      ],
+      "hs_events": 2,
+      "hs_value_mae": null
+    },
+    {
+      "row": 504,
+      "seed": 1,
+      "variant": "hs_on",
+      "hold_counts": [
+        0,
+        0,
+        9
+      ],
+      "generated_holds": 0,
+      "target_holds": 9,
+      "generated_hold_frames": 0,
+      "target_hold_frames": 154,
+      "balloons": 0,
+      "balloon_hits": [],
+      "bpm_counts": [
+        0,
+        2,
+        13
+      ],
+      "bpm_events": 2,
+      "bpm_value_mae": 10.080500602722168,
+      "hs_counts": [
+        0,
+        2,
+        0
+      ],
+      "hs_events": 2,
+      "hs_value_mae": null
+    },
+    {
+      "row": 1157,
+      "seed": 0,
+      "variant": "base",
+      "hold_counts": [
+        0,
+        0,
+        18
+      ],
+      "generated_holds": 0,
+      "target_holds": 18,
+      "generated_hold_frames": 0,
+      "target_hold_frames": 143,
+      "balloons": 0,
+      "balloon_hits": [],
+      "bpm_counts": [
+        0,
+        1,
+        0
+      ],
+      "bpm_events": 1,
+      "bpm_value_mae": null,
+      "hs_counts": [
+        0,
+        1,
+        2
+      ],
+      "hs_events": 1,
+      "hs_value_mae": 1.612045168876648
+    },
+    {
+      "row": 1157,
+      "seed": 0,
+      "variant": "bpm_off",
+      "hold_counts": [
+        0,
+        0,
+        18
+      ],
+      "generated_holds": 0,
+      "target_holds": 18,
+      "generated_hold_frames": 0,
+      "target_hold_frames": 143,
+      "balloons": 0,
+      "balloon_hits": [],
+      "bpm_counts": [
+        0,
+        1,
+        0
+      ],
+      "bpm_events": 1,
+      "bpm_value_mae": null,
+      "hs_counts": [
+        0,
+        1,
+        2
+      ],
+      "hs_events": 1,
+      "hs_value_mae": 1.612045168876648
+    },
+    {
+      "row": 1157,
+      "seed": 0,
+      "variant": "bpm_high",
+      "hold_counts": [
+        0,
+        0,
+        18
+      ],
+      "generated_holds": 0,
+      "target_holds": 18,
+      "generated_hold_frames": 0,
+      "target_hold_frames": 143,
+      "balloons": 0,
+      "balloon_hits": [],
+      "bpm_counts": [
+        0,
+        3,
+        0
+      ],
+      "bpm_events": 3,
+      "bpm_value_mae": null,
+      "hs_counts": [
+        0,
+        1,
+        2
+      ],
+      "hs_events": 1,
+      "hs_value_mae": 1.4786510467529297
+    },
+    {
+      "row": 1157,
+      "seed": 0,
+      "variant": "hs_off",
+      "hold_counts": [
+        0,
+        0,
+        18
+      ],
+      "generated_holds": 0,
+      "target_holds": 18,
+      "generated_hold_frames": 0,
+      "target_hold_frames": 143,
+      "balloons": 0,
+      "balloon_hits": [],
+      "bpm_counts": [
+        0,
+        1,
+        0
+      ],
+      "bpm_events": 1,
+      "bpm_value_mae": null,
+      "hs_counts": [
+        0,
+        0,
+        2
+      ],
+      "hs_events": 0,
+      "hs_value_mae": 1.512072205543518
+    },
+    {
+      "row": 1157,
+      "seed": 0,
+      "variant": "hs_on",
+      "hold_counts": [
+        0,
+        0,
+        18
+      ],
+      "generated_holds": 0,
+      "target_holds": 18,
+      "generated_hold_frames": 0,
+      "target_hold_frames": 143,
+      "balloons": 0,
+      "balloon_hits": [],
+      "bpm_counts": [
+        0,
+        1,
+        0
+      ],
+      "bpm_events": 1,
+      "bpm_value_mae": null,
+      "hs_counts": [
+        0,
+        1,
+        2
+      ],
+      "hs_events": 1,
+      "hs_value_mae": 1.612045168876648
+    },
+    {
+      "row": 1157,
+      "seed": 1,
+      "variant": "base",
+      "hold_counts": [
+        0,
+        1,
+        18
+      ],
+      "generated_holds": 0,
+      "target_holds": 18,
+      "generated_hold_frames": 0,
+      "target_hold_frames": 143,
+      "balloons": 0,
+      "balloon_hits": [],
+      "bpm_counts": [
+        0,
+        0,
+        0
+      ],
+      "bpm_events": 0,
+      "bpm_value_mae": null,
+      "hs_counts": [
+        0,
+        0,
+        2
+      ],
+      "hs_events": 0,
+      "hs_value_mae": 1.470860481262207
+    },
+    {
+      "row": 1157,
+      "seed": 1,
+      "variant": "bpm_off",
+      "hold_counts": [
+        0,
+        1,
+        18
+      ],
+      "generated_holds": 0,
+      "target_holds": 18,
+      "generated_hold_frames": 0,
+      "target_hold_frames": 143,
+      "balloons": 0,
+      "balloon_hits": [],
+      "bpm_counts": [
+        0,
+        0,
+        0
+      ],
+      "bpm_events": 0,
+      "bpm_value_mae": null,
+      "hs_counts": [
+        0,
+        0,
+        2
+      ],
+      "hs_events": 0,
+      "hs_value_mae": 1.470860481262207
+    },
+    {
+      "row": 1157,
+      "seed": 1,
+      "variant": "bpm_high",
+      "hold_counts": [
+        0,
+        1,
+        18
+      ],
+      "generated_holds": 0,
+      "target_holds": 18,
+      "generated_hold_frames": 0,
+      "target_hold_frames": 143,
+      "balloons": 0,
+      "balloon_hits": [],
+      "bpm_counts": [
+        0,
+        1,
+        0
+      ],
+      "bpm_events": 1,
+      "bpm_value_mae": null,
+      "hs_counts": [
+        0,
+        1,
+        2
+      ],
+      "hs_events": 1,
+      "hs_value_mae": 1.5032182931900024
+    },
+    {
+      "row": 1157,
+      "seed": 1,
+      "variant": "hs_off",
+      "hold_counts": [
+        0,
+        0,
+        18
+      ],
+      "generated_holds": 0,
+      "target_holds": 18,
+      "generated_hold_frames": 0,
+      "target_hold_frames": 143,
+      "balloons": 0,
+      "balloon_hits": [],
+      "bpm_counts": [
+        0,
+        0,
+        0
+      ],
+      "bpm_events": 0,
+      "bpm_value_mae": null,
+      "hs_counts": [
+        0,
+        0,
+        2
+      ],
+      "hs_events": 0,
+      "hs_value_mae": 1.5300363302230835
+    },
+    {
+      "row": 1157,
+      "seed": 1,
+      "variant": "hs_on",
+      "hold_counts": [
+        0,
+        1,
+        18
+      ],
+      "generated_holds": 0,
+      "target_holds": 18,
+      "generated_hold_frames": 0,
+      "target_hold_frames": 143,
+      "balloons": 0,
+      "balloon_hits": [],
+      "bpm_counts": [
+        0,
+        0,
+        0
+      ],
+      "bpm_events": 0,
+      "bpm_value_mae": null,
+      "hs_counts": [
+        0,
+        0,
+        2
+      ],
+      "hs_events": 0,
+      "hs_value_mae": 1.470860481262207
+    },
+    {
+      "row": 486,
+      "seed": 0,
+      "variant": "base",
+      "hold_counts": [
+        0,
+        4,
+        1
+      ],
+      "generated_holds": 3,
+      "target_holds": 1,
+      "generated_hold_frames": 5,
+      "target_hold_frames": 9,
+      "balloons": 1,
+      "balloon_hits": [
+        2
+      ],
+      "bpm_counts": [
+        0,
+        3,
+        3
+      ],
+      "bpm_events": 3,
+      "bpm_value_mae": 32.27992248535156,
+      "hs_counts": [
+        0,
+        5,
+        1
+      ],
+      "hs_events": 5,
+      "hs_value_mae": 0.3153163194656372
+    },
+    {
+      "row": 486,
+      "seed": 0,
+      "variant": "bpm_off",
+      "hold_counts": [
+        0,
+        3,
+        1
+      ],
+      "generated_holds": 3,
+      "target_holds": 1,
+      "generated_hold_frames": 5,
+      "target_hold_frames": 9,
+      "balloons": 1,
+      "balloon_hits": [
+        2
+      ],
+      "bpm_counts": [
+        0,
+        1,
+        3
+      ],
+      "bpm_events": 1,
+      "bpm_value_mae": 36.212074279785156,
+      "hs_counts": [
+        0,
+        2,
+        1
+      ],
+      "hs_events": 2,
+      "hs_value_mae": 0.300753116607666
+    },
+    {
+      "row": 486,
+      "seed": 0,
+      "variant": "bpm_high",
+      "hold_counts": [
+        0,
+        4,
+        1
+      ],
+      "generated_holds": 3,
+      "target_holds": 1,
+      "generated_hold_frames": 5,
+      "target_hold_frames": 9,
+      "balloons": 1,
+      "balloon_hits": [
+        2
+      ],
+      "bpm_counts": [
+        0,
+        3,
+        3
+      ],
+      "bpm_events": 3,
+      "bpm_value_mae": 27.59331512451172,
+      "hs_counts": [
+        0,
+        8,
+        1
+      ],
+      "hs_events": 8,
+      "hs_value_mae": 0.322489857673645
+    },
+    {
+      "row": 486,
+      "seed": 0,
+      "variant": "hs_off",
+      "hold_counts": [
+        0,
+        4,
+        1
+      ],
+      "generated_holds": 2,
+      "target_holds": 1,
+      "generated_hold_frames": 4,
+      "target_hold_frames": 9,
+      "balloons": 1,
+      "balloon_hits": [
+        2
+      ],
+      "bpm_counts": [
+        0,
+        1,
+        3
+      ],
+      "bpm_events": 1,
+      "bpm_value_mae": 31.610877990722656,
+      "hs_counts": [
+        0,
+        2,
+        1
+      ],
+      "hs_events": 2,
+      "hs_value_mae": 0.31141090393066406
+    },
+    {
+      "row": 486,
+      "seed": 0,
+      "variant": "hs_on",
+      "hold_counts": [
+        0,
+        4,
+        1
+      ],
+      "generated_holds": 3,
+      "target_holds": 1,
+      "generated_hold_frames": 5,
+      "target_hold_frames": 9,
+      "balloons": 1,
+      "balloon_hits": [
+        2
+      ],
+      "bpm_counts": [
+        0,
+        3,
+        3
+      ],
+      "bpm_events": 3,
+      "bpm_value_mae": 32.27992248535156,
+      "hs_counts": [
+        0,
+        5,
+        1
+      ],
+      "hs_events": 5,
+      "hs_value_mae": 0.3153163194656372
+    },
+    {
+      "row": 486,
+      "seed": 1,
+      "variant": "base",
+      "hold_counts": [
+        0,
+        1,
+        1
+      ],
+      "generated_holds": 1,
+      "target_holds": 1,
+      "generated_hold_frames": 5,
+      "target_hold_frames": 9,
+      "balloons": 0,
+      "balloon_hits": [],
+      "bpm_counts": [
+        0,
+        4,
+        3
+      ],
+      "bpm_events": 4,
+      "bpm_value_mae": 27.279155731201172,
+      "hs_counts": [
+        0,
+        5,
+        1
+      ],
+      "hs_events": 5,
+      "hs_value_mae": 0.20667880773544312
+    },
+    {
+      "row": 486,
+      "seed": 1,
+      "variant": "bpm_off",
+      "hold_counts": [
+        0,
+        2,
+        1
+      ],
+      "generated_holds": 2,
+      "target_holds": 1,
+      "generated_hold_frames": 7,
+      "target_hold_frames": 9,
+      "balloons": 1,
+      "balloon_hits": [
+        4
+      ],
+      "bpm_counts": [
+        0,
+        4,
+        3
+      ],
+      "bpm_events": 4,
+      "bpm_value_mae": 32.77425003051758,
+      "hs_counts": [
+        0,
+        3,
+        1
+      ],
+      "hs_events": 3,
+      "hs_value_mae": 0.21024346351623535
+    },
+    {
+      "row": 486,
+      "seed": 1,
+      "variant": "bpm_high",
+      "hold_counts": [
+        0,
+        1,
+        1
+      ],
+      "generated_holds": 1,
+      "target_holds": 1,
+      "generated_hold_frames": 5,
+      "target_hold_frames": 9,
+      "balloons": 0,
+      "balloon_hits": [],
+      "bpm_counts": [
+        0,
+        6,
+        3
+      ],
+      "bpm_events": 6,
+      "bpm_value_mae": 22.495573043823242,
+      "hs_counts": [
+        0,
+        6,
+        1
+      ],
+      "hs_events": 6,
+      "hs_value_mae": 0.21235370635986328
+    },
+    {
+      "row": 486,
+      "seed": 1,
+      "variant": "hs_off",
+      "hold_counts": [
+        0,
+        1,
+        1
+      ],
+      "generated_holds": 1,
+      "target_holds": 1,
+      "generated_hold_frames": 5,
+      "target_hold_frames": 9,
+      "balloons": 0,
+      "balloon_hits": [],
+      "bpm_counts": [
+        0,
+        3,
+        3
+      ],
+      "bpm_events": 3,
+      "bpm_value_mae": 25.806577682495117,
+      "hs_counts": [
+        0,
+        2,
+        1
+      ],
+      "hs_events": 2,
+      "hs_value_mae": 0.20616531372070312
+    },
+    {
+      "row": 486,
+      "seed": 1,
+      "variant": "hs_on",
+      "hold_counts": [
+        0,
+        1,
+        1
+      ],
+      "generated_holds": 1,
+      "target_holds": 1,
+      "generated_hold_frames": 5,
+      "target_hold_frames": 9,
+      "balloons": 0,
+      "balloon_hits": [],
+      "bpm_counts": [
+        0,
+        4,
+        3
+      ],
+      "bpm_events": 4,
+      "bpm_value_mae": 27.279155731201172,
+      "hs_counts": [
+        0,
+        5,
+        1
+      ],
+      "hs_events": 5,
+      "hs_value_mae": 0.20667880773544312
+    },
+    {
+      "row": 508,
+      "seed": 0,
+      "variant": "base",
+      "hold_counts": [
+        1,
+        1,
+        7
+      ],
+      "generated_holds": 2,
+      "target_holds": 8,
+      "generated_hold_frames": 7,
+      "target_hold_frames": 134,
+      "balloons": 1,
+      "balloon_hits": [
+        1
+      ],
+      "bpm_counts": [
+        0,
+        1,
+        12
+      ],
+      "bpm_events": 1,
+      "bpm_value_mae": 11.315328598022461,
+      "hs_counts": [
+        0,
+        0,
+        0
+      ],
+      "hs_events": 0,
+      "hs_value_mae": null
+    },
+    {
+      "row": 508,
+      "seed": 0,
+      "variant": "bpm_off",
+      "hold_counts": [
+        0,
+        0,
+        8
+      ],
+      "generated_holds": 0,
+      "target_holds": 8,
+      "generated_hold_frames": 0,
+      "target_hold_frames": 134,
+      "balloons": 0,
+      "balloon_hits": [],
+      "bpm_counts": [
+        0,
+        0,
+        12
+      ],
+      "bpm_events": 0,
+      "bpm_value_mae": 11.088712692260742,
+      "hs_counts": [
+        0,
+        0,
+        0
+      ],
+      "hs_events": 0,
+      "hs_value_mae": null
+    },
+    {
+      "row": 508,
+      "seed": 0,
+      "variant": "bpm_high",
+      "hold_counts": [
+        1,
+        1,
+        7
+      ],
+      "generated_holds": 2,
+      "target_holds": 8,
+      "generated_hold_frames": 7,
+      "target_hold_frames": 134,
+      "balloons": 1,
+      "balloon_hits": [
+        1
+      ],
+      "bpm_counts": [
+        0,
+        1,
+        12
+      ],
+      "bpm_events": 1,
+      "bpm_value_mae": 11.315328598022461,
+      "hs_counts": [
+        0,
+        0,
+        0
+      ],
+      "hs_events": 0,
+      "hs_value_mae": null
+    },
+    {
+      "row": 508,
+      "seed": 0,
+      "variant": "hs_off",
+      "hold_counts": [
+        1,
+        0,
+        7
+      ],
+      "generated_holds": 1,
+      "target_holds": 8,
+      "generated_hold_frames": 2,
+      "target_hold_frames": 134,
+      "balloons": 0,
+      "balloon_hits": [],
+      "bpm_counts": [
+        0,
+        0,
+        12
+      ],
+      "bpm_events": 0,
+      "bpm_value_mae": 7.942022800445557,
+      "hs_counts": [
+        0,
+        0,
+        0
+      ],
+      "hs_events": 0,
+      "hs_value_mae": null
+    },
+    {
+      "row": 508,
+      "seed": 0,
+      "variant": "hs_on",
+      "hold_counts": [
+        1,
+        1,
+        7
+      ],
+      "generated_holds": 2,
+      "target_holds": 8,
+      "generated_hold_frames": 7,
+      "target_hold_frames": 134,
+      "balloons": 1,
+      "balloon_hits": [
+        1
+      ],
+      "bpm_counts": [
+        0,
+        1,
+        12
+      ],
+      "bpm_events": 1,
+      "bpm_value_mae": 11.315328598022461,
+      "hs_counts": [
+        0,
+        0,
+        0
+      ],
+      "hs_events": 0,
+      "hs_value_mae": null
+    },
+    {
+      "row": 508,
+      "seed": 1,
+      "variant": "base",
+      "hold_counts": [
+        0,
+        4,
+        8
+      ],
+      "generated_holds": 2,
+      "target_holds": 8,
+      "generated_hold_frames": 4,
+      "target_hold_frames": 134,
+      "balloons": 1,
+      "balloon_hits": [
+        2
+      ],
+      "bpm_counts": [
+        0,
+        1,
+        12
+      ],
+      "bpm_events": 1,
+      "bpm_value_mae": 8.798110961914062,
+      "hs_counts": [
+        0,
+        2,
+        0
+      ],
+      "hs_events": 2,
+      "hs_value_mae": null
+    },
+    {
+      "row": 508,
+      "seed": 1,
+      "variant": "bpm_off",
+      "hold_counts": [
+        0,
+        1,
+        8
+      ],
+      "generated_holds": 0,
+      "target_holds": 8,
+      "generated_hold_frames": 0,
+      "target_hold_frames": 134,
+      "balloons": 0,
+      "balloon_hits": [],
+      "bpm_counts": [
+        0,
+        0,
+        12
+      ],
+      "bpm_events": 0,
+      "bpm_value_mae": 7.73834753036499,
+      "hs_counts": [
+        0,
+        1,
+        0
+      ],
+      "hs_events": 1,
+      "hs_value_mae": null
+    },
+    {
+      "row": 508,
+      "seed": 1,
+      "variant": "bpm_high",
+      "hold_counts": [
+        0,
+        4,
+        8
+      ],
+      "generated_holds": 2,
+      "target_holds": 8,
+      "generated_hold_frames": 4,
+      "target_hold_frames": 134,
+      "balloons": 1,
+      "balloon_hits": [
+        2
+      ],
+      "bpm_counts": [
+        0,
+        1,
+        12
+      ],
+      "bpm_events": 1,
+      "bpm_value_mae": 8.798110961914062,
+      "hs_counts": [
+        0,
+        2,
+        0
+      ],
+      "hs_events": 2,
+      "hs_value_mae": null
+    },
+    {
+      "row": 508,
+      "seed": 1,
+      "variant": "hs_off",
+      "hold_counts": [
+        0,
+        3,
+        8
+      ],
+      "generated_holds": 2,
+      "target_holds": 8,
+      "generated_hold_frames": 4,
+      "target_hold_frames": 134,
+      "balloons": 1,
+      "balloon_hits": [
+        2
+      ],
+      "bpm_counts": [
+        0,
+        0,
+        12
+      ],
+      "bpm_events": 0,
+      "bpm_value_mae": 6.595873832702637,
+      "hs_counts": [
+        0,
+        1,
+        0
+      ],
+      "hs_events": 1,
+      "hs_value_mae": null
+    },
+    {
+      "row": 508,
+      "seed": 1,
+      "variant": "hs_on",
+      "hold_counts": [
+        0,
+        4,
+        8
+      ],
+      "generated_holds": 2,
+      "target_holds": 8,
+      "generated_hold_frames": 4,
+      "target_hold_frames": 134,
+      "balloons": 1,
+      "balloon_hits": [
+        2
+      ],
+      "bpm_counts": [
+        0,
+        1,
+        12
+      ],
+      "bpm_events": 1,
+      "bpm_value_mae": 8.798110961914062,
+      "hs_counts": [
+        0,
+        2,
+        0
+      ],
+      "hs_events": 2,
+      "hs_value_mae": null
+    },
+    {
+      "row": 809,
+      "seed": 0,
+      "variant": "base",
+      "hold_counts": [
+        1,
+        3,
+        6
+      ],
+      "generated_holds": 4,
+      "target_holds": 7,
+      "generated_hold_frames": 17,
+      "target_hold_frames": 157,
+      "balloons": 2,
+      "balloon_hits": [
+        3,
+        6
+      ],
+      "bpm_counts": [
+        0,
+        3,
+        0
+      ],
+      "bpm_events": 3,
+      "bpm_value_mae": null,
+      "hs_counts": [
+        1,
+        5,
+        0
+      ],
+      "hs_events": 6,
+      "hs_value_mae": 0.15891873836517334
+    },
+    {
+      "row": 809,
+      "seed": 0,
+      "variant": "bpm_off",
+      "hold_counts": [
+        1,
+        3,
+        6
+      ],
+      "generated_holds": 4,
+      "target_holds": 7,
+      "generated_hold_frames": 17,
+      "target_hold_frames": 157,
+      "balloons": 2,
+      "balloon_hits": [
+        3,
+        6
+      ],
+      "bpm_counts": [
+        0,
+        0,
+        0
+      ],
+      "bpm_events": 0,
+      "bpm_value_mae": null,
+      "hs_counts": [
+        1,
+        6,
+        0
+      ],
+      "hs_events": 7,
+      "hs_value_mae": 0.19460976123809814
+    },
+    {
+      "row": 809,
+      "seed": 0,
+      "variant": "bpm_high",
+      "hold_counts": [
+        0,
+        3,
+        7
+      ],
+      "generated_holds": 3,
+      "target_holds": 7,
+      "generated_hold_frames": 8,
+      "target_hold_frames": 157,
+      "balloons": 2,
+      "balloon_hits": [
+        3,
+        1
+      ],
+      "bpm_counts": [
+        0,
+        5,
+        0
+      ],
+      "bpm_events": 5,
+      "bpm_value_mae": null,
+      "hs_counts": [
+        1,
+        2,
+        0
+      ],
+      "hs_events": 3,
+      "hs_value_mae": 0.05249500274658203
+    },
+    {
+      "row": 809,
+      "seed": 0,
+      "variant": "hs_off",
+      "hold_counts": [
+        1,
+        3,
+        6
+      ],
+      "generated_holds": 4,
+      "target_holds": 7,
+      "generated_hold_frames": 17,
+      "target_hold_frames": 157,
+      "balloons": 2,
+      "balloon_hits": [
+        3,
+        6
+      ],
+      "bpm_counts": [
+        0,
+        2,
+        0
+      ],
+      "bpm_events": 2,
+      "bpm_value_mae": null,
+      "hs_counts": [
+        1,
+        1,
+        0
+      ],
+      "hs_events": 2,
+      "hs_value_mae": 0.10541927814483643
+    },
+    {
+      "row": 809,
+      "seed": 0,
+      "variant": "hs_on",
+      "hold_counts": [
+        1,
+        3,
+        6
+      ],
+      "generated_holds": 4,
+      "target_holds": 7,
+      "generated_hold_frames": 17,
+      "target_hold_frames": 157,
+      "balloons": 2,
+      "balloon_hits": [
+        3,
+        6
+      ],
+      "bpm_counts": [
+        0,
+        3,
+        0
+      ],
+      "bpm_events": 3,
+      "bpm_value_mae": null,
+      "hs_counts": [
+        1,
+        5,
+        0
+      ],
+      "hs_events": 6,
+      "hs_value_mae": 0.15891873836517334
+    },
+    {
+      "row": 809,
+      "seed": 1,
+      "variant": "base",
+      "hold_counts": [
+        0,
+        2,
+        7
+      ],
+      "generated_holds": 2,
+      "target_holds": 7,
+      "generated_hold_frames": 11,
+      "target_hold_frames": 157,
+      "balloons": 1,
+      "balloon_hits": [
+        4
+      ],
+      "bpm_counts": [
+        0,
+        0,
+        0
+      ],
+      "bpm_events": 0,
+      "bpm_value_mae": null,
+      "hs_counts": [
+        0,
+        0,
+        1
+      ],
+      "hs_events": 0,
+      "hs_value_mae": 0.49409019947052
+    },
+    {
+      "row": 809,
+      "seed": 1,
+      "variant": "bpm_off",
+      "hold_counts": [
+        0,
+        1,
+        7
+      ],
+      "generated_holds": 1,
+      "target_holds": 7,
+      "generated_hold_frames": 7,
+      "target_hold_frames": 157,
+      "balloons": 0,
+      "balloon_hits": [],
+      "bpm_counts": [
+        0,
+        1,
+        0
+      ],
+      "bpm_events": 1,
+      "bpm_value_mae": null,
+      "hs_counts": [
+        0,
+        1,
+        1
+      ],
+      "hs_events": 1,
+      "hs_value_mae": 0.492514967918396
+    },
+    {
+      "row": 809,
+      "seed": 1,
+      "variant": "bpm_high",
+      "hold_counts": [
+        0,
+        1,
+        7
+      ],
+      "generated_holds": 0,
+      "target_holds": 7,
+      "generated_hold_frames": 0,
+      "target_hold_frames": 157,
+      "balloons": 0,
+      "balloon_hits": [],
+      "bpm_counts": [
+        0,
+        3,
+        0
+      ],
+      "bpm_events": 3,
+      "bpm_value_mae": null,
+      "hs_counts": [
+        0,
+        3,
+        1
+      ],
+      "hs_events": 3,
+      "hs_value_mae": 0.5219976305961609
+    },
+    {
+      "row": 809,
+      "seed": 1,
+      "variant": "hs_off",
+      "hold_counts": [
+        0,
+        1,
+        7
+      ],
+      "generated_holds": 1,
+      "target_holds": 7,
+      "generated_hold_frames": 7,
+      "target_hold_frames": 157,
+      "balloons": 0,
+      "balloon_hits": [],
+      "bpm_counts": [
+        0,
+        0,
+        0
+      ],
+      "bpm_events": 0,
+      "bpm_value_mae": null,
+      "hs_counts": [
+        0,
+        0,
+        1
+      ],
+      "hs_events": 0,
+      "hs_value_mae": 0.4901367425918579
+    },
+    {
+      "row": 809,
+      "seed": 1,
+      "variant": "hs_on",
+      "hold_counts": [
+        0,
+        2,
+        7
+      ],
+      "generated_holds": 2,
+      "target_holds": 7,
+      "generated_hold_frames": 11,
+      "target_hold_frames": 157,
+      "balloons": 1,
+      "balloon_hits": [
+        4
+      ],
+      "bpm_counts": [
+        0,
+        0,
+        0
+      ],
+      "bpm_events": 0,
+      "bpm_value_mae": null,
+      "hs_counts": [
+        0,
+        0,
+        1
+      ],
+      "hs_events": 0,
+      "hs_value_mae": 0.49409019947052
+    },
+    {
+      "row": 501,
+      "seed": 0,
+      "variant": "base",
+      "hold_counts": [
+        0,
+        2,
+        7
+      ],
+      "generated_holds": 2,
+      "target_holds": 7,
+      "generated_hold_frames": 7,
+      "target_hold_frames": 118,
+      "balloons": 1,
+      "balloon_hits": [
+        4
+      ],
+      "bpm_counts": [
+        0,
+        3,
+        14
+      ],
+      "bpm_events": 3,
+      "bpm_value_mae": 3.7908732891082764,
+      "hs_counts": [
+        0,
+        4,
+        0
+      ],
+      "hs_events": 4,
+      "hs_value_mae": null
+    },
+    {
+      "row": 501,
+      "seed": 0,
+      "variant": "bpm_off",
+      "hold_counts": [
+        0,
+        1,
+        7
+      ],
+      "generated_holds": 1,
+      "target_holds": 7,
+      "generated_hold_frames": 26,
+      "target_hold_frames": 118,
+      "balloons": 0,
+      "balloon_hits": [],
+      "bpm_counts": [
+        0,
+        0,
+        14
+      ],
+      "bpm_events": 0,
+      "bpm_value_mae": 4.499212741851807,
+      "hs_counts": [
+        0,
+        0,
+        0
+      ],
+      "hs_events": 0,
+      "hs_value_mae": null
+    },
+    {
+      "row": 501,
+      "seed": 0,
+      "variant": "bpm_high",
+      "hold_counts": [
+        0,
+        2,
+        7
+      ],
+      "generated_holds": 2,
+      "target_holds": 7,
+      "generated_hold_frames": 7,
+      "target_hold_frames": 118,
+      "balloons": 1,
+      "balloon_hits": [
+        4
+      ],
+      "bpm_counts": [
+        0,
+        3,
+        14
+      ],
+      "bpm_events": 3,
+      "bpm_value_mae": 3.7908732891082764,
+      "hs_counts": [
+        0,
+        4,
+        0
+      ],
+      "hs_events": 4,
+      "hs_value_mae": null
+    },
+    {
+      "row": 501,
+      "seed": 0,
+      "variant": "hs_off",
+      "hold_counts": [
+        0,
+        2,
+        7
+      ],
+      "generated_holds": 2,
+      "target_holds": 7,
+      "generated_hold_frames": 7,
+      "target_hold_frames": 118,
+      "balloons": 1,
+      "balloon_hits": [
+        4
+      ],
+      "bpm_counts": [
+        0,
+        1,
+        14
+      ],
+      "bpm_events": 1,
+      "bpm_value_mae": 3.356153726577759,
+      "hs_counts": [
+        0,
+        2,
+        0
+      ],
+      "hs_events": 2,
+      "hs_value_mae": null
+    },
+    {
+      "row": 501,
+      "seed": 0,
+      "variant": "hs_on",
+      "hold_counts": [
+        0,
+        2,
+        7
+      ],
+      "generated_holds": 2,
+      "target_holds": 7,
+      "generated_hold_frames": 7,
+      "target_hold_frames": 118,
+      "balloons": 1,
+      "balloon_hits": [
+        4
+      ],
+      "bpm_counts": [
+        0,
+        3,
+        14
+      ],
+      "bpm_events": 3,
+      "bpm_value_mae": 3.7908732891082764,
+      "hs_counts": [
+        0,
+        4,
+        0
+      ],
+      "hs_events": 4,
+      "hs_value_mae": null
+    },
+    {
+      "row": 501,
+      "seed": 1,
+      "variant": "base",
+      "hold_counts": [
+        0,
+        1,
+        7
+      ],
+      "generated_holds": 1,
+      "target_holds": 7,
+      "generated_hold_frames": 8,
+      "target_hold_frames": 118,
+      "balloons": 0,
+      "balloon_hits": [],
+      "bpm_counts": [
+        0,
+        2,
+        14
+      ],
+      "bpm_events": 2,
+      "bpm_value_mae": 9.606938362121582,
+      "hs_counts": [
+        0,
+        2,
+        0
+      ],
+      "hs_events": 2,
+      "hs_value_mae": null
+    },
+    {
+      "row": 501,
+      "seed": 1,
+      "variant": "bpm_off",
+      "hold_counts": [
+        0,
+        1,
+        7
+      ],
+      "generated_holds": 1,
+      "target_holds": 7,
+      "generated_hold_frames": 8,
+      "target_hold_frames": 118,
+      "balloons": 0,
+      "balloon_hits": [],
+      "bpm_counts": [
+        0,
+        0,
+        14
+      ],
+      "bpm_events": 0,
+      "bpm_value_mae": 10.288223266601562,
+      "hs_counts": [
+        0,
+        0,
+        0
+      ],
+      "hs_events": 0,
+      "hs_value_mae": null
+    },
+    {
+      "row": 501,
+      "seed": 1,
+      "variant": "bpm_high",
+      "hold_counts": [
+        0,
+        1,
+        7
+      ],
+      "generated_holds": 1,
+      "target_holds": 7,
+      "generated_hold_frames": 8,
+      "target_hold_frames": 118,
+      "balloons": 0,
+      "balloon_hits": [],
+      "bpm_counts": [
+        0,
+        2,
+        14
+      ],
+      "bpm_events": 2,
+      "bpm_value_mae": 9.606938362121582,
+      "hs_counts": [
+        0,
+        2,
+        0
+      ],
+      "hs_events": 2,
+      "hs_value_mae": null
+    },
+    {
+      "row": 501,
+      "seed": 1,
+      "variant": "hs_off",
+      "hold_counts": [
+        0,
+        1,
+        7
+      ],
+      "generated_holds": 1,
+      "target_holds": 7,
+      "generated_hold_frames": 8,
+      "target_hold_frames": 118,
+      "balloons": 0,
+      "balloon_hits": [],
+      "bpm_counts": [
+        0,
+        1,
+        14
+      ],
+      "bpm_events": 1,
+      "bpm_value_mae": 10.220146179199219,
+      "hs_counts": [
+        0,
+        1,
+        0
+      ],
+      "hs_events": 1,
+      "hs_value_mae": null
+    },
+    {
+      "row": 501,
+      "seed": 1,
+      "variant": "hs_on",
+      "hold_counts": [
+        0,
+        1,
+        7
+      ],
+      "generated_holds": 1,
+      "target_holds": 7,
+      "generated_hold_frames": 8,
+      "target_hold_frames": 118,
+      "balloons": 0,
+      "balloon_hits": [],
+      "bpm_counts": [
+        0,
+        2,
+        14
+      ],
+      "bpm_events": 2,
+      "bpm_value_mae": 9.606938362121582,
+      "hs_counts": [
+        0,
+        2,
+        0
+      ],
+      "hs_events": 2,
+      "hs_value_mae": null
+    },
+    {
+      "row": 126,
+      "seed": 0,
+      "variant": "base",
+      "hold_counts": [
+        0,
+        1,
+        3
+      ],
+      "generated_holds": 0,
+      "target_holds": 3,
+      "generated_hold_frames": 0,
+      "target_hold_frames": 152,
+      "balloons": 0,
+      "balloon_hits": [],
+      "bpm_counts": [
+        0,
+        2,
+        5
+      ],
+      "bpm_events": 2,
+      "bpm_value_mae": 22.027822494506836,
+      "hs_counts": [
+        0,
+        3,
+        3
+      ],
+      "hs_events": 3,
+      "hs_value_mae": 0.36077752709388733
+    },
+    {
+      "row": 126,
+      "seed": 0,
+      "variant": "bpm_off",
+      "hold_counts": [
+        0,
+        0,
+        3
+      ],
+      "generated_holds": 0,
+      "target_holds": 3,
+      "generated_hold_frames": 0,
+      "target_hold_frames": 152,
+      "balloons": 0,
+      "balloon_hits": [],
+      "bpm_counts": [
+        0,
+        0,
+        5
+      ],
+      "bpm_events": 0,
+      "bpm_value_mae": 27.786054611206055,
+      "hs_counts": [
+        0,
+        1,
+        3
+      ],
+      "hs_events": 1,
+      "hs_value_mae": 0.3949073255062103
+    },
+    {
+      "row": 126,
+      "seed": 0,
+      "variant": "bpm_high",
+      "hold_counts": [
+        0,
+        1,
+        3
+      ],
+      "generated_holds": 0,
+      "target_holds": 3,
+      "generated_hold_frames": 0,
+      "target_hold_frames": 152,
+      "balloons": 0,
+      "balloon_hits": [],
+      "bpm_counts": [
+        0,
+        2,
+        5
+      ],
+      "bpm_events": 2,
+      "bpm_value_mae": 22.027822494506836,
+      "hs_counts": [
+        0,
+        3,
+        3
+      ],
+      "hs_events": 3,
+      "hs_value_mae": 0.36077752709388733
+    },
+    {
+      "row": 126,
+      "seed": 0,
+      "variant": "hs_off",
+      "hold_counts": [
+        0,
+        1,
+        3
+      ],
+      "generated_holds": 0,
+      "target_holds": 3,
+      "generated_hold_frames": 0,
+      "target_hold_frames": 152,
+      "balloons": 0,
+      "balloon_hits": [],
+      "bpm_counts": [
+        0,
+        0,
+        5
+      ],
+      "bpm_events": 0,
+      "bpm_value_mae": 21.363101959228516,
+      "hs_counts": [
+        0,
+        0,
+        3
+      ],
+      "hs_events": 0,
+      "hs_value_mae": 0.3664175271987915
+    },
+    {
+      "row": 126,
+      "seed": 0,
+      "variant": "hs_on",
+      "hold_counts": [
+        0,
+        1,
+        3
+      ],
+      "generated_holds": 0,
+      "target_holds": 3,
+      "generated_hold_frames": 0,
+      "target_hold_frames": 152,
+      "balloons": 0,
+      "balloon_hits": [],
+      "bpm_counts": [
+        0,
+        2,
+        5
+      ],
+      "bpm_events": 2,
+      "bpm_value_mae": 22.027822494506836,
+      "hs_counts": [
+        0,
+        3,
+        3
+      ],
+      "hs_events": 3,
+      "hs_value_mae": 0.36077752709388733
+    },
+    {
+      "row": 126,
+      "seed": 1,
+      "variant": "base",
+      "hold_counts": [
+        0,
+        1,
+        3
+      ],
+      "generated_holds": 0,
+      "target_holds": 3,
+      "generated_hold_frames": 0,
+      "target_hold_frames": 152,
+      "balloons": 0,
+      "balloon_hits": [],
+      "bpm_counts": [
+        0,
+        0,
+        5
+      ],
+      "bpm_events": 0,
+      "bpm_value_mae": 15.149894714355469,
+      "hs_counts": [
+        0,
+        1,
+        3
+      ],
+      "hs_events": 1,
+      "hs_value_mae": 0.2684292197227478
+    },
+    {
+      "row": 126,
+      "seed": 1,
+      "variant": "bpm_off",
+      "hold_counts": [
+        0,
+        1,
+        3
+      ],
+      "generated_holds": 0,
+      "target_holds": 3,
+      "generated_hold_frames": 0,
+      "target_hold_frames": 152,
+      "balloons": 0,
+      "balloon_hits": [],
+      "bpm_counts": [
+        0,
+        0,
+        5
+      ],
+      "bpm_events": 0,
+      "bpm_value_mae": 25.193721771240234,
+      "hs_counts": [
+        0,
+        1,
+        3
+      ],
+      "hs_events": 1,
+      "hs_value_mae": 0.2916695773601532
+    },
+    {
+      "row": 126,
+      "seed": 1,
+      "variant": "bpm_high",
+      "hold_counts": [
+        0,
+        1,
+        3
+      ],
+      "generated_holds": 0,
+      "target_holds": 3,
+      "generated_hold_frames": 0,
+      "target_hold_frames": 152,
+      "balloons": 0,
+      "balloon_hits": [],
+      "bpm_counts": [
+        0,
+        0,
+        5
+      ],
+      "bpm_events": 0,
+      "bpm_value_mae": 15.149894714355469,
+      "hs_counts": [
+        0,
+        1,
+        3
+      ],
+      "hs_events": 1,
+      "hs_value_mae": 0.2684292197227478
+    },
+    {
+      "row": 126,
+      "seed": 1,
+      "variant": "hs_off",
+      "hold_counts": [
+        0,
+        1,
+        3
+      ],
+      "generated_holds": 0,
+      "target_holds": 3,
+      "generated_hold_frames": 0,
+      "target_hold_frames": 152,
+      "balloons": 0,
+      "balloon_hits": [],
+      "bpm_counts": [
+        0,
+        0,
+        5
+      ],
+      "bpm_events": 0,
+      "bpm_value_mae": 17.052978515625,
+      "hs_counts": [
+        0,
+        0,
+        3
+      ],
+      "hs_events": 0,
+      "hs_value_mae": 0.2901224195957184
+    },
+    {
+      "row": 126,
+      "seed": 1,
+      "variant": "hs_on",
+      "hold_counts": [
+        0,
+        1,
+        3
+      ],
+      "generated_holds": 0,
+      "target_holds": 3,
+      "generated_hold_frames": 0,
+      "target_hold_frames": 152,
+      "balloons": 0,
+      "balloon_hits": [],
+      "bpm_counts": [
+        0,
+        0,
+        5
+      ],
+      "bpm_events": 0,
+      "bpm_value_mae": 15.149894714355469,
+      "hs_counts": [
+        0,
+        1,
+        3
+      ],
+      "hs_events": 1,
+      "hs_value_mae": 0.2684292197227478
+    },
+    {
+      "row": 485,
+      "seed": 0,
+      "variant": "base",
+      "hold_counts": [
+        0,
+        1,
+        1
+      ],
+      "generated_holds": 1,
+      "target_holds": 1,
+      "generated_hold_frames": 17,
+      "target_hold_frames": 180,
+      "balloons": 0,
+      "balloon_hits": [],
+      "bpm_counts": [
+        0,
+        5,
+        1
+      ],
+      "bpm_events": 5,
+      "bpm_value_mae": 47.65351867675781,
+      "hs_counts": [
+        0,
+        4,
+        0
+      ],
+      "hs_events": 4,
+      "hs_value_mae": null
+    },
+    {
+      "row": 485,
+      "seed": 0,
+      "variant": "bpm_off",
+      "hold_counts": [
+        0,
+        1,
+        1
+      ],
+      "generated_holds": 1,
+      "target_holds": 1,
+      "generated_hold_frames": 17,
+      "target_hold_frames": 180,
+      "balloons": 0,
+      "balloon_hits": [],
+      "bpm_counts": [
+        0,
+        3,
+        1
+      ],
+      "bpm_events": 3,
+      "bpm_value_mae": 56.16720962524414,
+      "hs_counts": [
+        0,
+        5,
+        0
+      ],
+      "hs_events": 5,
+      "hs_value_mae": null
+    },
+    {
+      "row": 485,
+      "seed": 0,
+      "variant": "bpm_high",
+      "hold_counts": [
+        0,
+        3,
+        1
+      ],
+      "generated_holds": 1,
+      "target_holds": 1,
+      "generated_hold_frames": 17,
+      "target_hold_frames": 180,
+      "balloons": 0,
+      "balloon_hits": [],
+      "bpm_counts": [
+        0,
+        5,
+        1
+      ],
+      "bpm_events": 5,
+      "bpm_value_mae": 48.16376495361328,
+      "hs_counts": [
+        0,
+        4,
+        0
+      ],
+      "hs_events": 4,
+      "hs_value_mae": null
+    },
+    {
+      "row": 485,
+      "seed": 0,
+      "variant": "hs_off",
+      "hold_counts": [
+        0,
+        1,
+        1
+      ],
+      "generated_holds": 1,
+      "target_holds": 1,
+      "generated_hold_frames": 17,
+      "target_hold_frames": 180,
+      "balloons": 0,
+      "balloon_hits": [],
+      "bpm_counts": [
+        0,
+        2,
+        1
+      ],
+      "bpm_events": 2,
+      "bpm_value_mae": 41.11880111694336,
+      "hs_counts": [
+        0,
+        1,
+        0
+      ],
+      "hs_events": 1,
+      "hs_value_mae": null
+    },
+    {
+      "row": 485,
+      "seed": 0,
+      "variant": "hs_on",
+      "hold_counts": [
+        0,
+        1,
+        1
+      ],
+      "generated_holds": 1,
+      "target_holds": 1,
+      "generated_hold_frames": 17,
+      "target_hold_frames": 180,
+      "balloons": 0,
+      "balloon_hits": [],
+      "bpm_counts": [
+        0,
+        5,
+        1
+      ],
+      "bpm_events": 5,
+      "bpm_value_mae": 47.65351867675781,
+      "hs_counts": [
+        0,
+        4,
+        0
+      ],
+      "hs_events": 4,
+      "hs_value_mae": null
+    },
+    {
+      "row": 485,
+      "seed": 1,
+      "variant": "base",
+      "hold_counts": [
+        0,
+        1,
+        1
+      ],
+      "generated_holds": 1,
+      "target_holds": 1,
+      "generated_hold_frames": 7,
+      "target_hold_frames": 180,
+      "balloons": 0,
+      "balloon_hits": [],
+      "bpm_counts": [
+        0,
+        4,
+        1
+      ],
+      "bpm_events": 4,
+      "bpm_value_mae": 19.639814376831055,
+      "hs_counts": [
+        0,
+        4,
+        0
+      ],
+      "hs_events": 4,
+      "hs_value_mae": null
+    },
+    {
+      "row": 485,
+      "seed": 1,
+      "variant": "bpm_off",
+      "hold_counts": [
+        0,
+        1,
+        1
+      ],
+      "generated_holds": 1,
+      "target_holds": 1,
+      "generated_hold_frames": 7,
+      "target_hold_frames": 180,
+      "balloons": 0,
+      "balloon_hits": [],
+      "bpm_counts": [
+        0,
+        4,
+        1
+      ],
+      "bpm_events": 4,
+      "bpm_value_mae": 24.10976791381836,
+      "hs_counts": [
+        0,
+        4,
+        0
+      ],
+      "hs_events": 4,
+      "hs_value_mae": null
+    },
+    {
+      "row": 485,
+      "seed": 1,
+      "variant": "bpm_high",
+      "hold_counts": [
+        0,
+        1,
+        1
+      ],
+      "generated_holds": 1,
+      "target_holds": 1,
+      "generated_hold_frames": 7,
+      "target_hold_frames": 180,
+      "balloons": 0,
+      "balloon_hits": [],
+      "bpm_counts": [
+        0,
+        6,
+        1
+      ],
+      "bpm_events": 6,
+      "bpm_value_mae": 20.073223114013672,
+      "hs_counts": [
+        0,
+        4,
+        0
+      ],
+      "hs_events": 4,
+      "hs_value_mae": null
+    },
+    {
+      "row": 485,
+      "seed": 1,
+      "variant": "hs_off",
+      "hold_counts": [
+        0,
+        2,
+        1
+      ],
+      "generated_holds": 1,
+      "target_holds": 1,
+      "generated_hold_frames": 7,
+      "target_hold_frames": 180,
+      "balloons": 0,
+      "balloon_hits": [],
+      "bpm_counts": [
+        0,
+        3,
+        1
+      ],
+      "bpm_events": 3,
+      "bpm_value_mae": 21.41030502319336,
+      "hs_counts": [
+        0,
+        3,
+        0
+      ],
+      "hs_events": 3,
+      "hs_value_mae": null
+    },
+    {
+      "row": 485,
+      "seed": 1,
+      "variant": "hs_on",
+      "hold_counts": [
+        0,
+        1,
+        1
+      ],
+      "generated_holds": 1,
+      "target_holds": 1,
+      "generated_hold_frames": 7,
+      "target_hold_frames": 180,
+      "balloons": 0,
+      "balloon_hits": [],
+      "bpm_counts": [
+        0,
+        4,
+        1
+      ],
+      "bpm_events": 4,
+      "bpm_value_mae": 19.639814376831055,
+      "hs_counts": [
+        0,
+        4,
+        0
+      ],
+      "hs_events": 4,
+      "hs_value_mae": null
+    },
+    {
+      "row": 502,
+      "seed": 0,
+      "variant": "base",
+      "hold_counts": [
+        0,
+        0,
+        7
+      ],
+      "generated_holds": 0,
+      "target_holds": 7,
+      "generated_hold_frames": 0,
+      "target_hold_frames": 122,
+      "balloons": 0,
+      "balloon_hits": [],
+      "bpm_counts": [
+        0,
+        0,
+        12
+      ],
+      "bpm_events": 0,
+      "bpm_value_mae": 5.819606781005859,
+      "hs_counts": [
+        0,
+        0,
+        0
+      ],
+      "hs_events": 0,
+      "hs_value_mae": null
+    },
+    {
+      "row": 502,
+      "seed": 0,
+      "variant": "bpm_off",
+      "hold_counts": [
+        0,
+        0,
+        7
+      ],
+      "generated_holds": 0,
+      "target_holds": 7,
+      "generated_hold_frames": 0,
+      "target_hold_frames": 122,
+      "balloons": 0,
+      "balloon_hits": [],
+      "bpm_counts": [
+        0,
+        0,
+        12
+      ],
+      "bpm_events": 0,
+      "bpm_value_mae": 6.120911121368408,
+      "hs_counts": [
+        0,
+        0,
+        0
+      ],
+      "hs_events": 0,
+      "hs_value_mae": null
+    },
+    {
+      "row": 502,
+      "seed": 0,
+      "variant": "bpm_high",
+      "hold_counts": [
+        0,
+        0,
+        7
+      ],
+      "generated_holds": 0,
+      "target_holds": 7,
+      "generated_hold_frames": 0,
+      "target_hold_frames": 122,
+      "balloons": 0,
+      "balloon_hits": [],
+      "bpm_counts": [
+        0,
+        0,
+        12
+      ],
+      "bpm_events": 0,
+      "bpm_value_mae": 5.819606781005859,
+      "hs_counts": [
+        0,
+        0,
+        0
+      ],
+      "hs_events": 0,
+      "hs_value_mae": null
+    },
+    {
+      "row": 502,
+      "seed": 0,
+      "variant": "hs_off",
+      "hold_counts": [
+        0,
+        0,
+        7
+      ],
+      "generated_holds": 0,
+      "target_holds": 7,
+      "generated_hold_frames": 0,
+      "target_hold_frames": 122,
+      "balloons": 0,
+      "balloon_hits": [],
+      "bpm_counts": [
+        0,
+        0,
+        12
+      ],
+      "bpm_events": 0,
+      "bpm_value_mae": 5.431339263916016,
+      "hs_counts": [
+        0,
+        0,
+        0
+      ],
+      "hs_events": 0,
+      "hs_value_mae": null
+    },
+    {
+      "row": 502,
+      "seed": 0,
+      "variant": "hs_on",
+      "hold_counts": [
+        0,
+        0,
+        7
+      ],
+      "generated_holds": 0,
+      "target_holds": 7,
+      "generated_hold_frames": 0,
+      "target_hold_frames": 122,
+      "balloons": 0,
+      "balloon_hits": [],
+      "bpm_counts": [
+        0,
+        0,
+        12
+      ],
+      "bpm_events": 0,
+      "bpm_value_mae": 5.819606781005859,
+      "hs_counts": [
+        0,
+        0,
+        0
+      ],
+      "hs_events": 0,
+      "hs_value_mae": null
+    },
+    {
+      "row": 502,
+      "seed": 1,
+      "variant": "base",
+      "hold_counts": [
+        0,
+        0,
+        7
+      ],
+      "generated_holds": 0,
+      "target_holds": 7,
+      "generated_hold_frames": 0,
+      "target_hold_frames": 122,
+      "balloons": 0,
+      "balloon_hits": [],
+      "bpm_counts": [
+        0,
+        2,
+        12
+      ],
+      "bpm_events": 2,
+      "bpm_value_mae": 9.282861709594727,
+      "hs_counts": [
+        0,
+        0,
+        0
+      ],
+      "hs_events": 0,
+      "hs_value_mae": null
+    },
+    {
+      "row": 502,
+      "seed": 1,
+      "variant": "bpm_off",
+      "hold_counts": [
+        0,
+        0,
+        7
+      ],
+      "generated_holds": 0,
+      "target_holds": 7,
+      "generated_hold_frames": 0,
+      "target_hold_frames": 122,
+      "balloons": 0,
+      "balloon_hits": [],
+      "bpm_counts": [
+        0,
+        0,
+        12
+      ],
+      "bpm_events": 0,
+      "bpm_value_mae": 8.340248107910156,
+      "hs_counts": [
+        0,
+        0,
+        0
+      ],
+      "hs_events": 0,
+      "hs_value_mae": null
+    },
+    {
+      "row": 502,
+      "seed": 1,
+      "variant": "bpm_high",
+      "hold_counts": [
+        0,
+        0,
+        7
+      ],
+      "generated_holds": 0,
+      "target_holds": 7,
+      "generated_hold_frames": 0,
+      "target_hold_frames": 122,
+      "balloons": 0,
+      "balloon_hits": [],
+      "bpm_counts": [
+        0,
+        2,
+        12
+      ],
+      "bpm_events": 2,
+      "bpm_value_mae": 9.282861709594727,
+      "hs_counts": [
+        0,
+        0,
+        0
+      ],
+      "hs_events": 0,
+      "hs_value_mae": null
+    },
+    {
+      "row": 502,
+      "seed": 1,
+      "variant": "hs_off",
+      "hold_counts": [
+        0,
+        0,
+        7
+      ],
+      "generated_holds": 0,
+      "target_holds": 7,
+      "generated_hold_frames": 0,
+      "target_hold_frames": 122,
+      "balloons": 0,
+      "balloon_hits": [],
+      "bpm_counts": [
+        0,
+        0,
+        12
+      ],
+      "bpm_events": 0,
+      "bpm_value_mae": 11.044432640075684,
+      "hs_counts": [
+        0,
+        0,
+        0
+      ],
+      "hs_events": 0,
+      "hs_value_mae": null
+    },
+    {
+      "row": 502,
+      "seed": 1,
+      "variant": "hs_on",
+      "hold_counts": [
+        0,
+        0,
+        7
+      ],
+      "generated_holds": 0,
+      "target_holds": 7,
+      "generated_hold_frames": 0,
+      "target_hold_frames": 122,
+      "balloons": 0,
+      "balloon_hits": [],
+      "bpm_counts": [
+        0,
+        2,
+        12
+      ],
+      "bpm_events": 2,
+      "bpm_value_mae": 9.282861709594727,
+      "hs_counts": [
+        0,
+        0,
+        0
+      ],
+      "hs_events": 0,
+      "hs_value_mae": null
+    },
+    {
+      "row": 592,
+      "seed": 0,
+      "variant": "base",
+      "hold_counts": [
+        0,
+        0,
+        6
+      ],
+      "generated_holds": 0,
+      "target_holds": 6,
+      "generated_hold_frames": 0,
+      "target_hold_frames": 157,
+      "balloons": 0,
+      "balloon_hits": [],
+      "bpm_counts": [
+        0,
+        0,
+        0
+      ],
+      "bpm_events": 0,
+      "bpm_value_mae": null,
+      "hs_counts": [
+        0,
+        0,
+        0
+      ],
+      "hs_events": 0,
+      "hs_value_mae": null
+    },
+    {
+      "row": 592,
+      "seed": 0,
+      "variant": "bpm_off",
+      "hold_counts": [
+        0,
+        0,
+        6
+      ],
+      "generated_holds": 0,
+      "target_holds": 6,
+      "generated_hold_frames": 0,
+      "target_hold_frames": 157,
+      "balloons": 0,
+      "balloon_hits": [],
+      "bpm_counts": [
+        0,
+        0,
+        0
+      ],
+      "bpm_events": 0,
+      "bpm_value_mae": null,
+      "hs_counts": [
+        0,
+        0,
+        0
+      ],
+      "hs_events": 0,
+      "hs_value_mae": null
+    },
+    {
+      "row": 592,
+      "seed": 0,
+      "variant": "bpm_high",
+      "hold_counts": [
+        0,
+        1,
+        6
+      ],
+      "generated_holds": 0,
+      "target_holds": 6,
+      "generated_hold_frames": 0,
+      "target_hold_frames": 157,
+      "balloons": 0,
+      "balloon_hits": [],
+      "bpm_counts": [
+        0,
+        3,
+        0
+      ],
+      "bpm_events": 3,
+      "bpm_value_mae": null,
+      "hs_counts": [
+        0,
+        0,
+        0
+      ],
+      "hs_events": 0,
+      "hs_value_mae": null
+    },
+    {
+      "row": 592,
+      "seed": 0,
+      "variant": "hs_off",
+      "hold_counts": [
+        0,
+        0,
+        6
+      ],
+      "generated_holds": 0,
+      "target_holds": 6,
+      "generated_hold_frames": 0,
+      "target_hold_frames": 157,
+      "balloons": 0,
+      "balloon_hits": [],
+      "bpm_counts": [
+        0,
+        0,
+        0
+      ],
+      "bpm_events": 0,
+      "bpm_value_mae": null,
+      "hs_counts": [
+        0,
+        0,
+        0
+      ],
+      "hs_events": 0,
+      "hs_value_mae": null
+    },
+    {
+      "row": 592,
+      "seed": 0,
+      "variant": "hs_on",
+      "hold_counts": [
+        0,
+        0,
+        6
+      ],
+      "generated_holds": 0,
+      "target_holds": 6,
+      "generated_hold_frames": 0,
+      "target_hold_frames": 157,
+      "balloons": 0,
+      "balloon_hits": [],
+      "bpm_counts": [
+        0,
+        0,
+        0
+      ],
+      "bpm_events": 0,
+      "bpm_value_mae": null,
+      "hs_counts": [
+        0,
+        0,
+        0
+      ],
+      "hs_events": 0,
+      "hs_value_mae": null
+    },
+    {
+      "row": 592,
+      "seed": 1,
+      "variant": "base",
+      "hold_counts": [
+        0,
+        0,
+        6
+      ],
+      "generated_holds": 0,
+      "target_holds": 6,
+      "generated_hold_frames": 0,
+      "target_hold_frames": 157,
+      "balloons": 0,
+      "balloon_hits": [],
+      "bpm_counts": [
+        0,
+        0,
+        0
+      ],
+      "bpm_events": 0,
+      "bpm_value_mae": null,
+      "hs_counts": [
+        0,
+        0,
+        0
+      ],
+      "hs_events": 0,
+      "hs_value_mae": null
+    },
+    {
+      "row": 592,
+      "seed": 1,
+      "variant": "bpm_off",
+      "hold_counts": [
+        0,
+        0,
+        6
+      ],
+      "generated_holds": 0,
+      "target_holds": 6,
+      "generated_hold_frames": 0,
+      "target_hold_frames": 157,
+      "balloons": 0,
+      "balloon_hits": [],
+      "bpm_counts": [
+        0,
+        0,
+        0
+      ],
+      "bpm_events": 0,
+      "bpm_value_mae": null,
+      "hs_counts": [
+        0,
+        0,
+        0
+      ],
+      "hs_events": 0,
+      "hs_value_mae": null
+    },
+    {
+      "row": 592,
+      "seed": 1,
+      "variant": "bpm_high",
+      "hold_counts": [
+        0,
+        1,
+        6
+      ],
+      "generated_holds": 1,
+      "target_holds": 6,
+      "generated_hold_frames": 1,
+      "target_hold_frames": 157,
+      "balloons": 0,
+      "balloon_hits": [],
+      "bpm_counts": [
+        0,
+        2,
+        0
+      ],
+      "bpm_events": 2,
+      "bpm_value_mae": null,
+      "hs_counts": [
+        0,
+        0,
+        0
+      ],
+      "hs_events": 0,
+      "hs_value_mae": null
+    },
+    {
+      "row": 592,
+      "seed": 1,
+      "variant": "hs_off",
+      "hold_counts": [
+        0,
+        0,
+        6
+      ],
+      "generated_holds": 0,
+      "target_holds": 6,
+      "generated_hold_frames": 0,
+      "target_hold_frames": 157,
+      "balloons": 0,
+      "balloon_hits": [],
+      "bpm_counts": [
+        0,
+        0,
+        0
+      ],
+      "bpm_events": 0,
+      "bpm_value_mae": null,
+      "hs_counts": [
+        0,
+        0,
+        0
+      ],
+      "hs_events": 0,
+      "hs_value_mae": null
+    },
+    {
+      "row": 592,
+      "seed": 1,
+      "variant": "hs_on",
+      "hold_counts": [
+        0,
+        0,
+        6
+      ],
+      "generated_holds": 0,
+      "target_holds": 6,
+      "generated_hold_frames": 0,
+      "target_hold_frames": 157,
+      "balloons": 0,
+      "balloon_hits": [],
+      "bpm_counts": [
+        0,
+        0,
+        0
+      ],
+      "bpm_events": 0,
+      "bpm_value_mae": null,
+      "hs_counts": [
+        0,
+        0,
+        0
+      ],
+      "hs_events": 0,
+      "hs_value_mae": null
+    },
+    {
+      "row": 41,
+      "seed": 0,
+      "variant": "base",
+      "hold_counts": [
+        0,
+        0,
+        6
+      ],
+      "generated_holds": 0,
+      "target_holds": 6,
+      "generated_hold_frames": 0,
+      "target_hold_frames": 153,
+      "balloons": 0,
+      "balloon_hits": [],
+      "bpm_counts": [
+        0,
+        0,
+        0
+      ],
+      "bpm_events": 0,
+      "bpm_value_mae": null,
+      "hs_counts": [
+        0,
+        1,
+        1
+      ],
+      "hs_events": 1,
+      "hs_value_mae": 0.18248677253723145
+    },
+    {
+      "row": 41,
+      "seed": 0,
+      "variant": "bpm_off",
+      "hold_counts": [
+        0,
+        0,
+        6
+      ],
+      "generated_holds": 0,
+      "target_holds": 6,
+      "generated_hold_frames": 0,
+      "target_hold_frames": 153,
+      "balloons": 0,
+      "balloon_hits": [],
+      "bpm_counts": [
+        0,
+        0,
+        0
+      ],
+      "bpm_events": 0,
+      "bpm_value_mae": null,
+      "hs_counts": [
+        0,
+        1,
+        1
+      ],
+      "hs_events": 1,
+      "hs_value_mae": 0.18248677253723145
+    },
+    {
+      "row": 41,
+      "seed": 0,
+      "variant": "bpm_high",
+      "hold_counts": [
+        0,
+        0,
+        6
+      ],
+      "generated_holds": 0,
+      "target_holds": 6,
+      "generated_hold_frames": 0,
+      "target_hold_frames": 153,
+      "balloons": 0,
+      "balloon_hits": [],
+      "bpm_counts": [
+        0,
+        5,
+        0
+      ],
+      "bpm_events": 5,
+      "bpm_value_mae": null,
+      "hs_counts": [
+        0,
+        2,
+        1
+      ],
+      "hs_events": 2,
+      "hs_value_mae": 0.2448880672454834
+    },
+    {
+      "row": 41,
+      "seed": 0,
+      "variant": "hs_off",
+      "hold_counts": [
+        0,
+        0,
+        6
+      ],
+      "generated_holds": 0,
+      "target_holds": 6,
+      "generated_hold_frames": 0,
+      "target_hold_frames": 153,
+      "balloons": 0,
+      "balloon_hits": [],
+      "bpm_counts": [
+        0,
+        0,
+        0
+      ],
+      "bpm_events": 0,
+      "bpm_value_mae": null,
+      "hs_counts": [
+        0,
+        0,
+        1
+      ],
+      "hs_events": 0,
+      "hs_value_mae": 0.5136927962303162
+    },
+    {
+      "row": 41,
+      "seed": 0,
+      "variant": "hs_on",
+      "hold_counts": [
+        0,
+        0,
+        6
+      ],
+      "generated_holds": 0,
+      "target_holds": 6,
+      "generated_hold_frames": 0,
+      "target_hold_frames": 153,
+      "balloons": 0,
+      "balloon_hits": [],
+      "bpm_counts": [
+        0,
+        0,
+        0
+      ],
+      "bpm_events": 0,
+      "bpm_value_mae": null,
+      "hs_counts": [
+        0,
+        1,
+        1
+      ],
+      "hs_events": 1,
+      "hs_value_mae": 0.18248677253723145
+    },
+    {
+      "row": 41,
+      "seed": 1,
+      "variant": "base",
+      "hold_counts": [
+        0,
+        1,
+        6
+      ],
+      "generated_holds": 1,
+      "target_holds": 6,
+      "generated_hold_frames": 17,
+      "target_hold_frames": 153,
+      "balloons": 0,
+      "balloon_hits": [],
+      "bpm_counts": [
+        0,
+        4,
+        0
+      ],
+      "bpm_events": 4,
+      "bpm_value_mae": null,
+      "hs_counts": [
+        1,
+        3,
+        0
+      ],
+      "hs_events": 4,
+      "hs_value_mae": 0.12961924076080322
+    },
+    {
+      "row": 41,
+      "seed": 1,
+      "variant": "bpm_off",
+      "hold_counts": [
+        0,
+        1,
+        6
+      ],
+      "generated_holds": 1,
+      "target_holds": 6,
+      "generated_hold_frames": 17,
+      "target_hold_frames": 153,
+      "balloons": 0,
+      "balloon_hits": [],
+      "bpm_counts": [
+        0,
+        4,
+        0
+      ],
+      "bpm_events": 4,
+      "bpm_value_mae": null,
+      "hs_counts": [
+        1,
+        3,
+        0
+      ],
+      "hs_events": 4,
+      "hs_value_mae": 0.12961924076080322
+    },
+    {
+      "row": 41,
+      "seed": 1,
+      "variant": "bpm_high",
+      "hold_counts": [
+        1,
+        3,
+        5
+      ],
+      "generated_holds": 3,
+      "target_holds": 6,
+      "generated_hold_frames": 19,
+      "target_hold_frames": 153,
+      "balloons": 0,
+      "balloon_hits": [],
+      "bpm_counts": [
+        0,
+        12,
+        0
+      ],
+      "bpm_events": 12,
+      "bpm_value_mae": null,
+      "hs_counts": [
+        1,
+        8,
+        0
+      ],
+      "hs_events": 9,
+      "hs_value_mae": 0.2542300224304199
+    },
+    {
+      "row": 41,
+      "seed": 1,
+      "variant": "hs_off",
+      "hold_counts": [
+        1,
+        1,
+        5
+      ],
+      "generated_holds": 2,
+      "target_holds": 6,
+      "generated_hold_frames": 20,
+      "target_hold_frames": 153,
+      "balloons": 0,
+      "balloon_hits": [],
+      "bpm_counts": [
+        0,
+        2,
+        0
+      ],
+      "bpm_events": 2,
+      "bpm_value_mae": null,
+      "hs_counts": [
+        1,
+        1,
+        0
+      ],
+      "hs_events": 2,
+      "hs_value_mae": 0.23802995681762695
+    },
+    {
+      "row": 41,
+      "seed": 1,
+      "variant": "hs_on",
+      "hold_counts": [
+        0,
+        1,
+        6
+      ],
+      "generated_holds": 1,
+      "target_holds": 6,
+      "generated_hold_frames": 17,
+      "target_hold_frames": 153,
+      "balloons": 0,
+      "balloon_hits": [],
+      "bpm_counts": [
+        0,
+        4,
+        0
+      ],
+      "bpm_events": 4,
+      "bpm_value_mae": null,
+      "hs_counts": [
+        1,
+        3,
+        0
+      ],
+      "hs_events": 4,
+      "hs_value_mae": 0.12961924076080322
+    },
+    {
+      "row": 1090,
+      "seed": 0,
+      "variant": "base",
+      "hold_counts": [
+        0,
+        3,
+        1
+      ],
+      "generated_holds": 1,
+      "target_holds": 1,
+      "generated_hold_frames": 1,
+      "target_hold_frames": 81,
+      "balloons": 0,
+      "balloon_hits": [],
+      "bpm_counts": [
+        0,
+        5,
+        11
+      ],
+      "bpm_events": 5,
+      "bpm_value_mae": 41.932945251464844,
+      "hs_counts": [
+        0,
+        6,
+        0
+      ],
+      "hs_events": 6,
+      "hs_value_mae": null
+    },
+    {
+      "row": 1090,
+      "seed": 0,
+      "variant": "bpm_off",
+      "hold_counts": [
+        0,
+        3,
+        1
+      ],
+      "generated_holds": 1,
+      "target_holds": 1,
+      "generated_hold_frames": 4,
+      "target_hold_frames": 81,
+      "balloons": 0,
+      "balloon_hits": [],
+      "bpm_counts": [
+        0,
+        5,
+        11
+      ],
+      "bpm_events": 5,
+      "bpm_value_mae": 44.16278076171875,
+      "hs_counts": [
+        0,
+        5,
+        0
+      ],
+      "hs_events": 5,
+      "hs_value_mae": null
+    },
+    {
+      "row": 1090,
+      "seed": 0,
+      "variant": "bpm_high",
+      "hold_counts": [
+        0,
+        3,
+        1
+      ],
+      "generated_holds": 1,
+      "target_holds": 1,
+      "generated_hold_frames": 1,
+      "target_hold_frames": 81,
+      "balloons": 0,
+      "balloon_hits": [],
+      "bpm_counts": [
+        0,
+        5,
+        11
+      ],
+      "bpm_events": 5,
+      "bpm_value_mae": 41.932945251464844,
+      "hs_counts": [
+        0,
+        6,
+        0
+      ],
+      "hs_events": 6,
+      "hs_value_mae": null
+    },
+    {
+      "row": 1090,
+      "seed": 0,
+      "variant": "hs_off",
+      "hold_counts": [
+        0,
+        3,
+        1
+      ],
+      "generated_holds": 2,
+      "target_holds": 1,
+      "generated_hold_frames": 2,
+      "target_hold_frames": 81,
+      "balloons": 0,
+      "balloon_hits": [],
+      "bpm_counts": [
+        0,
+        4,
+        11
+      ],
+      "bpm_events": 4,
+      "bpm_value_mae": 41.943153381347656,
+      "hs_counts": [
+        0,
+        6,
+        0
+      ],
+      "hs_events": 6,
+      "hs_value_mae": null
+    },
+    {
+      "row": 1090,
+      "seed": 0,
+      "variant": "hs_on",
+      "hold_counts": [
+        0,
+        3,
+        1
+      ],
+      "generated_holds": 1,
+      "target_holds": 1,
+      "generated_hold_frames": 1,
+      "target_hold_frames": 81,
+      "balloons": 0,
+      "balloon_hits": [],
+      "bpm_counts": [
+        0,
+        5,
+        11
+      ],
+      "bpm_events": 5,
+      "bpm_value_mae": 41.932945251464844,
+      "hs_counts": [
+        0,
+        6,
+        0
+      ],
+      "hs_events": 6,
+      "hs_value_mae": null
+    },
+    {
+      "row": 1090,
+      "seed": 1,
+      "variant": "base",
+      "hold_counts": [
+        0,
+        4,
+        1
+      ],
+      "generated_holds": 3,
+      "target_holds": 1,
+      "generated_hold_frames": 10,
+      "target_hold_frames": 81,
+      "balloons": 0,
+      "balloon_hits": [],
+      "bpm_counts": [
+        0,
+        2,
+        11
+      ],
+      "bpm_events": 2,
+      "bpm_value_mae": 22.423173904418945,
+      "hs_counts": [
+        0,
+        1,
+        0
+      ],
+      "hs_events": 1,
+      "hs_value_mae": null
+    },
+    {
+      "row": 1090,
+      "seed": 1,
+      "variant": "bpm_off",
+      "hold_counts": [
+        0,
+        4,
+        1
+      ],
+      "generated_holds": 3,
+      "target_holds": 1,
+      "generated_hold_frames": 11,
+      "target_hold_frames": 81,
+      "balloons": 0,
+      "balloon_hits": [],
+      "bpm_counts": [
+        0,
+        1,
+        11
+      ],
+      "bpm_events": 1,
+      "bpm_value_mae": 25.55200958251953,
+      "hs_counts": [
+        0,
+        0,
+        0
+      ],
+      "hs_events": 0,
+      "hs_value_mae": null
+    },
+    {
+      "row": 1090,
+      "seed": 1,
+      "variant": "bpm_high",
+      "hold_counts": [
+        0,
+        4,
+        1
+      ],
+      "generated_holds": 3,
+      "target_holds": 1,
+      "generated_hold_frames": 10,
+      "target_hold_frames": 81,
+      "balloons": 0,
+      "balloon_hits": [],
+      "bpm_counts": [
+        0,
+        2,
+        11
+      ],
+      "bpm_events": 2,
+      "bpm_value_mae": 22.423173904418945,
+      "hs_counts": [
+        0,
+        1,
+        0
+      ],
+      "hs_events": 1,
+      "hs_value_mae": null
+    },
+    {
+      "row": 1090,
+      "seed": 1,
+      "variant": "hs_off",
+      "hold_counts": [
+        0,
+        4,
+        1
+      ],
+      "generated_holds": 3,
+      "target_holds": 1,
+      "generated_hold_frames": 11,
+      "target_hold_frames": 81,
+      "balloons": 0,
+      "balloon_hits": [],
+      "bpm_counts": [
+        0,
+        1,
+        11
+      ],
+      "bpm_events": 1,
+      "bpm_value_mae": 21.270076751708984,
+      "hs_counts": [
+        0,
+        0,
+        0
+      ],
+      "hs_events": 0,
+      "hs_value_mae": null
+    },
+    {
+      "row": 1090,
+      "seed": 1,
+      "variant": "hs_on",
+      "hold_counts": [
+        0,
+        4,
+        1
+      ],
+      "generated_holds": 3,
+      "target_holds": 1,
+      "generated_hold_frames": 10,
+      "target_hold_frames": 81,
+      "balloons": 0,
+      "balloon_hits": [],
+      "bpm_counts": [
+        0,
+        2,
+        11
+      ],
+      "bpm_events": 2,
+      "bpm_value_mae": 22.423173904418945,
+      "hs_counts": [
+        0,
+        1,
+        0
+      ],
+      "hs_events": 1,
+      "hs_value_mae": null
+    },
+    {
+      "row": 591,
+      "seed": 0,
+      "variant": "base",
+      "hold_counts": [
+        0,
+        0,
+        6
+      ],
+      "generated_holds": 0,
+      "target_holds": 6,
+      "generated_hold_frames": 0,
+      "target_hold_frames": 147,
+      "balloons": 0,
+      "balloon_hits": [],
+      "bpm_counts": [
+        0,
+        0,
+        0
+      ],
+      "bpm_events": 0,
+      "bpm_value_mae": null,
+      "hs_counts": [
+        0,
+        0,
+        0
+      ],
+      "hs_events": 0,
+      "hs_value_mae": null
+    },
+    {
+      "row": 591,
+      "seed": 0,
+      "variant": "bpm_off",
+      "hold_counts": [
+        0,
+        0,
+        6
+      ],
+      "generated_holds": 0,
+      "target_holds": 6,
+      "generated_hold_frames": 0,
+      "target_hold_frames": 147,
+      "balloons": 0,
+      "balloon_hits": [],
+      "bpm_counts": [
+        0,
+        0,
+        0
+      ],
+      "bpm_events": 0,
+      "bpm_value_mae": null,
+      "hs_counts": [
+        0,
+        0,
+        0
+      ],
+      "hs_events": 0,
+      "hs_value_mae": null
+    },
+    {
+      "row": 591,
+      "seed": 0,
+      "variant": "bpm_high",
+      "hold_counts": [
+        0,
+        0,
+        6
+      ],
+      "generated_holds": 0,
+      "target_holds": 6,
+      "generated_hold_frames": 0,
+      "target_hold_frames": 147,
+      "balloons": 0,
+      "balloon_hits": [],
+      "bpm_counts": [
+        0,
+        0,
+        0
+      ],
+      "bpm_events": 0,
+      "bpm_value_mae": null,
+      "hs_counts": [
+        0,
+        0,
+        0
+      ],
+      "hs_events": 0,
+      "hs_value_mae": null
+    },
+    {
+      "row": 591,
+      "seed": 0,
+      "variant": "hs_off",
+      "hold_counts": [
+        0,
+        0,
+        6
+      ],
+      "generated_holds": 0,
+      "target_holds": 6,
+      "generated_hold_frames": 0,
+      "target_hold_frames": 147,
+      "balloons": 0,
+      "balloon_hits": [],
+      "bpm_counts": [
+        0,
+        0,
+        0
+      ],
+      "bpm_events": 0,
+      "bpm_value_mae": null,
+      "hs_counts": [
+        0,
+        0,
+        0
+      ],
+      "hs_events": 0,
+      "hs_value_mae": null
+    },
+    {
+      "row": 591,
+      "seed": 0,
+      "variant": "hs_on",
+      "hold_counts": [
+        0,
+        0,
+        6
+      ],
+      "generated_holds": 0,
+      "target_holds": 6,
+      "generated_hold_frames": 0,
+      "target_hold_frames": 147,
+      "balloons": 0,
+      "balloon_hits": [],
+      "bpm_counts": [
+        0,
+        0,
+        0
+      ],
+      "bpm_events": 0,
+      "bpm_value_mae": null,
+      "hs_counts": [
+        0,
+        0,
+        0
+      ],
+      "hs_events": 0,
+      "hs_value_mae": null
+    },
+    {
+      "row": 591,
+      "seed": 1,
+      "variant": "base",
+      "hold_counts": [
+        0,
+        1,
+        6
+      ],
+      "generated_holds": 1,
+      "target_holds": 6,
+      "generated_hold_frames": 10,
+      "target_hold_frames": 147,
+      "balloons": 0,
+      "balloon_hits": [],
+      "bpm_counts": [
+        0,
+        2,
+        0
+      ],
+      "bpm_events": 2,
+      "bpm_value_mae": null,
+      "hs_counts": [
+        0,
+        2,
+        0
+      ],
+      "hs_events": 2,
+      "hs_value_mae": null
+    },
+    {
+      "row": 591,
+      "seed": 1,
+      "variant": "bpm_off",
+      "hold_counts": [
+        0,
+        1,
+        6
+      ],
+      "generated_holds": 1,
+      "target_holds": 6,
+      "generated_hold_frames": 10,
+      "target_hold_frames": 147,
+      "balloons": 0,
+      "balloon_hits": [],
+      "bpm_counts": [
+        0,
+        2,
+        0
+      ],
+      "bpm_events": 2,
+      "bpm_value_mae": null,
+      "hs_counts": [
+        0,
+        2,
+        0
+      ],
+      "hs_events": 2,
+      "hs_value_mae": null
+    },
+    {
+      "row": 591,
+      "seed": 1,
+      "variant": "bpm_high",
+      "hold_counts": [
+        0,
+        1,
+        6
+      ],
+      "generated_holds": 1,
+      "target_holds": 6,
+      "generated_hold_frames": 10,
+      "target_hold_frames": 147,
+      "balloons": 0,
+      "balloon_hits": [],
+      "bpm_counts": [
+        0,
+        1,
+        0
+      ],
+      "bpm_events": 1,
+      "bpm_value_mae": null,
+      "hs_counts": [
+        0,
+        2,
+        0
+      ],
+      "hs_events": 2,
+      "hs_value_mae": null
+    },
+    {
+      "row": 591,
+      "seed": 1,
+      "variant": "hs_off",
+      "hold_counts": [
+        0,
+        1,
+        6
+      ],
+      "generated_holds": 1,
+      "target_holds": 6,
+      "generated_hold_frames": 10,
+      "target_hold_frames": 147,
+      "balloons": 0,
+      "balloon_hits": [],
+      "bpm_counts": [
+        0,
+        0,
+        0
+      ],
+      "bpm_events": 0,
+      "bpm_value_mae": null,
+      "hs_counts": [
+        0,
+        0,
+        0
+      ],
+      "hs_events": 0,
+      "hs_value_mae": null
+    },
+    {
+      "row": 591,
+      "seed": 1,
+      "variant": "hs_on",
+      "hold_counts": [
+        0,
+        1,
+        6
+      ],
+      "generated_holds": 1,
+      "target_holds": 6,
+      "generated_hold_frames": 10,
+      "target_hold_frames": 147,
+      "balloons": 0,
+      "balloon_hits": [],
+      "bpm_counts": [
+        0,
+        2,
+        0
+      ],
+      "bpm_events": 2,
+      "bpm_value_mae": null,
+      "hs_counts": [
+        0,
+        2,
+        0
+      ],
+      "hs_events": 2,
+      "hs_value_mae": null
+    },
+    {
+      "row": 510,
+      "seed": 0,
+      "variant": "base",
+      "hold_counts": [
+        0,
+        1,
+        2
+      ],
+      "generated_holds": 0,
+      "target_holds": 2,
+      "generated_hold_frames": 0,
+      "target_hold_frames": 34,
+      "balloons": 0,
+      "balloon_hits": [],
+      "bpm_counts": [
+        0,
+        1,
+        0
+      ],
+      "bpm_events": 1,
+      "bpm_value_mae": null,
+      "hs_counts": [
+        0,
+        2,
+        43
+      ],
+      "hs_events": 2,
+      "hs_value_mae": 1.0397735834121704
+    },
+    {
+      "row": 510,
+      "seed": 0,
+      "variant": "bpm_off",
+      "hold_counts": [
+        0,
+        1,
+        2
+      ],
+      "generated_holds": 0,
+      "target_holds": 2,
+      "generated_hold_frames": 0,
+      "target_hold_frames": 34,
+      "balloons": 0,
+      "balloon_hits": [],
+      "bpm_counts": [
+        0,
+        1,
+        0
+      ],
+      "bpm_events": 1,
+      "bpm_value_mae": null,
+      "hs_counts": [
+        0,
+        2,
+        43
+      ],
+      "hs_events": 2,
+      "hs_value_mae": 1.0397735834121704
+    },
+    {
+      "row": 510,
+      "seed": 0,
+      "variant": "bpm_high",
+      "hold_counts": [
+        0,
+        1,
+        2
+      ],
+      "generated_holds": 0,
+      "target_holds": 2,
+      "generated_hold_frames": 0,
+      "target_hold_frames": 34,
+      "balloons": 0,
+      "balloon_hits": [],
+      "bpm_counts": [
+        0,
+        3,
+        0
+      ],
+      "bpm_events": 3,
+      "bpm_value_mae": null,
+      "hs_counts": [
+        1,
+        3,
+        42
+      ],
+      "hs_events": 4,
+      "hs_value_mae": 0.9240857362747192
+    },
+    {
+      "row": 510,
+      "seed": 0,
+      "variant": "hs_off",
+      "hold_counts": [
+        0,
+        0,
+        2
+      ],
+      "generated_holds": 0,
+      "target_holds": 2,
+      "generated_hold_frames": 0,
+      "target_hold_frames": 34,
+      "balloons": 0,
+      "balloon_hits": [],
+      "bpm_counts": [
+        0,
+        1,
+        0
+      ],
+      "bpm_events": 1,
+      "bpm_value_mae": null,
+      "hs_counts": [
+        0,
+        2,
+        43
+      ],
+      "hs_events": 2,
+      "hs_value_mae": 1.1259971857070923
+    },
+    {
+      "row": 510,
+      "seed": 0,
+      "variant": "hs_on",
+      "hold_counts": [
+        0,
+        1,
+        2
+      ],
+      "generated_holds": 0,
+      "target_holds": 2,
+      "generated_hold_frames": 0,
+      "target_hold_frames": 34,
+      "balloons": 0,
+      "balloon_hits": [],
+      "bpm_counts": [
+        0,
+        1,
+        0
+      ],
+      "bpm_events": 1,
+      "bpm_value_mae": null,
+      "hs_counts": [
+        0,
+        2,
+        43
+      ],
+      "hs_events": 2,
+      "hs_value_mae": 1.0397735834121704
+    },
+    {
+      "row": 510,
+      "seed": 1,
+      "variant": "base",
+      "hold_counts": [
+        0,
+        2,
+        2
+      ],
+      "generated_holds": 1,
+      "target_holds": 2,
+      "generated_hold_frames": 18,
+      "target_hold_frames": 34,
+      "balloons": 1,
+      "balloon_hits": [
+        12
+      ],
+      "bpm_counts": [
+        0,
+        2,
+        0
+      ],
+      "bpm_events": 2,
+      "bpm_value_mae": null,
+      "hs_counts": [
+        1,
+        1,
+        42
+      ],
+      "hs_events": 2,
+      "hs_value_mae": 1.1348557472229004
+    },
+    {
+      "row": 510,
+      "seed": 1,
+      "variant": "bpm_off",
+      "hold_counts": [
+        0,
+        2,
+        2
+      ],
+      "generated_holds": 1,
+      "target_holds": 2,
+      "generated_hold_frames": 18,
+      "target_hold_frames": 34,
+      "balloons": 1,
+      "balloon_hits": [
+        12
+      ],
+      "bpm_counts": [
+        0,
+        2,
+        0
+      ],
+      "bpm_events": 2,
+      "bpm_value_mae": null,
+      "hs_counts": [
+        1,
+        1,
+        42
+      ],
+      "hs_events": 2,
+      "hs_value_mae": 1.1348557472229004
+    },
+    {
+      "row": 510,
+      "seed": 1,
+      "variant": "bpm_high",
+      "hold_counts": [
+        0,
+        2,
+        2
+      ],
+      "generated_holds": 2,
+      "target_holds": 2,
+      "generated_hold_frames": 21,
+      "target_hold_frames": 34,
+      "balloons": 1,
+      "balloon_hits": [
+        12
+      ],
+      "bpm_counts": [
+        0,
+        2,
+        0
+      ],
+      "bpm_events": 2,
+      "bpm_value_mae": null,
+      "hs_counts": [
+        1,
+        1,
+        42
+      ],
+      "hs_events": 2,
+      "hs_value_mae": 1.136312484741211
+    },
+    {
+      "row": 510,
+      "seed": 1,
+      "variant": "hs_off",
+      "hold_counts": [
+        0,
+        2,
+        2
+      ],
+      "generated_holds": 1,
+      "target_holds": 2,
+      "generated_hold_frames": 20,
+      "target_hold_frames": 34,
+      "balloons": 1,
+      "balloon_hits": [
+        13
+      ],
+      "bpm_counts": [
+        0,
+        1,
+        0
+      ],
+      "bpm_events": 1,
+      "bpm_value_mae": null,
+      "hs_counts": [
+        0,
+        1,
+        43
+      ],
+      "hs_events": 1,
+      "hs_value_mae": 1.1147698163986206
+    },
+    {
+      "row": 510,
+      "seed": 1,
+      "variant": "hs_on",
+      "hold_counts": [
+        0,
+        2,
+        2
+      ],
+      "generated_holds": 1,
+      "target_holds": 2,
+      "generated_hold_frames": 18,
+      "target_hold_frames": 34,
+      "balloons": 1,
+      "balloon_hits": [
+        12
+      ],
+      "bpm_counts": [
+        0,
+        2,
+        0
+      ],
+      "bpm_events": 2,
+      "bpm_value_mae": null,
+      "hs_counts": [
+        1,
+        1,
+        42
+      ],
+      "hs_events": 2,
+      "hs_value_mae": 1.1348557472229004
+    },
+    {
+      "row": 505,
+      "seed": 0,
+      "variant": "base",
+      "hold_counts": [
+        0,
+        0,
+        5
+      ],
+      "generated_holds": 0,
+      "target_holds": 5,
+      "generated_hold_frames": 0,
+      "target_hold_frames": 100,
+      "balloons": 0,
+      "balloon_hits": [],
+      "bpm_counts": [
+        1,
+        0,
+        16
+      ],
+      "bpm_events": 1,
+      "bpm_value_mae": 12.15690803527832,
+      "hs_counts": [
+        0,
+        1,
+        0
+      ],
+      "hs_events": 1,
+      "hs_value_mae": null
+    },
+    {
+      "row": 505,
+      "seed": 0,
+      "variant": "bpm_off",
+      "hold_counts": [
+        0,
+        0,
+        5
+      ],
+      "generated_holds": 0,
+      "target_holds": 5,
+      "generated_hold_frames": 0,
+      "target_hold_frames": 100,
+      "balloons": 0,
+      "balloon_hits": [],
+      "bpm_counts": [
+        1,
+        0,
+        16
+      ],
+      "bpm_events": 1,
+      "bpm_value_mae": 4.215724468231201,
+      "hs_counts": [
+        0,
+        1,
+        0
+      ],
+      "hs_events": 1,
+      "hs_value_mae": null
+    },
+    {
+      "row": 505,
+      "seed": 0,
+      "variant": "bpm_high",
+      "hold_counts": [
+        0,
+        0,
+        5
+      ],
+      "generated_holds": 0,
+      "target_holds": 5,
+      "generated_hold_frames": 0,
+      "target_hold_frames": 100,
+      "balloons": 0,
+      "balloon_hits": [],
+      "bpm_counts": [
+        1,
+        0,
+        16
+      ],
+      "bpm_events": 1,
+      "bpm_value_mae": 12.15690803527832,
+      "hs_counts": [
+        0,
+        1,
+        0
+      ],
+      "hs_events": 1,
+      "hs_value_mae": null
+    },
+    {
+      "row": 505,
+      "seed": 0,
+      "variant": "hs_off",
+      "hold_counts": [
+        0,
+        0,
+        5
+      ],
+      "generated_holds": 0,
+      "target_holds": 5,
+      "generated_hold_frames": 0,
+      "target_hold_frames": 100,
+      "balloons": 0,
+      "balloon_hits": [],
+      "bpm_counts": [
+        1,
+        0,
+        16
+      ],
+      "bpm_events": 1,
+      "bpm_value_mae": 11.721890449523926,
+      "hs_counts": [
+        0,
+        1,
+        0
+      ],
+      "hs_events": 1,
+      "hs_value_mae": null
+    },
+    {
+      "row": 505,
+      "seed": 0,
+      "variant": "hs_on",
+      "hold_counts": [
+        0,
+        0,
+        5
+      ],
+      "generated_holds": 0,
+      "target_holds": 5,
+      "generated_hold_frames": 0,
+      "target_hold_frames": 100,
+      "balloons": 0,
+      "balloon_hits": [],
+      "bpm_counts": [
+        1,
+        0,
+        16
+      ],
+      "bpm_events": 1,
+      "bpm_value_mae": 12.15690803527832,
+      "hs_counts": [
+        0,
+        1,
+        0
+      ],
+      "hs_events": 1,
+      "hs_value_mae": null
+    },
+    {
+      "row": 505,
+      "seed": 1,
+      "variant": "base",
+      "hold_counts": [
+        0,
+        1,
+        5
+      ],
+      "generated_holds": 1,
+      "target_holds": 5,
+      "generated_hold_frames": 1,
+      "target_hold_frames": 100,
+      "balloons": 0,
+      "balloon_hits": [],
+      "bpm_counts": [
+        1,
+        0,
+        16
+      ],
+      "bpm_events": 1,
+      "bpm_value_mae": 11.607014656066895,
+      "hs_counts": [
+        0,
+        1,
+        0
+      ],
+      "hs_events": 1,
+      "hs_value_mae": null
+    },
+    {
+      "row": 505,
+      "seed": 1,
+      "variant": "bpm_off",
+      "hold_counts": [
+        0,
+        0,
+        5
+      ],
+      "generated_holds": 0,
+      "target_holds": 5,
+      "generated_hold_frames": 0,
+      "target_hold_frames": 100,
+      "balloons": 0,
+      "balloon_hits": [],
+      "bpm_counts": [
+        0,
+        0,
+        17
+      ],
+      "bpm_events": 0,
+      "bpm_value_mae": 13.30698013305664,
+      "hs_counts": [
+        0,
+        0,
+        0
+      ],
+      "hs_events": 0,
+      "hs_value_mae": null
+    },
+    {
+      "row": 505,
+      "seed": 1,
+      "variant": "bpm_high",
+      "hold_counts": [
+        0,
+        1,
+        5
+      ],
+      "generated_holds": 1,
+      "target_holds": 5,
+      "generated_hold_frames": 1,
+      "target_hold_frames": 100,
+      "balloons": 0,
+      "balloon_hits": [],
+      "bpm_counts": [
+        1,
+        0,
+        16
+      ],
+      "bpm_events": 1,
+      "bpm_value_mae": 11.607014656066895,
+      "hs_counts": [
+        0,
+        1,
+        0
+      ],
+      "hs_events": 1,
+      "hs_value_mae": null
+    },
+    {
+      "row": 505,
+      "seed": 1,
+      "variant": "hs_off",
+      "hold_counts": [
+        0,
+        1,
+        5
+      ],
+      "generated_holds": 1,
+      "target_holds": 5,
+      "generated_hold_frames": 1,
+      "target_hold_frames": 100,
+      "balloons": 0,
+      "balloon_hits": [],
+      "bpm_counts": [
+        0,
+        0,
+        17
+      ],
+      "bpm_events": 0,
+      "bpm_value_mae": 12.529158592224121,
+      "hs_counts": [
+        0,
+        0,
+        0
+      ],
+      "hs_events": 0,
+      "hs_value_mae": null
+    },
+    {
+      "row": 505,
+      "seed": 1,
+      "variant": "hs_on",
+      "hold_counts": [
+        0,
+        1,
+        5
+      ],
+      "generated_holds": 1,
+      "target_holds": 5,
+      "generated_hold_frames": 1,
+      "target_hold_frames": 100,
+      "balloons": 0,
+      "balloon_hits": [],
+      "bpm_counts": [
+        1,
+        0,
+        16
+      ],
+      "bpm_events": 1,
+      "bpm_value_mae": 11.607014656066895,
+      "hs_counts": [
+        0,
+        1,
+        0
+      ],
+      "hs_events": 1,
+      "hs_value_mae": null
+    },
+    {
+      "row": 1084,
+      "seed": 0,
+      "variant": "base",
+      "hold_counts": [
+        0,
+        2,
+        14
+      ],
+      "generated_holds": 1,
+      "target_holds": 2,
+      "generated_hold_frames": 10,
+      "target_hold_frames": 81,
+      "balloons": 0,
+      "balloon_hits": [],
+      "bpm_counts": [
+        0,
+        3,
+        10
+      ],
+      "bpm_events": 3,
+      "bpm_value_mae": 52.090492248535156,
+      "hs_counts": [
+        0,
+        4,
+        1
+      ],
+      "hs_events": 4,
+      "hs_value_mae": 0.008683204650878906
+    },
+    {
+      "row": 1084,
+      "seed": 0,
+      "variant": "bpm_off",
+      "hold_counts": [
+        0,
+        1,
+        14
+      ],
+      "generated_holds": 1,
+      "target_holds": 2,
+      "generated_hold_frames": 11,
+      "target_hold_frames": 81,
+      "balloons": 0,
+      "balloon_hits": [],
+      "bpm_counts": [
+        0,
+        0,
+        10
+      ],
+      "bpm_events": 0,
+      "bpm_value_mae": 52.42905807495117,
+      "hs_counts": [
+        0,
+        0,
+        1
+      ],
+      "hs_events": 0,
+      "hs_value_mae": 0.008522748947143555
+    },
+    {
+      "row": 1084,
+      "seed": 0,
+      "variant": "bpm_high",
+      "hold_counts": [
+        0,
+        2,
+        14
+      ],
+      "generated_holds": 1,
+      "target_holds": 2,
+      "generated_hold_frames": 10,
+      "target_hold_frames": 81,
+      "balloons": 0,
+      "balloon_hits": [],
+      "bpm_counts": [
+        0,
+        3,
+        10
+      ],
+      "bpm_events": 3,
+      "bpm_value_mae": 52.090492248535156,
+      "hs_counts": [
+        0,
+        4,
+        1
+      ],
+      "hs_events": 4,
+      "hs_value_mae": 0.008683204650878906
+    },
+    {
+      "row": 1084,
+      "seed": 0,
+      "variant": "hs_off",
+      "hold_counts": [
+        0,
+        3,
+        14
+      ],
+      "generated_holds": 1,
+      "target_holds": 2,
+      "generated_hold_frames": 9,
+      "target_hold_frames": 81,
+      "balloons": 0,
+      "balloon_hits": [],
+      "bpm_counts": [
+        0,
+        1,
+        10
+      ],
+      "bpm_events": 1,
+      "bpm_value_mae": 51.088294982910156,
+      "hs_counts": [
+        0,
+        0,
+        1
+      ],
+      "hs_events": 0,
+      "hs_value_mae": 0.027775287628173828
+    },
+    {
+      "row": 1084,
+      "seed": 0,
+      "variant": "hs_on",
+      "hold_counts": [
+        0,
+        2,
+        14
+      ],
+      "generated_holds": 1,
+      "target_holds": 2,
+      "generated_hold_frames": 10,
+      "target_hold_frames": 81,
+      "balloons": 0,
+      "balloon_hits": [],
+      "bpm_counts": [
+        0,
+        3,
+        10
+      ],
+      "bpm_events": 3,
+      "bpm_value_mae": 52.090492248535156,
+      "hs_counts": [
+        0,
+        4,
+        1
+      ],
+      "hs_events": 4,
+      "hs_value_mae": 0.008683204650878906
+    },
+    {
+      "row": 1084,
+      "seed": 1,
+      "variant": "base",
+      "hold_counts": [
+        0,
+        0,
+        14
+      ],
+      "generated_holds": 0,
+      "target_holds": 2,
+      "generated_hold_frames": 0,
+      "target_hold_frames": 81,
+      "balloons": 0,
+      "balloon_hits": [],
+      "bpm_counts": [
+        0,
+        4,
+        10
+      ],
+      "bpm_events": 4,
+      "bpm_value_mae": 49.197105407714844,
+      "hs_counts": [
+        0,
+        4,
+        1
+      ],
+      "hs_events": 4,
+      "hs_value_mae": 0.10037517547607422
+    },
+    {
+      "row": 1084,
+      "seed": 1,
+      "variant": "bpm_off",
+      "hold_counts": [
+        0,
+        0,
+        14
+      ],
+      "generated_holds": 0,
+      "target_holds": 2,
+      "generated_hold_frames": 0,
+      "target_hold_frames": 81,
+      "balloons": 0,
+      "balloon_hits": [],
+      "bpm_counts": [
+        0,
+        2,
+        10
+      ],
+      "bpm_events": 2,
+      "bpm_value_mae": 49.119239807128906,
+      "hs_counts": [
+        0,
+        3,
+        1
+      ],
+      "hs_events": 3,
+      "hs_value_mae": 0.034281909465789795
+    },
+    {
+      "row": 1084,
+      "seed": 1,
+      "variant": "bpm_high",
+      "hold_counts": [
+        0,
+        0,
+        14
+      ],
+      "generated_holds": 0,
+      "target_holds": 2,
+      "generated_hold_frames": 0,
+      "target_hold_frames": 81,
+      "balloons": 0,
+      "balloon_hits": [],
+      "bpm_counts": [
+        0,
+        4,
+        10
+      ],
+      "bpm_events": 4,
+      "bpm_value_mae": 49.197105407714844,
+      "hs_counts": [
+        0,
+        4,
+        1
+      ],
+      "hs_events": 4,
+      "hs_value_mae": 0.10037517547607422
+    },
+    {
+      "row": 1084,
+      "seed": 1,
+      "variant": "hs_off",
+      "hold_counts": [
+        0,
+        0,
+        14
+      ],
+      "generated_holds": 0,
+      "target_holds": 2,
+      "generated_hold_frames": 0,
+      "target_hold_frames": 81,
+      "balloons": 0,
+      "balloon_hits": [],
+      "bpm_counts": [
+        0,
+        2,
+        10
+      ],
+      "bpm_events": 2,
+      "bpm_value_mae": 49.23594665527344,
+      "hs_counts": [
+        0,
+        3,
+        1
+      ],
+      "hs_events": 3,
+      "hs_value_mae": 0.07145410776138306
+    },
+    {
+      "row": 1084,
+      "seed": 1,
+      "variant": "hs_on",
+      "hold_counts": [
+        0,
+        0,
+        14
+      ],
+      "generated_holds": 0,
+      "target_holds": 2,
+      "generated_hold_frames": 0,
+      "target_hold_frames": 81,
+      "balloons": 0,
+      "balloon_hits": [],
+      "bpm_counts": [
+        0,
+        4,
+        10
+      ],
+      "bpm_events": 4,
+      "bpm_value_mae": 49.197105407714844,
+      "hs_counts": [
+        0,
+        4,
+        1
+      ],
+      "hs_events": 4,
+      "hs_value_mae": 0.10037517547607422
+    },
+    {
+      "row": 503,
+      "seed": 0,
+      "variant": "base",
+      "hold_counts": [
+        0,
+        0,
+        7
+      ],
+      "generated_holds": 0,
+      "target_holds": 7,
+      "generated_hold_frames": 0,
+      "target_hold_frames": 120,
+      "balloons": 0,
+      "balloon_hits": [],
+      "bpm_counts": [
+        2,
+        2,
+        5
+      ],
+      "bpm_events": 4,
+      "bpm_value_mae": 11.090306282043457,
+      "hs_counts": [
+        0,
+        4,
+        0
+      ],
+      "hs_events": 4,
+      "hs_value_mae": null
+    },
+    {
+      "row": 503,
+      "seed": 0,
+      "variant": "bpm_off",
+      "hold_counts": [
+        0,
+        0,
+        7
+      ],
+      "generated_holds": 0,
+      "target_holds": 7,
+      "generated_hold_frames": 0,
+      "target_hold_frames": 120,
+      "balloons": 0,
+      "balloon_hits": [],
+      "bpm_counts": [
+        0,
+        0,
+        7
+      ],
+      "bpm_events": 0,
+      "bpm_value_mae": 8.492134094238281,
+      "hs_counts": [
+        0,
+        0,
+        0
+      ],
+      "hs_events": 0,
+      "hs_value_mae": null
+    },
+    {
+      "row": 503,
+      "seed": 0,
+      "variant": "bpm_high",
+      "hold_counts": [
+        0,
+        0,
+        7
+      ],
+      "generated_holds": 0,
+      "target_holds": 7,
+      "generated_hold_frames": 0,
+      "target_hold_frames": 120,
+      "balloons": 0,
+      "balloon_hits": [],
+      "bpm_counts": [
+        2,
+        2,
+        5
+      ],
+      "bpm_events": 4,
+      "bpm_value_mae": 11.090306282043457,
+      "hs_counts": [
+        0,
+        4,
+        0
+      ],
+      "hs_events": 4,
+      "hs_value_mae": null
+    },
+    {
+      "row": 503,
+      "seed": 0,
+      "variant": "hs_off",
+      "hold_counts": [
+        0,
+        0,
+        7
+      ],
+      "generated_holds": 0,
+      "target_holds": 7,
+      "generated_hold_frames": 0,
+      "target_hold_frames": 120,
+      "balloons": 0,
+      "balloon_hits": [],
+      "bpm_counts": [
+        1,
+        1,
+        6
+      ],
+      "bpm_events": 2,
+      "bpm_value_mae": 10.394096374511719,
+      "hs_counts": [
+        0,
+        1,
+        0
+      ],
+      "hs_events": 1,
+      "hs_value_mae": null
+    },
+    {
+      "row": 503,
+      "seed": 0,
+      "variant": "hs_on",
+      "hold_counts": [
+        0,
+        0,
+        7
+      ],
+      "generated_holds": 0,
+      "target_holds": 7,
+      "generated_hold_frames": 0,
+      "target_hold_frames": 120,
+      "balloons": 0,
+      "balloon_hits": [],
+      "bpm_counts": [
+        2,
+        2,
+        5
+      ],
+      "bpm_events": 4,
+      "bpm_value_mae": 11.090306282043457,
+      "hs_counts": [
+        0,
+        4,
+        0
+      ],
+      "hs_events": 4,
+      "hs_value_mae": null
+    },
+    {
+      "row": 503,
+      "seed": 1,
+      "variant": "base",
+      "hold_counts": [
+        0,
+        0,
+        7
+      ],
+      "generated_holds": 0,
+      "target_holds": 7,
+      "generated_hold_frames": 0,
+      "target_hold_frames": 120,
+      "balloons": 0,
+      "balloon_hits": [],
+      "bpm_counts": [
+        1,
+        1,
+        6
+      ],
+      "bpm_events": 2,
+      "bpm_value_mae": 9.327077865600586,
+      "hs_counts": [
+        0,
+        2,
+        0
+      ],
+      "hs_events": 2,
+      "hs_value_mae": null
+    },
+    {
+      "row": 503,
+      "seed": 1,
+      "variant": "bpm_off",
+      "hold_counts": [
+        0,
+        0,
+        7
+      ],
+      "generated_holds": 0,
+      "target_holds": 7,
+      "generated_hold_frames": 0,
+      "target_hold_frames": 120,
+      "balloons": 0,
+      "balloon_hits": [],
+      "bpm_counts": [
+        0,
+        0,
+        7
+      ],
+      "bpm_events": 0,
+      "bpm_value_mae": 10.265324592590332,
+      "hs_counts": [
+        0,
+        0,
+        0
+      ],
+      "hs_events": 0,
+      "hs_value_mae": null
+    },
+    {
+      "row": 503,
+      "seed": 1,
+      "variant": "bpm_high",
+      "hold_counts": [
+        0,
+        0,
+        7
+      ],
+      "generated_holds": 0,
+      "target_holds": 7,
+      "generated_hold_frames": 0,
+      "target_hold_frames": 120,
+      "balloons": 0,
+      "balloon_hits": [],
+      "bpm_counts": [
+        1,
+        1,
+        6
+      ],
+      "bpm_events": 2,
+      "bpm_value_mae": 9.327077865600586,
+      "hs_counts": [
+        0,
+        2,
+        0
+      ],
+      "hs_events": 2,
+      "hs_value_mae": null
+    },
+    {
+      "row": 503,
+      "seed": 1,
+      "variant": "hs_off",
+      "hold_counts": [
+        0,
+        0,
+        7
+      ],
+      "generated_holds": 0,
+      "target_holds": 7,
+      "generated_hold_frames": 0,
+      "target_hold_frames": 120,
+      "balloons": 0,
+      "balloon_hits": [],
+      "bpm_counts": [
+        0,
+        0,
+        7
+      ],
+      "bpm_events": 0,
+      "bpm_value_mae": 9.692883491516113,
+      "hs_counts": [
+        0,
+        0,
+        0
+      ],
+      "hs_events": 0,
+      "hs_value_mae": null
+    },
+    {
+      "row": 503,
+      "seed": 1,
+      "variant": "hs_on",
+      "hold_counts": [
+        0,
+        0,
+        7
+      ],
+      "generated_holds": 0,
+      "target_holds": 7,
+      "generated_hold_frames": 0,
+      "target_hold_frames": 120,
+      "balloons": 0,
+      "balloon_hits": [],
+      "bpm_counts": [
+        1,
+        1,
+        6
+      ],
+      "bpm_events": 2,
+      "bpm_value_mae": 9.327077865600586,
+      "hs_counts": [
+        0,
+        2,
+        0
+      ],
+      "hs_events": 2,
+      "hs_value_mae": null
+    },
+    {
+      "row": 290,
+      "seed": 0,
+      "variant": "base",
+      "hold_counts": [
+        0,
+        0,
+        10
+      ],
+      "generated_holds": 0,
+      "target_holds": 10,
+      "generated_hold_frames": 0,
+      "target_hold_frames": 128,
+      "balloons": 0,
+      "balloon_hits": [],
+      "bpm_counts": [
+        0,
+        1,
+        0
+      ],
+      "bpm_events": 1,
+      "bpm_value_mae": null,
+      "hs_counts": [
+        0,
+        1,
+        0
+      ],
+      "hs_events": 1,
+      "hs_value_mae": null
+    },
+    {
+      "row": 290,
+      "seed": 0,
+      "variant": "bpm_off",
+      "hold_counts": [
+        0,
+        0,
+        10
+      ],
+      "generated_holds": 0,
+      "target_holds": 10,
+      "generated_hold_frames": 0,
+      "target_hold_frames": 128,
+      "balloons": 0,
+      "balloon_hits": [],
+      "bpm_counts": [
+        0,
+        1,
+        0
+      ],
+      "bpm_events": 1,
+      "bpm_value_mae": null,
+      "hs_counts": [
+        0,
+        1,
+        0
+      ],
+      "hs_events": 1,
+      "hs_value_mae": null
+    },
+    {
+      "row": 290,
+      "seed": 0,
+      "variant": "bpm_high",
+      "hold_counts": [
+        0,
+        0,
+        10
+      ],
+      "generated_holds": 0,
+      "target_holds": 10,
+      "generated_hold_frames": 0,
+      "target_hold_frames": 128,
+      "balloons": 0,
+      "balloon_hits": [],
+      "bpm_counts": [
+        0,
+        1,
+        0
+      ],
+      "bpm_events": 1,
+      "bpm_value_mae": null,
+      "hs_counts": [
+        0,
+        1,
+        0
+      ],
+      "hs_events": 1,
+      "hs_value_mae": null
+    },
+    {
+      "row": 290,
+      "seed": 0,
+      "variant": "hs_off",
+      "hold_counts": [
+        0,
+        0,
+        10
+      ],
+      "generated_holds": 0,
+      "target_holds": 10,
+      "generated_hold_frames": 0,
+      "target_hold_frames": 128,
+      "balloons": 0,
+      "balloon_hits": [],
+      "bpm_counts": [
+        0,
+        1,
+        0
+      ],
+      "bpm_events": 1,
+      "bpm_value_mae": null,
+      "hs_counts": [
+        0,
+        1,
+        0
+      ],
+      "hs_events": 1,
+      "hs_value_mae": null
+    },
+    {
+      "row": 290,
+      "seed": 0,
+      "variant": "hs_on",
+      "hold_counts": [
+        0,
+        0,
+        10
+      ],
+      "generated_holds": 0,
+      "target_holds": 10,
+      "generated_hold_frames": 0,
+      "target_hold_frames": 128,
+      "balloons": 0,
+      "balloon_hits": [],
+      "bpm_counts": [
+        0,
+        1,
+        0
+      ],
+      "bpm_events": 1,
+      "bpm_value_mae": null,
+      "hs_counts": [
+        0,
+        1,
+        0
+      ],
+      "hs_events": 1,
+      "hs_value_mae": null
+    },
+    {
+      "row": 290,
+      "seed": 1,
+      "variant": "base",
+      "hold_counts": [
+        0,
+        0,
+        10
+      ],
+      "generated_holds": 0,
+      "target_holds": 10,
+      "generated_hold_frames": 0,
+      "target_hold_frames": 128,
+      "balloons": 0,
+      "balloon_hits": [],
+      "bpm_counts": [
+        0,
+        1,
+        0
+      ],
+      "bpm_events": 1,
+      "bpm_value_mae": null,
+      "hs_counts": [
+        0,
+        1,
+        0
+      ],
+      "hs_events": 1,
+      "hs_value_mae": null
+    },
+    {
+      "row": 290,
+      "seed": 1,
+      "variant": "bpm_off",
+      "hold_counts": [
+        0,
+        0,
+        10
+      ],
+      "generated_holds": 0,
+      "target_holds": 10,
+      "generated_hold_frames": 0,
+      "target_hold_frames": 128,
+      "balloons": 0,
+      "balloon_hits": [],
+      "bpm_counts": [
+        0,
+        0,
+        0
+      ],
+      "bpm_events": 0,
+      "bpm_value_mae": null,
+      "hs_counts": [
+        0,
+        1,
+        0
+      ],
+      "hs_events": 1,
+      "hs_value_mae": null
+    },
+    {
+      "row": 290,
+      "seed": 1,
+      "variant": "bpm_high",
+      "hold_counts": [
+        0,
+        0,
+        10
+      ],
+      "generated_holds": 0,
+      "target_holds": 10,
+      "generated_hold_frames": 0,
+      "target_hold_frames": 128,
+      "balloons": 0,
+      "balloon_hits": [],
+      "bpm_counts": [
+        0,
+        5,
+        0
+      ],
+      "bpm_events": 5,
+      "bpm_value_mae": null,
+      "hs_counts": [
+        0,
+        3,
+        0
+      ],
+      "hs_events": 3,
+      "hs_value_mae": null
+    },
+    {
+      "row": 290,
+      "seed": 1,
+      "variant": "hs_off",
+      "hold_counts": [
+        0,
+        0,
+        10
+      ],
+      "generated_holds": 0,
+      "target_holds": 10,
+      "generated_hold_frames": 0,
+      "target_hold_frames": 128,
+      "balloons": 0,
+      "balloon_hits": [],
+      "bpm_counts": [
+        0,
+        0,
+        0
+      ],
+      "bpm_events": 0,
+      "bpm_value_mae": null,
+      "hs_counts": [
+        0,
+        1,
+        0
+      ],
+      "hs_events": 1,
+      "hs_value_mae": null
+    },
+    {
+      "row": 290,
+      "seed": 1,
+      "variant": "hs_on",
+      "hold_counts": [
+        0,
+        0,
+        10
+      ],
+      "generated_holds": 0,
+      "target_holds": 10,
+      "generated_hold_frames": 0,
+      "target_hold_frames": 128,
+      "balloons": 0,
+      "balloon_hits": [],
+      "bpm_counts": [
+        0,
+        1,
+        0
+      ],
+      "bpm_events": 1,
+      "bpm_value_mae": null,
+      "hs_counts": [
+        0,
+        1,
+        0
+      ],
+      "hs_events": 1,
+      "hs_value_mae": null
+    },
+    {
+      "row": 1191,
+      "seed": 0,
+      "variant": "base",
+      "hold_counts": [
+        0,
+        0,
+        2
+      ],
+      "generated_holds": 0,
+      "target_holds": 2,
+      "generated_hold_frames": 0,
+      "target_hold_frames": 102,
+      "balloons": 0,
+      "balloon_hits": [],
+      "bpm_counts": [
+        0,
+        1,
+        11
+      ],
+      "bpm_events": 1,
+      "bpm_value_mae": 15.03819465637207,
+      "hs_counts": [
+        0,
+        1,
+        8
+      ],
+      "hs_events": 1,
+      "hs_value_mae": 0.08958267420530319
+    },
+    {
+      "row": 1191,
+      "seed": 0,
+      "variant": "bpm_off",
+      "hold_counts": [
+        0,
+        0,
+        2
+      ],
+      "generated_holds": 0,
+      "target_holds": 2,
+      "generated_hold_frames": 0,
+      "target_hold_frames": 102,
+      "balloons": 0,
+      "balloon_hits": [],
+      "bpm_counts": [
+        0,
+        1,
+        11
+      ],
+      "bpm_events": 1,
+      "bpm_value_mae": 17.233070373535156,
+      "hs_counts": [
+        0,
+        1,
+        8
+      ],
+      "hs_events": 1,
+      "hs_value_mae": 0.10872785747051239
+    },
+    {
+      "row": 1191,
+      "seed": 0,
+      "variant": "bpm_high",
+      "hold_counts": [
+        0,
+        0,
+        2
+      ],
+      "generated_holds": 0,
+      "target_holds": 2,
+      "generated_hold_frames": 0,
+      "target_hold_frames": 102,
+      "balloons": 0,
+      "balloon_hits": [],
+      "bpm_counts": [
+        1,
+        3,
+        10
+      ],
+      "bpm_events": 4,
+      "bpm_value_mae": 13.92778491973877,
+      "hs_counts": [
+        0,
+        3,
+        8
+      ],
+      "hs_events": 3,
+      "hs_value_mae": 0.07913005352020264
+    },
+    {
+      "row": 1191,
+      "seed": 0,
+      "variant": "hs_off",
+      "hold_counts": [
+        0,
+        0,
+        2
+      ],
+      "generated_holds": 0,
+      "target_holds": 2,
+      "generated_hold_frames": 0,
+      "target_hold_frames": 102,
+      "balloons": 0,
+      "balloon_hits": [],
+      "bpm_counts": [
+        0,
+        1,
+        11
+      ],
+      "bpm_events": 1,
+      "bpm_value_mae": 15.202481269836426,
+      "hs_counts": [
+        0,
+        1,
+        8
+      ],
+      "hs_events": 1,
+      "hs_value_mae": 0.07129929214715958
+    },
+    {
+      "row": 1191,
+      "seed": 0,
+      "variant": "hs_on",
+      "hold_counts": [
+        0,
+        0,
+        2
+      ],
+      "generated_holds": 0,
+      "target_holds": 2,
+      "generated_hold_frames": 0,
+      "target_hold_frames": 102,
+      "balloons": 0,
+      "balloon_hits": [],
+      "bpm_counts": [
+        0,
+        1,
+        11
+      ],
+      "bpm_events": 1,
+      "bpm_value_mae": 15.03819465637207,
+      "hs_counts": [
+        0,
+        1,
+        8
+      ],
+      "hs_events": 1,
+      "hs_value_mae": 0.08958267420530319
+    },
+    {
+      "row": 1191,
+      "seed": 1,
+      "variant": "base",
+      "hold_counts": [
+        0,
+        0,
+        2
+      ],
+      "generated_holds": 0,
+      "target_holds": 2,
+      "generated_hold_frames": 0,
+      "target_hold_frames": 102,
+      "balloons": 0,
+      "balloon_hits": [],
+      "bpm_counts": [
+        0,
+        0,
+        11
+      ],
+      "bpm_events": 0,
+      "bpm_value_mae": 12.782550811767578,
+      "hs_counts": [
+        0,
+        0,
+        8
+      ],
+      "hs_events": 0,
+      "hs_value_mae": 0.07821495085954666
+    },
+    {
+      "row": 1191,
+      "seed": 1,
+      "variant": "bpm_off",
+      "hold_counts": [
+        0,
+        0,
+        2
+      ],
+      "generated_holds": 0,
+      "target_holds": 2,
+      "generated_hold_frames": 0,
+      "target_hold_frames": 102,
+      "balloons": 0,
+      "balloon_hits": [],
+      "bpm_counts": [
+        0,
+        0,
+        11
+      ],
+      "bpm_events": 0,
+      "bpm_value_mae": 14.27967357635498,
+      "hs_counts": [
+        0,
+        0,
+        8
+      ],
+      "hs_events": 0,
+      "hs_value_mae": 0.07828519493341446
+    },
+    {
+      "row": 1191,
+      "seed": 1,
+      "variant": "bpm_high",
+      "hold_counts": [
+        0,
+        0,
+        2
+      ],
+      "generated_holds": 0,
+      "target_holds": 2,
+      "generated_hold_frames": 0,
+      "target_hold_frames": 102,
+      "balloons": 0,
+      "balloon_hits": [],
+      "bpm_counts": [
+        2,
+        1,
+        9
+      ],
+      "bpm_events": 3,
+      "bpm_value_mae": 10.949345588684082,
+      "hs_counts": [
+        0,
+        2,
+        8
+      ],
+      "hs_events": 2,
+      "hs_value_mae": 0.07255205512046814
+    },
+    {
+      "row": 1191,
+      "seed": 1,
+      "variant": "hs_off",
+      "hold_counts": [
+        0,
+        0,
+        2
+      ],
+      "generated_holds": 0,
+      "target_holds": 2,
+      "generated_hold_frames": 0,
+      "target_hold_frames": 102,
+      "balloons": 0,
+      "balloon_hits": [],
+      "bpm_counts": [
+        0,
+        0,
+        11
+      ],
+      "bpm_events": 0,
+      "bpm_value_mae": 13.026874542236328,
+      "hs_counts": [
+        0,
+        0,
+        8
+      ],
+      "hs_events": 0,
+      "hs_value_mae": 0.07664771378040314
+    },
+    {
+      "row": 1191,
+      "seed": 1,
+      "variant": "hs_on",
+      "hold_counts": [
+        0,
+        0,
+        2
+      ],
+      "generated_holds": 0,
+      "target_holds": 2,
+      "generated_hold_frames": 0,
+      "target_hold_frames": 102,
+      "balloons": 0,
+      "balloon_hits": [],
+      "bpm_counts": [
+        0,
+        0,
+        11
+      ],
+      "bpm_events": 0,
+      "bpm_value_mae": 12.782550811767578,
+      "hs_counts": [
+        0,
+        0,
+        8
+      ],
+      "hs_events": 0,
+      "hs_value_mae": 0.07821495085954666
+    },
+    {
+      "row": 762,
+      "seed": 0,
+      "variant": "base",
+      "hold_counts": [
+        0,
+        2,
+        1
+      ],
+      "generated_holds": 0,
+      "target_holds": 1,
+      "generated_hold_frames": 0,
+      "target_hold_frames": 88,
+      "balloons": 0,
+      "balloon_hits": [],
+      "bpm_counts": [
+        0,
+        1,
+        0
+      ],
+      "bpm_events": 1,
+      "bpm_value_mae": null,
+      "hs_counts": [
+        0,
+        0,
+        25
+      ],
+      "hs_events": 0,
+      "hs_value_mae": 0.6217308640480042
+    },
+    {
+      "row": 762,
+      "seed": 0,
+      "variant": "bpm_off",
+      "hold_counts": [
+        0,
+        2,
+        1
+      ],
+      "generated_holds": 0,
+      "target_holds": 1,
+      "generated_hold_frames": 0,
+      "target_hold_frames": 88,
+      "balloons": 0,
+      "balloon_hits": [],
+      "bpm_counts": [
+        0,
+        1,
+        0
+      ],
+      "bpm_events": 1,
+      "bpm_value_mae": null,
+      "hs_counts": [
+        0,
+        0,
+        25
+      ],
+      "hs_events": 0,
+      "hs_value_mae": 0.6217308640480042
+    },
+    {
+      "row": 762,
+      "seed": 0,
+      "variant": "bpm_high",
+      "hold_counts": [
+        0,
+        1,
+        1
+      ],
+      "generated_holds": 0,
+      "target_holds": 1,
+      "generated_hold_frames": 0,
+      "target_hold_frames": 88,
+      "balloons": 0,
+      "balloon_hits": [],
+      "bpm_counts": [
+        0,
+        2,
+        0
+      ],
+      "bpm_events": 2,
+      "bpm_value_mae": null,
+      "hs_counts": [
+        0,
+        1,
+        25
+      ],
+      "hs_events": 1,
+      "hs_value_mae": 0.6115875244140625
+    },
+    {
+      "row": 762,
+      "seed": 0,
+      "variant": "hs_off",
+      "hold_counts": [
+        0,
+        2,
+        1
+      ],
+      "generated_holds": 0,
+      "target_holds": 1,
+      "generated_hold_frames": 0,
+      "target_hold_frames": 88,
+      "balloons": 0,
+      "balloon_hits": [],
+      "bpm_counts": [
+        0,
+        1,
+        0
+      ],
+      "bpm_events": 1,
+      "bpm_value_mae": null,
+      "hs_counts": [
+        0,
+        0,
+        25
+      ],
+      "hs_events": 0,
+      "hs_value_mae": 0.6217308640480042
+    },
+    {
+      "row": 762,
+      "seed": 0,
+      "variant": "hs_on",
+      "hold_counts": [
+        0,
+        2,
+        1
+      ],
+      "generated_holds": 0,
+      "target_holds": 1,
+      "generated_hold_frames": 0,
+      "target_hold_frames": 88,
+      "balloons": 0,
+      "balloon_hits": [],
+      "bpm_counts": [
+        0,
+        1,
+        0
+      ],
+      "bpm_events": 1,
+      "bpm_value_mae": null,
+      "hs_counts": [
+        0,
+        2,
+        25
+      ],
+      "hs_events": 2,
+      "hs_value_mae": 0.6038666367530823
+    },
+    {
+      "row": 762,
+      "seed": 1,
+      "variant": "base",
+      "hold_counts": [
+        0,
+        0,
+        1
+      ],
+      "generated_holds": 0,
+      "target_holds": 1,
+      "generated_hold_frames": 0,
+      "target_hold_frames": 88,
+      "balloons": 0,
+      "balloon_hits": [],
+      "bpm_counts": [
+        0,
+        1,
+        0
+      ],
+      "bpm_events": 1,
+      "bpm_value_mae": null,
+      "hs_counts": [
+        0,
+        2,
+        25
+      ],
+      "hs_events": 2,
+      "hs_value_mae": 0.6036779880523682
+    },
+    {
+      "row": 762,
+      "seed": 1,
+      "variant": "bpm_off",
+      "hold_counts": [
+        0,
+        0,
+        1
+      ],
+      "generated_holds": 0,
+      "target_holds": 1,
+      "generated_hold_frames": 0,
+      "target_hold_frames": 88,
+      "balloons": 0,
+      "balloon_hits": [],
+      "bpm_counts": [
+        0,
+        1,
+        0
+      ],
+      "bpm_events": 1,
+      "bpm_value_mae": null,
+      "hs_counts": [
+        0,
+        2,
+        25
+      ],
+      "hs_events": 2,
+      "hs_value_mae": 0.6036779880523682
+    },
+    {
+      "row": 762,
+      "seed": 1,
+      "variant": "bpm_high",
+      "hold_counts": [
+        0,
+        0,
+        1
+      ],
+      "generated_holds": 0,
+      "target_holds": 1,
+      "generated_hold_frames": 0,
+      "target_hold_frames": 88,
+      "balloons": 0,
+      "balloon_hits": [],
+      "bpm_counts": [
+        0,
+        2,
+        0
+      ],
+      "bpm_events": 2,
+      "bpm_value_mae": null,
+      "hs_counts": [
+        0,
+        2,
+        25
+      ],
+      "hs_events": 2,
+      "hs_value_mae": 0.6075382828712463
+    },
+    {
+      "row": 762,
+      "seed": 1,
+      "variant": "hs_off",
+      "hold_counts": [
+        0,
+        0,
+        1
+      ],
+      "generated_holds": 0,
+      "target_holds": 1,
+      "generated_hold_frames": 0,
+      "target_hold_frames": 88,
+      "balloons": 0,
+      "balloon_hits": [],
+      "bpm_counts": [
+        0,
+        1,
+        0
+      ],
+      "bpm_events": 1,
+      "bpm_value_mae": null,
+      "hs_counts": [
+        0,
+        2,
+        25
+      ],
+      "hs_events": 2,
+      "hs_value_mae": 0.6036779880523682
+    },
+    {
+      "row": 762,
+      "seed": 1,
+      "variant": "hs_on",
+      "hold_counts": [
+        0,
+        0,
+        1
+      ],
+      "generated_holds": 0,
+      "target_holds": 1,
+      "generated_hold_frames": 0,
+      "target_hold_frames": 88,
+      "balloons": 0,
+      "balloon_hits": [],
+      "bpm_counts": [
+        0,
+        2,
+        0
+      ],
+      "bpm_events": 2,
+      "bpm_value_mae": null,
+      "hs_counts": [
+        0,
+        2,
+        25
+      ],
+      "hs_events": 2,
+      "hs_value_mae": 0.9171755909919739
+    }
+  ]
+}

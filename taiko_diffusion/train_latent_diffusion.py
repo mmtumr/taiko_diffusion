@@ -7,10 +7,10 @@ from pathlib import Path
 
 import numpy as np
 import torch
-from torch.utils.data import DataLoader
+from torch.utils.data import DataLoader, WeightedRandomSampler
 
 from taiko_diffusion.config import load_config
-from taiko_diffusion.data.diffusion_dataset import TaikoAudioDiffusionDataset
+from taiko_diffusion.data.diffusion_dataset import TaikoAudioDiffusionDataset, local_path
 from taiko_diffusion.models.latent_diffusion import (
     ChartAutoencoder1D,
     ChartAutoencoderKL1D,
@@ -134,10 +134,25 @@ def make_loader(data_cfg: dict, split: str, batch_size: int, num_workers: int, s
         audio_cache_dir / f"{split}.csv",
         audio_cache_dir / "stats.json",
     )
+    sampler = None
+    oversample = data_cfg.get("event_oversample") if split == "train" else None
+    if oversample:
+        target_channels = [str(name) for name in dataset.stats["target_channels"]]
+        channel = {name: index for index, name in enumerate(target_channels)}
+        weights = []
+        for row in dataset.rows:
+            chart = np.load(local_path(row["npz_path"]), allow_pickle=False)["chart"]
+            weight = 1.0
+            for name, multiplier in oversample.items():
+                if name in channel and np.any(chart[:, channel[name]] > 0.5):
+                    weight += float(multiplier) - 1.0
+            weights.append(weight)
+        sampler = WeightedRandomSampler(weights, num_samples=len(weights), replacement=True)
     return DataLoader(
         dataset,
         batch_size=batch_size,
-        shuffle=shuffle,
+        shuffle=shuffle and sampler is None,
+        sampler=sampler,
         num_workers=num_workers,
         pin_memory=torch.cuda.is_available(),
     )

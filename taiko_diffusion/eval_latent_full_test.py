@@ -37,9 +37,14 @@ def ddim_sample_batch(
     latent_shape: tuple[int, int],
     guidance_scale: float,
     device: torch.device,
+    initial_noise: torch.Tensor | None = None,
 ) -> torch.Tensor:
     batch_size = condition.shape[0]
-    x = torch.randn((batch_size, latent_shape[0], latent_shape[1]), device=device)
+    x = (
+        initial_noise.to(device)
+        if initial_noise is not None
+        else torch.randn((batch_size, latent_shape[0], latent_shape[1]), device=device)
+    )
     steps = np.linspace(timesteps - 1, 0, num=min(sample_steps, timesteps), dtype=np.int64)
     steps = np.unique(steps)[::-1]
     if steps[0] != timesteps - 1:

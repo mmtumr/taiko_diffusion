@@ -243,7 +243,8 @@ def main() -> None:
     parser.add_argument("--frame-ms", type=float, default=46.4399)
     parser.add_argument("--onset-mix", type=float, default=0.0)
     parser.add_argument("--fps", type=int, default=30)
-    parser.add_argument("--approach-sec", type=float, default=2.15)
+    parser.add_argument("--approach-sec", type=float, default=None)
+    parser.add_argument("--sixteenth-spacing", type=float, default=80.0)
     parser.add_argument("--keep-frames", action="store_true")
     args = parser.parse_args()
 
@@ -256,6 +257,14 @@ def main() -> None:
     don_times = frame_times[don]
     ka_times = frame_times[ka]
     title = str(sample["source_title"][0]) if "source_title" in sample.files else str(sample["source_chunk_id"][0])
+    bpm = float(sample["bpm_track"][0]) if "bpm_track" in sample.files and sample["bpm_track"].size else 120.0
+    lane_distance = 1510.0 - 260.0
+    sixteenth_sec = 60.0 / max(bpm, 1e-6) / 4.0
+    approach_sec = (
+        float(args.approach_sec)
+        if args.approach_sec is not None
+        else lane_distance * sixteenth_sec / float(args.sixteenth_spacing)
+    )
     conditions = condition_map(sample)
     condition_text = (
         f"const {conditions.get('const', 0):.1f} | complex {conditions.get('complex_bin', 0):.0f} | "
@@ -280,7 +289,7 @@ def main() -> None:
             title,
             duration_sec,
             int(args.fps),
-            float(args.approach_sec),
+            approach_sec,
             float(args.frame_ms),
             condition_text,
         )
@@ -301,6 +310,9 @@ def main() -> None:
                 "notes": int(note.sum()),
                 "don": int(don.sum()),
                 "ka": int(ka.sum()),
+                "bpm": bpm,
+                "approach_sec": approach_sec,
+                "sixteenth_spacing_px": lane_distance * sixteenth_sec / approach_sec,
             },
             ensure_ascii=False,
             indent=2,

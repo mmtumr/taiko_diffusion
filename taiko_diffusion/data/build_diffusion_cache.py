@@ -46,11 +46,17 @@ def source_by_sample(index_path: Path) -> dict[str, dict[str, str]]:
 def target_grid(source_x: np.ndarray, channels: list[str], target_channels: list[str]) -> np.ndarray:
     channel_index = {name: index for index, name in enumerate(channels)}
     values: dict[str, np.ndarray] = {}
-    don = np.clip(source_x[:, channel_index["don"]] + source_x[:, channel_index["big_don"]], 0.0, 1.0)
-    ka = np.clip(source_x[:, channel_index["ka"]] + source_x[:, channel_index["big_ka"]], 0.0, 1.0)
+    separate_big_notes = "big_don" in target_channels or "big_ka" in target_channels
+    don = source_x[:, channel_index["don"]]
+    ka = source_x[:, channel_index["ka"]]
+    if not separate_big_notes:
+        don = np.clip(don + source_x[:, channel_index["big_don"]], 0.0, 1.0)
+        ka = np.clip(ka + source_x[:, channel_index["big_ka"]], 0.0, 1.0)
     note = np.clip(don + ka, 0.0, 1.0)
     values["don"] = don
     values["ka"] = ka
+    values["big_don"] = source_x[:, channel_index["big_don"]]
+    values["big_ka"] = source_x[:, channel_index["big_ka"]]
     values["note_event"] = note
     values["ka_probability"] = ka
     for name in [
@@ -62,6 +68,10 @@ def target_grid(source_x: np.ndarray, channels: list[str], target_channels: list
         "balloon_end",
     ]:
         values[name] = source_x[:, channel_index[name]]
+    values["bpm_change_event"] = source_x[:, channel_index["bpm_change_event"]]
+    values["bpm_value"] = np.clip(source_x[:, channel_index["bpm"]], 0.0, 1.0)
+    values["scroll_change_event"] = source_x[:, channel_index["scroll_change_event"]]
+    values["scroll_value"] = np.clip(source_x[:, channel_index["scroll"]] / 4.0, 0.0, 1.0)
     return np.stack([values[name] for name in target_channels], axis=1).astype(np.float32)
 
 
@@ -97,15 +107,38 @@ def exact_grid_metadata(
     return masks, measure_indices, slot_indices
 
 
-def snap_target_to_grid(target: np.ndarray, legal_mask: np.ndarray) -> np.ndarray:
+def snap_target_to_grid(
+    target: np.ndarray,
+    legal_mask: np.ndarray,
+    target_channels: list[str],
+) -> np.ndarray:
     legal_indices = np.flatnonzero(legal_mask > 0.5)
     if legal_indices.size == 0:
         return np.zeros_like(target)
-    snapped = np.zeros_like(target)
-    for source_frame in np.flatnonzero(target.max(axis=1) > 0.5):
-        nearest = int(legal_indices[np.argmin(np.abs(legal_indices - source_frame))])
-        snapped[nearest] = np.maximum(snapped[nearest], target[source_frame])
+    snapped = target.copy()
+    snap_names = {
+        "don", "ka", "big_don", "big_ka", "note_event", "roll_start", "roll_end",
+        "balloon_start", "balloon_end", "bpm_change_event", "scroll_change_event",
+    }
+    for channel_index, name in enumerate(target_channels):
+        if name not in snap_names:
+            continue
+        snapped[:, channel_index] = 0.0
+        for source_frame in np.flatnonzero(target[:, channel_index] > 0.5):
+            nearest = int(legal_indices[np.argmin(np.abs(legal_indices - source_frame))])
+            snapped[nearest, channel_index] = max(snapped[nearest, channel_index], target[source_frame, channel_index])
     return snapped
+
+
+def subdivision_bin_from_target(target: np.ndarray, legal_masks: np.ndarray) -> int:
+    note_frames = np.flatnonzero(target.max(axis=1) > 0.5)
+    if note_frames.size == 0:
+        return 0
+    for bin_index in [0, 1]:
+        legal_frames = np.flatnonzero(legal_masks[bin_index] > 0.5)
+        if legal_frames.size and all(np.min(np.abs(legal_frames - frame)) <= 1 for frame in note_frames):
+            return bin_index
+    return 2
 
 
 def condition_values(
@@ -125,6 +158,7 @@ def condition_values(
     values["bpm_rhythm_bin"] = float(np.searchsorted([1e-6, 25.0], labels["bpm_change"], side="right"))
     values["note_type_high"] = float(labels["note_type"] >= 25.0)
     values["ka_ratio"] = float(ka.sum() / note_count)
+    values["subdivision_bin"] = 2.0
     if bin_thresholds is not None:
         values["complex_bin"] = float(np.searchsorted(bin_thresholds["complex_bin"], values["complex"], side="right"))
         values["hs_change_bin"] = float(values["hs_change"] > 0.0)
@@ -209,15 +243,21 @@ def make_split(
         duration_frames = int(source["duration_frames"][0])
         target = target_grid(source_x, channels, target_channels)
         cond = condition_values(source_x, channels, labels, condition_names, frame_ms, bin_thresholds)
-        if "complex_bin" in condition_names:
+        if "subdivision_bin" in condition_names or "complex_bin" in condition_names:
             all_legal_masks, all_measure_indices, all_slot_indices = exact_grid_metadata(
                 source_x, channels, duration_frames
             )
         else:
             all_legal_masks = all_measure_indices = all_slot_indices = None
-        complex_bin = int(round(float(cond[condition_names.index("complex_bin")]))) if all_legal_masks is not None else 2
-        if all_legal_masks is not None and complex_bin < 2:
-            target = snap_target_to_grid(target, all_legal_masks[max(0, complex_bin)])
+        if "subdivision_bin" in condition_names and all_legal_masks is not None:
+            subdivision_bin = subdivision_bin_from_target(target, all_legal_masks)
+            cond[condition_names.index("subdivision_bin")] = float(subdivision_bin)
+        elif "complex_bin" in condition_names:
+            subdivision_bin = int(round(float(cond[condition_names.index("complex_bin")])))
+        else:
+            subdivision_bin = 2
+        if all_legal_masks is not None and subdivision_bin < 2:
+            target = snap_target_to_grid(target, all_legal_masks[max(0, subdivision_bin)], target_channels)
 
         for start in chunk_starts(duration_frames, window_frames, stride_frames):
             end = start + window_frames
@@ -240,7 +280,10 @@ def make_split(
             event_indices = [
                 index
                 for index, name in enumerate(target_channels)
-                if name in {"note_event", "don", "ka", "roll_start", "roll_end", "balloon_start", "balloon_end"}
+                if name in {
+                    "note_event", "don", "ka", "big_don", "big_ka", "roll_start", "roll_end",
+                    "balloon_start", "balloon_end", "bpm_change_event", "scroll_change_event",
+                }
             ]
             event_count = int(chunk[:, event_indices].sum()) if event_indices else int(chunk.sum())
             if event_count < min_events:
@@ -258,7 +301,7 @@ def make_split(
                 start_frame=np.asarray([start], dtype=np.int32),
                 duration_frames=np.asarray([duration_frames], dtype=np.int32),
                 legal_masks=legal_masks,
-                legal_mask=legal_masks[max(0, min(complex_bin, 2))],
+                legal_mask=legal_masks[max(0, min(subdivision_bin, 2))],
                 measure_indices=measure_indices,
                 slot_indices=slot_indices,
                 bpm_track=bpm_track,
@@ -295,6 +338,7 @@ def main() -> None:
     min_events = int(data_cfg.get("min_events_per_window", 1))
     target_channels = [str(name) for name in data_cfg["target_channels"]]
     condition_names = [str(name) for name in data_cfg["condition_names"]]
+    align_audio_cache_dir = Path(data_cfg["align_audio_cache_dir"]) if data_cfg.get("align_audio_cache_dir") else None
 
     source_rows = source_by_sample(source_index)
     output_dir.mkdir(parents=True, exist_ok=True)
@@ -322,6 +366,11 @@ def main() -> None:
             min_events,
             bin_thresholds,
         )
+        if align_audio_cache_dir is not None:
+            audio_ids = {row["chunk_id"] for row in read_rows(align_audio_cache_dir / f"{split_name}.csv")}
+            kept = [(row, condition) for row, condition in zip(chunk_rows, conditions) if row["chunk_id"] in audio_ids]
+            chunk_rows = [row for row, _ in kept]
+            conditions = [condition for _, condition in kept]
         write_rows(output_dir / f"{split_name}.csv", chunk_rows)
         split_summaries[split_name] = len(chunk_rows)
         if split_name == "train":

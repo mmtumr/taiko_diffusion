@@ -56,6 +56,7 @@ def run_epoch(
     model: torch.nn.Module,
     loader: DataLoader,
     positive_loss_weight: float,
+    channel_positive_weights: torch.Tensor | None,
     count_loss_weight: float,
     latent_l2_weight: float,
     kl_weight: float,
@@ -80,7 +81,8 @@ def run_epoch(
             else:
                 kl_loss = torch.zeros((), device=device)
                 latent_l2 = latent_or_posterior.square().mean()
-            weights = torch.where(chart > 0.5, positive_loss_weight, 1.0)
+            positive_weights = positive_loss_weight if channel_positive_weights is None else channel_positive_weights
+            weights = torch.where(chart > 0.5, positive_weights, 1.0)
             bce = torch.nn.functional.binary_cross_entropy_with_logits(logits, chart, reduction="none")
             bce = (bce * weights).mean()
             prob = torch.sigmoid(logits)
@@ -149,6 +151,10 @@ def main() -> None:
     history_path = log_dir / "history.json"
     history = json.loads(history_path.read_text(encoding="utf-8")) if args.resume_checkpoint and history_path.exists() else []
     positive_loss_weight = float(training.get("positive_loss_weight", 4.0))
+    configured_weights = training.get("channel_positive_weights")
+    channel_positive_weights = None
+    if configured_weights is not None:
+        channel_positive_weights = torch.tensor(configured_weights, dtype=torch.float32, device=device).view(1, -1, 1)
     count_loss_weight = float(training.get("count_loss_weight", 0.25))
     latent_l2_weight = float(training.get("latent_l2_weight", 0.0001))
     kl_weight = float(training.get("kl_weight", 0.0))
@@ -157,6 +163,7 @@ def main() -> None:
             model,
             train_loader,
             positive_loss_weight,
+            channel_positive_weights,
             count_loss_weight,
             latent_l2_weight,
             kl_weight,
@@ -167,6 +174,7 @@ def main() -> None:
             model,
             val_loader,
             positive_loss_weight,
+            channel_positive_weights,
             count_loss_weight,
             latent_l2_weight,
             kl_weight,

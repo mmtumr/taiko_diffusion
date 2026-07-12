@@ -1,0 +1,36 @@
+data:
+  source_index: data/cache/encoder_v1/index.csv
+  source_split_dir: data/splits/encoder_final_main
+  cache_dir: data/cache/diffusion_v12_full_events
+  align_audio_cache_dir: data/cache/audio_v0
+  frame_ms: 46.4399
+  window_frames: 512
+  stride_frames: 256
+  min_events_per_window: 1
+  target_channels:
+    - don
+    - ka
+    - big_don
+    - big_ka
+    - roll_start
+    - roll_body
+    - roll_end
+    - balloon_start
+    - balloon_body
+    - balloon_end
+    - bpm_change_event
+    - bpm_value
+    - scroll_change_event
+    - scroll_value
+  condition_names:
+    - const
+    - complex_bin
+    - subdivision_bin
+    - hs_change_bin
+    - bpm_rhythm_bin
+    - note_type_bin
+    - avg_density_bin
+    - peak_density_bin
+    - big_note_ratio
+    - balloon_roll_ratio
+    - ka_ratio

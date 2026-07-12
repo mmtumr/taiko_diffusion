@@ -139,8 +139,8 @@ def main() -> None:
     slot_indices = None
     source_data = np.load(local_path(row["npz_path"]), allow_pickle=False)
     if "legal_masks" in source_data.files:
-        complex_bin = int(round(raw_condition.get("complex_bin", 2.0)))
-        selected_bin = max(0, min(complex_bin, 2))
+        subdivision_bin = int(round(raw_condition.get("subdivision_bin", raw_condition.get("complex_bin", 2.0))))
+        selected_bin = max(0, min(subdivision_bin, 2))
         legal_mask = source_data["legal_masks"][selected_bin].astype(np.float32)
         measure_indices = source_data["measure_indices"][selected_bin].astype(np.int32)
         slot_indices = source_data["slot_indices"][selected_bin].astype(np.int32)

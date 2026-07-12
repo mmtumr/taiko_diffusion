@@ -105,6 +105,7 @@ def load_init_model(model: LatentUNet1D, checkpoint: dict, config: dict) -> dict
     if source_names and target_names and condition_weight in source and condition_weight in target:
         aliases = {
             "complex_bin": "complex",
+            "subdivision_bin": "complex_bin",
             "hs_change_bin": "hs_change",
             "note_type_bin": "note_type",
             "avg_density_bin": "avg_density",

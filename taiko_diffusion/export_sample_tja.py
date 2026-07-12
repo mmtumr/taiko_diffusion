@@ -23,6 +23,10 @@ def frame_to_char(values: np.ndarray, names: list[str]) -> str:
         return "7"
     if values[channel["roll_start"]] > 0.5:
         return "5"
+    if "big_ka" in channel and values[channel["big_ka"]] > 0.5:
+        return "4"
+    if "big_don" in channel and values[channel["big_don"]] > 0.5:
+        return "3"
     if values[channel["ka"]] > 0.5 and values[channel["ka"]] >= values[channel["don"]]:
         return "2"
     if values[channel["don"]] > 0.5:
@@ -91,6 +95,45 @@ def density_topk_binary(
         don_is_stronger = probability[:, channel["don"]] >= probability[:, channel["ka"]]
         binary[selected & don_is_stronger, channel["don"]] = 1.0
         binary[selected & ~don_is_stronger, channel["ka"]] = 1.0
+        if "big_don" in channel and "big_ka" in channel:
+            selected_indices = np.flatnonzero(selected)
+            big_count = int(round(len(selected_indices) * min(max(condition.get("big_note_ratio", 0.0), 0.0), 1.0)))
+            if big_count > 0:
+                big_score = np.maximum(
+                    probability[selected_indices, channel["big_don"]],
+                    probability[selected_indices, channel["big_ka"]],
+                )
+                big_indices = selected_indices[np.argpartition(big_score, -big_count)[-big_count:]]
+                for frame in big_indices:
+                    if binary[frame, channel["ka"]] > 0.5:
+                        binary[frame, channel["ka"]] = 0.0
+                        binary[frame, channel["big_ka"]] = 1.0
+                    else:
+                        binary[frame, channel["don"]] = 0.0
+                        binary[frame, channel["big_don"]] = 1.0
+        if all(name in channel for name in ["roll_start", "roll_body", "roll_end", "balloon_start", "balloon_body", "balloon_end"]):
+            span_ratio = min(max(condition.get("balloon_roll_ratio", 0.0), 0.0), 1.0)
+            span_count = int(round(span_ratio * max(len(np.flatnonzero(selected)), 1) / 8.0))
+            available = legal_mask > 0.5 if legal_mask is not None else np.ones(probability.shape[0], dtype=bool)
+            occupied = np.zeros(probability.shape[0], dtype=bool)
+            start_score = np.maximum(probability[:, channel["roll_start"]], probability[:, channel["balloon_start"]])
+            start_score = np.where(available, start_score, -np.inf)
+            for _ in range(span_count):
+                start = int(np.argmax(np.where(occupied, -np.inf, start_score)))
+                if not np.isfinite(start_score[start]):
+                    break
+                candidates = np.flatnonzero(available & (np.arange(probability.shape[0]) >= start + 2) & (np.arange(probability.shape[0]) <= start + 32) & ~occupied)
+                if candidates.size == 0:
+                    break
+                end_score = np.maximum(probability[candidates, channel["roll_end"]], probability[candidates, channel["balloon_end"]])
+                end = int(candidates[np.argmax(end_score)])
+                is_balloon = probability[start, channel["balloon_start"]] > probability[start, channel["roll_start"]]
+                binary[start : end + 1] = 0.0
+                prefix = "balloon" if is_balloon else "roll"
+                binary[start, channel[f"{prefix}_start"]] = 1.0
+                binary[start + 1 : end, channel[f"{prefix}_body"]] = 1.0
+                binary[end, channel[f"{prefix}_end"]] = 1.0
+                occupied[max(0, start - 1) : min(probability.shape[0], end + 2)] = True
     return binary
 
 
@@ -128,8 +171,8 @@ def main() -> None:
         condition_names = [str(name) for name in data["condition_names"]]
         raw_condition = data["raw_condition"].astype(np.float32)
         condition = {name: float(raw_condition[index]) for index, name in enumerate(condition_names)}
-        complex_bin = int(round(condition.get("complex_bin", 2.0)))
-        slots_per_measure = 16 if complex_bin == 0 else 96
+        subdivision_bin = int(round(condition.get("subdivision_bin", condition.get("complex_bin", 2.0))))
+        slots_per_measure = 16 if subdivision_bin == 0 else 96
         measures = []
         for measure_index in sorted(set(int(value) for value in measure_indices if value >= 0)):
             chars = ["0"] * slots_per_measure
@@ -139,7 +182,20 @@ def main() -> None:
                 output_slot = common_slot // 6 if slots_per_measure == 16 else common_slot
                 if output_slot < slots_per_measure:
                     chars[output_slot] = frame_to_char(binary[frame], names)
-            measures.append("".join(chars) + ",")
+            commands = []
+            channel = {name: index for index, name in enumerate(names)}
+            if condition.get("bpm_rhythm_bin", 0.0) > 0.0 and "bpm_change_event" in channel and "bpm_value" in channel:
+                event_frame = int(frames[np.argmax(probability[frames, channel["bpm_change_event"]])]) if frames.size else -1
+                if event_frame >= 0 and probability[event_frame, channel["bpm_change_event"]] > 0.5:
+                    next_bpm = float(probability[event_frame, channel["bpm_value"]] * 300.0)
+                    if next_bpm > 30.0:
+                        commands.append(f"#BPMCHANGE {next_bpm:.6g}")
+            if condition.get("hs_change_bin", 0.0) > 0.0 and "scroll_change_event" in channel and "scroll_value" in channel:
+                event_frame = int(frames[np.argmax(probability[frames, channel["scroll_change_event"]])]) if frames.size else -1
+                if event_frame >= 0 and probability[event_frame, channel["scroll_change_event"]] > 0.5:
+                    next_scroll = max(0.05, float(probability[event_frame, channel["scroll_value"]] * 4.0))
+                    commands.append(f"#SCROLL {next_scroll:.6g}")
+            measures.extend([*commands, "".join(chars) + ","])
         frames_per_measure = slots_per_measure
     else:
         frames_per_measure = max(1, int(round((4.0 * 60000.0 / bpm) / float(args.frame_ms))))

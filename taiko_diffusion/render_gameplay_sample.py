@@ -13,6 +13,7 @@ from PIL import Image, ImageDraw, ImageFont
 
 from taiko_diffusion.data.diffusion_dataset import local_path
 from taiko_diffusion.eval_audio_alignment import generated_ka_mask, generated_note_mask
+from taiko_diffusion.export_sample_tja import density_topk_binary
 
 
 BG = (16, 18, 22)
@@ -71,7 +72,7 @@ def masks_from_sample(
     audio_split: Path,
     frame_ms: float,
     onset_mix: float,
-) -> tuple[np.ndarray, np.ndarray, np.ndarray, dict[str, str], np.ndarray]:
+) -> tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray, np.ndarray, list[tuple[int, int, bool]], dict[str, str], np.ndarray]:
     chunk_id = str(sample["source_chunk_id"][0])
     audio_rows = read_rows_by_chunk(audio_split)
     audio_row = audio_rows[chunk_id]
@@ -80,18 +81,32 @@ def masks_from_sample(
 
     probability = sample["probability"].astype(np.float32)
     channel_names = [str(name) for name in sample["target_channels"]]
-    note = generated_note_mask(
-        probability,
-        condition_map(sample),
-        frame_ms,
-        onset=onset,
-        onset_mix=onset_mix,
-        channel_names=channel_names,
-        legal_mask=(sample["legal_mask"].astype(np.float32) if "legal_mask" in sample.files and sample["legal_mask"].size else None),
-    )
-    ka = generated_ka_mask(probability, note, channel_names)
+    binary = density_topk_binary(probability, channel_names, sample, frame_ms, None, onset_mix)
+    channel = {name: index for index, name in enumerate(channel_names)}
+    note = np.zeros(probability.shape[0], dtype=bool)
+    for name in ["don", "ka", "big_don", "big_ka"]:
+        if name in channel:
+            note |= binary[:, channel[name]] > 0.5
+    ka = np.zeros_like(note)
+    for name in ["ka", "big_ka"]:
+        if name in channel:
+            ka |= binary[:, channel[name]] > 0.5
+    big = np.zeros_like(note)
+    for name in ["big_don", "big_ka"]:
+        if name in channel:
+            big |= binary[:, channel[name]] > 0.5
     don = note & ~ka
-    return note, don, ka, audio_row, onset
+    spans = []
+    for prefix, is_balloon in [("roll", False), ("balloon", True)]:
+        if f"{prefix}_start" not in channel or f"{prefix}_end" not in channel:
+            continue
+        starts = np.flatnonzero(binary[:, channel[f"{prefix}_start"]] > 0.5)
+        ends = np.flatnonzero(binary[:, channel[f"{prefix}_end"]] > 0.5)
+        for start in starts:
+            later = ends[ends > start]
+            if later.size:
+                spans.append((int(start), int(later[0]), is_balloon))
+    return note, don, ka, big, binary, spans, audio_row, onset
 
 
 def draw_note(draw: ImageDraw.ImageDraw, x: float, y: float, color: tuple[int, int, int], radius: int) -> None:
@@ -108,6 +123,8 @@ def draw_frame(
     total_frames: int,
     don_times: np.ndarray,
     ka_times: np.ndarray,
+    big_times: np.ndarray,
+    spans: list[tuple[float, float, bool]],
     onset: np.ndarray,
     title: str,
     duration_sec: float,
@@ -165,15 +182,27 @@ def draw_frame(
             visible_notes.append((note_time, True))
     visible_notes.sort(key=lambda item: item[0], reverse=True)
 
+    for span_start, span_end, is_balloon in spans:
+        if span_end < t - 0.12 or span_start > t + approach_sec:
+            continue
+        start_x = hit_x + (span_start - t) / approach_sec * (spawn_x - hit_x)
+        end_x = hit_x + (span_end - t) / approach_sec * (spawn_x - hit_x)
+        left, right = sorted((max(hit_x, start_x), min(spawn_x, end_x)))
+        if right > left:
+            color = (244, 176, 55) if not is_balloon else (234, 112, 55)
+            draw.rounded_rectangle((left, lane_y - 24, right, lane_y + 24), radius=20, fill=color, outline=WHITE, width=3)
+
     for note_time, is_ka in visible_notes:
         dt = float(note_time - t)
         x = hit_x + dt / approach_sec * (spawn_x - hit_x)
+        is_big = bool(np.any(np.isclose(big_times, note_time, atol=1e-5)))
+        radius = 52 if is_big else note_radius
         if dt < 0:
             scale = max(0.15, 1.0 + dt / 0.12)
             color = KA if is_ka else DON
-            draw_note(draw, x, lane_y, color, max(8, int(note_radius * scale)))
+            draw_note(draw, x, lane_y, color, max(8, int(radius * scale)))
         else:
-            draw_note(draw, x, lane_y, KA if is_ka else DON, note_radius)
+            draw_note(draw, x, lane_y, KA if is_ka else DON, radius)
 
     # Hit flash.
     near_hits = np.concatenate([don_times, ka_times])
@@ -249,13 +278,15 @@ def main() -> None:
     args = parser.parse_args()
 
     sample = np.load(args.sample, allow_pickle=False)
-    note, don, ka, audio_row, onset = masks_from_sample(sample, args.audio_split, float(args.frame_ms), float(args.onset_mix))
+    note, don, ka, big, _, span_frames, audio_row, onset = masks_from_sample(sample, args.audio_split, float(args.frame_ms), float(args.onset_mix))
     frames = note.shape[0]
     duration_sec = frames * float(args.frame_ms) / 1000.0
     total_video_frames = max(1, int(math.ceil(duration_sec * int(args.fps))))
     frame_times = np.arange(frames, dtype=np.float32) * float(args.frame_ms) / 1000.0
     don_times = frame_times[don]
     ka_times = frame_times[ka]
+    big_times = frame_times[big]
+    spans = [(float(frame_times[start]), float(frame_times[end]), is_balloon) for start, end, is_balloon in span_frames]
     title = str(sample["source_title"][0]) if "source_title" in sample.files else str(sample["source_chunk_id"][0])
     bpm = float(sample["bpm_track"][0]) if "bpm_track" in sample.files and sample["bpm_track"].size else 120.0
     lane_distance = 1510.0 - 260.0
@@ -285,6 +316,8 @@ def main() -> None:
             total_video_frames,
             don_times,
             ka_times,
+            big_times,
+            spans,
             onset,
             title,
             duration_sec,

@@ -81,7 +81,10 @@ def density_topk_binary(
         onset = onset / max(float(onset.max()), 1e-6)
         note_score = note_score + float(onset_mix) * onset
     legal_mask = data["legal_mask"].astype(np.float32) if "legal_mask" in data.files and data["legal_mask"].size else None
-    active_frames = int((legal_mask > 0.5).sum()) if legal_mask is not None else probability.shape[0]
+    if "measure_indices" in data.files and np.any(data["measure_indices"] >= 0):
+        active_frames = int(np.flatnonzero(data["measure_indices"] >= 0)[-1]) + 1
+    else:
+        active_frames = int((legal_mask > 0.5).sum()) if legal_mask is not None else probability.shape[0]
     note_count = max(0, min(int(round(avg_density * active_frames * frame_ms / 1000.0)), probability.shape[0]))
     if legal_mask is not None:
         note_score = np.where(legal_mask > 0.5, note_score, -np.inf)

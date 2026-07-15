@@ -61,19 +61,20 @@ def legal_grid(window_frames: int, subdivision_bin: int, bpm: float, frame_ms: f
     slot_indices = np.full(window_frames, -1, dtype=np.int32)
     if subdivision_bin >= 2:
         return legal, measure_indices, slot_indices
-    slots_per_measure = 16 if subdivision_bin == 0 else 96
+    slots = (
+        list(range(0, 96, 6))
+        if subdivision_bin == 0
+        else sorted(set().union(*(range(0, 96, 96 // division) for division in [8, 12, 16, 24, 32])))
+    )
     measure_frames = max(1, int(round(4.0 * 60000.0 / bpm / frame_ms)))
-    for frame in range(window_frames):
-        measure = frame // measure_frames
-        local = frame % measure_frames
-        slot = int(round(local * slots_per_measure / measure_frames))
-        slot = min(slot, slots_per_measure - 1)
-        mapped = measure * measure_frames + int(round(slot * measure_frames / slots_per_measure))
-        if mapped != frame:
-            legal[frame] = 0.0
-        else:
+    legal.fill(0.0)
+    for measure, start in enumerate(range(0, window_frames, measure_frames)):
+        end = min(start + measure_frames, window_frames)
+        for slot in slots:
+            frame = min(end - 1, start + int(round(slot * (end - start) / 96.0)))
+            legal[frame] = 1.0
             measure_indices[frame] = measure
-            slot_indices[frame] = slot * (6 if subdivision_bin == 0 else 1)
+            slot_indices[frame] = slot
     return legal, measure_indices, slot_indices
 
 

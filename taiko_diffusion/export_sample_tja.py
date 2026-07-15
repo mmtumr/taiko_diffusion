@@ -18,6 +18,10 @@ def frame_to_char(values: np.ndarray, names: list[str]) -> str:
         ka_value = values[channel["ka_probability"]] if "ka_probability" in channel else 0.0
         return "2" if ka_value > 0.5 else "1"
     if "roll_end" not in channel and "balloon_end" not in channel:
+        if "big_ka" in channel and values[channel["big_ka"]] > 0.5:
+            return "4"
+        if "big_don" in channel and values[channel["big_don"]] > 0.5:
+            return "3"
         if values[channel["ka"]] > 0.5 and values[channel["ka"]] >= values[channel["don"]]:
             return "2"
         return "1" if values[channel["don"]] > 0.5 else "0"
@@ -58,8 +62,6 @@ def density_topk_binary(
     if "avg_density" not in condition and "decode_avg_density" in data.files:
         condition["avg_density"] = float(data["decode_avg_density"][0])
     avg_density = max(condition.get("avg_density", 0.0), 0.0)
-    window_seconds = probability.shape[0] * frame_ms / 1000.0
-    note_count = int(round(avg_density * window_seconds))
     channel = {name: index for index, name in enumerate(names)}
     if ka_ratio is None and "ka_ratio" in condition:
         ka_ratio = condition["ka_ratio"]
@@ -78,8 +80,9 @@ def density_topk_binary(
         onset = onset - float(onset.min())
         onset = onset / max(float(onset.max()), 1e-6)
         note_score = note_score + float(onset_mix) * onset
-    note_count = max(0, min(note_count, probability.shape[0]))
     legal_mask = data["legal_mask"].astype(np.float32) if "legal_mask" in data.files and data["legal_mask"].size else None
+    active_frames = int((legal_mask > 0.5).sum()) if legal_mask is not None else probability.shape[0]
+    note_count = max(0, min(int(round(avg_density * active_frames * frame_ms / 1000.0)), probability.shape[0]))
     if legal_mask is not None:
         note_score = np.where(legal_mask > 0.5, note_score, -np.inf)
         note_count = min(note_count, int((legal_mask > 0.5).sum()))

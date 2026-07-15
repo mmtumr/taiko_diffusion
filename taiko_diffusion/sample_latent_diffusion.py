@@ -14,6 +14,7 @@ from taiko_diffusion.data.diffusion_dataset import local_path
 from taiko_diffusion.sample_diffusion import load_audio_from_row, load_condition_from_row, read_selected_row
 from taiko_diffusion.train_diffusion import diffusion_schedule
 from taiko_diffusion.train_latent_diffusion import load_autoencoder, load_latent_stats, make_model
+from taiko_diffusion.hold_span_inference import load_hold_span_model, predict_hold_spans, spans_to_hold_channels
 
 
 def set_seed(seed: int | None) -> None:
@@ -104,6 +105,8 @@ def main() -> None:
     parser.add_argument("--row-index", type=int, default=0)
     parser.add_argument("--chunk-id", type=str, default=None)
     parser.add_argument("--set-condition", action="append", default=[], metavar="NAME=VALUE")
+    parser.add_argument("--hold-span-checkpoint", type=Path, default=None)
+    parser.add_argument("--hold-span-threshold", type=float, default=0.8)
     parser.add_argument("--device", type=str, default="auto")
     args = parser.parse_args()
 
@@ -123,6 +126,7 @@ def main() -> None:
         condition_raw - np.asarray(stats["condition_mean"], dtype=np.float32)
     ) / np.asarray(stats["condition_std"], dtype=np.float32)
     audio_np = load_audio_from_row(row, args.audio_split, args.audio_stats)
+    raw_audio_np = audio_np.copy()
     device = torch.device(
         "cuda" if args.device == "auto" and torch.cuda.is_available() else ("cpu" if args.device == "auto" else args.device)
     )
@@ -144,6 +148,9 @@ def main() -> None:
         legal_mask = source_data["legal_masks"][selected_bin].astype(np.float32)
         measure_indices = source_data["measure_indices"][selected_bin].astype(np.int32)
         slot_indices = source_data["slot_indices"][selected_bin].astype(np.int32)
+        active_mask = source_data["legal_masks"][2].astype(np.float32)
+    else:
+        active_mask = np.ones(int(stats["window_frames"]), dtype=np.float32)
     if bool(config["model"].get("use_legal_mask_channel", False)):
         if legal_mask is None:
             raise ValueError("Model requires legal_masks but the selected cache sample does not contain them")
@@ -176,6 +183,31 @@ def main() -> None:
         latent = latent * latent_std + latent_mean
     logits = autoencoder.decode(latent)
     probability = torch.sigmoid(logits).squeeze(0).transpose(0, 1).cpu().numpy().astype(np.float32)
+    hold_spans = []
+    if args.hold_span_checkpoint is not None:
+        if legal_mask is None:
+            raise ValueError("Hold span generation requires a cache sample with legal_masks")
+        hold_model, hold_config, duration_log_scale = load_hold_span_model(args.hold_span_checkpoint, device)
+        if hold_config["data"].get("context_channels"):
+            raise ValueError("Hold span checkpoint must not require chart context during inference")
+        hold_spans = predict_hold_spans(
+            hold_model,
+            raw_audio_np,
+            condition_np,
+            legal_mask,
+            active_mask,
+            duration_log_scale,
+            threshold=float(args.hold_span_threshold),
+            device=device,
+        )
+        channel = {name: index for index, name in enumerate(stats["target_channels"])}
+        required = ["hold_start", "hold_body", "hold_end"]
+        if not all(name in channel for name in required):
+            raise ValueError("Diffusion target channels do not support unified holds")
+        probability[:, [channel[name] for name in required]] = 0.0
+        probability[:, [channel[name] for name in required]] = spans_to_hold_channels(
+            probability.shape[0], hold_spans
+        )
     args.output.parent.mkdir(parents=True, exist_ok=True)
     np.savez_compressed(
         args.output,
@@ -196,6 +228,7 @@ def main() -> None:
         source_chunk_id=np.asarray([row["chunk_id"]]),
         source_sample_id=np.asarray([row["sample_id"]]),
         source_title=np.asarray([row.get("title", "")]),
+        neural_hold_spans=np.asarray(hold_spans, dtype=np.float32),
     )
     print(
         json.dumps(
@@ -206,6 +239,7 @@ def main() -> None:
                 "sample_steps": int(args.sample_steps),
                 "guidance_scale": float(args.guidance_scale),
                 "probability_shape": list(probability.shape),
+                "neural_hold_spans": len(hold_spans),
             },
             ensure_ascii=False,
             indent=2,

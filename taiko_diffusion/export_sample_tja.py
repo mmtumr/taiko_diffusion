@@ -38,6 +38,12 @@ def frame_to_char(values: np.ndarray, names: list[str]) -> str:
     return "0"
 
 
+def merge_slot_char(existing: str, candidate: str) -> str:
+    """Preserve hold boundaries when several frames quantize to one TJA slot."""
+    priority = {"0": 0, "1": 1, "2": 1, "3": 1, "4": 1, "5": 2, "7": 2, "8": 3}
+    return candidate if priority.get(candidate, 0) >= priority.get(existing, 0) else existing
+
+
 def density_topk_binary(
     probability: np.ndarray,
     names: list[str],
@@ -179,18 +185,24 @@ def density_topk_binary(
         elif all(name in channel for name in ["hold_start", "hold_body", "hold_end"]):
             starts = probability[:, channel["hold_start"]] > 0.5
             holding = probability[:, channel["hold_body"]] > 0.5
+            ends = probability[:, channel["hold_end"]] > 0.5
             for start in np.flatnonzero(starts):
-                end = int(start)
-                cursor = int(start) + 1
-                while cursor < probability.shape[0] and holding[cursor] and not starts[cursor]:
-                    end = cursor
-                    cursor += 1
-                if end == start:
+                later_start = np.flatnonzero(starts[start + 1 :])
+                search_end = int(start + 1 + later_start[0]) if later_start.size else probability.shape[0]
+                end_candidates = np.flatnonzero(ends[start + 1 : search_end])
+                if end_candidates.size:
+                    end = int(start + 1 + end_candidates[0])
+                else:
+                    end = int(start)
+                    cursor = int(start) + 1
+                    while cursor < search_end and holding[cursor]:
+                        end = cursor
+                        cursor += 1
+                if end <= start:
                     continue
                 binary[start : end + 1] = 0.0
                 binary[start, channel["hold_start"]] = 1.0
-                binary[start + 1 : end + 1, channel["hold_body"]] = 1.0
-                binary[end, channel["hold_body"]] = 0.0
+                binary[start + 1 : end, channel["hold_body"]] = 1.0
                 binary[end, channel["hold_end"]] = 1.0
     return binary
 
@@ -273,7 +285,9 @@ def main() -> None:
                 output_slot = common_slot // 6 if slots_per_measure == 16 else common_slot
                 if output_slot < slots_per_measure:
                     char = frame_to_char(binary[frame], names)
-                    chars[output_slot] = "7" if frame in balloon_starts and char == "5" else char
+                    if frame in balloon_starts and char == "5":
+                        char = "7"
+                    chars[output_slot] = merge_slot_char(chars[output_slot], char)
             commands = []
             channel = {name: index for index, name in enumerate(names)}
             if condition.get("bpm_rhythm_bin", 0.0) > 0.0 and "bpm_change_event" in channel and "bpm_value" in channel:

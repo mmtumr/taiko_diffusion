@@ -1,5 +1,37 @@
 # Taiko Diffusion
 
+## One-Click Audio To TJA
+
+The deployable v15 pipeline generates a TJA directly from an audio file. It
+requires the v15 diffusion checkpoint, the deployable neural hold-span
+checkpoint, and FFmpeg on `PATH`; it does not read ESE charts or training
+caches at inference time.
+
+```bash
+python -m taiko_diffusion.generate_audio_tja \
+  --audio /path/to/song.ogg \
+  --output generated_song.tja \
+  --set-condition const=7 \
+  --set-condition subdivision_bin=1 \
+  --set-condition avg_density_bin=1
+```
+
+The command also writes `generated_song.npz`, containing the generated
+probabilities and neural hold spans. Default checkpoints are:
+
+```text
+checkpoints/latent_diffusion_v15_full_catalog/best.pt
+checkpoints/hold_span_v2_deploy/best.pt
+```
+
+Optional `--set-condition NAME=VALUE` values are `const`, `complex_bin`,
+`subdivision_bin`, `hs_change_bin`, `bpm_rhythm_bin`, `note_type_bin`,
+`avg_density_bin`, `peak_density_bin`, `big_note_ratio`,
+`balloon_roll_ratio`, and `ka_ratio`. Use `--bpm VALUE` to override the
+default onset-estimated static BPM. The current full-length model accepts at
+most 8192 frames, approximately 380 seconds; longer input is truncated and
+reported by the command.
+
 Taiko Diffusion is an experimental project for Taiko no Tatsujin chart
 representation learning and future audio-conditioned chart generation.
 

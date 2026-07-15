@@ -17,7 +17,7 @@ def local_path(value: str) -> Path:
 
 
 class TaikoDiffusionDataset(Dataset):
-    def __init__(self, split_csv: str | Path, stats_path: str | Path):
+    def __init__(self, split_csv: str | Path, stats_path: str | Path, hold_substitution_hint_dir: str | Path | None = None):
         self.split_csv = Path(split_csv)
         self.stats_path = Path(stats_path)
         with self.split_csv.open("r", encoding="utf-8-sig", newline="") as file:
@@ -25,6 +25,7 @@ class TaikoDiffusionDataset(Dataset):
         self.stats = json.loads(self.stats_path.read_text(encoding="utf-8"))
         self.condition_mean = np.asarray(self.stats["condition_mean"], dtype=np.float32)
         self.condition_std = np.asarray(self.stats["condition_std"], dtype=np.float32)
+        self.hold_substitution_hint_dir = Path(hold_substitution_hint_dir) if hold_substitution_hint_dir else None
 
     def __len__(self) -> int:
         return len(self.rows)
@@ -33,6 +34,23 @@ class TaikoDiffusionDataset(Dataset):
         row = self.rows[index]
         data = np.load(local_path(row["npz_path"]), allow_pickle=False)
         chart = data["chart"].astype(np.float32)
+        hold_substitution_hint = np.zeros(chart.shape[0], dtype=np.float32)
+        if self.hold_substitution_hint_dir is not None:
+            hint_path = self.hold_substitution_hint_dir / f"{row['chunk_id']}.npz"
+            if hint_path.exists():
+                hint = np.load(hint_path, allow_pickle=False)["hold_hint"].astype(np.float32) > 0.5
+                hold_substitution_hint = hint.astype(np.float32)
+                names = [str(name) for name in self.stats["target_channels"]]
+                channel = {name: index for index, name in enumerate(names)}
+                for begin in np.flatnonzero(hint & ~np.r_[False, hint[:-1]]):
+                    later = np.flatnonzero(~hint[begin:])
+                    end = int(begin + later[0] - 1) if later.size else len(hint) - 1
+                    if end <= begin:
+                        continue
+                    chart[begin : end + 1, [channel[name] for name in ["don", "ka", "big_don", "big_ka"]]] = 0.0
+                    chart[begin, channel["hold_start"]] = 1.0
+                    chart[begin + 1 : end, channel["hold_body"]] = 1.0
+                    chart[end, channel["hold_end"]] = 1.0
         condition_raw = data["condition"].astype(np.float32)
         condition = (condition_raw - self.condition_mean) / self.condition_std
         item = {
@@ -42,6 +60,7 @@ class TaikoDiffusionDataset(Dataset):
             "chunk_id": row["chunk_id"],
             "sample_id": row["sample_id"],
             "title": row.get("title", ""),
+            "hold_substitution_hint": torch.from_numpy(hold_substitution_hint),
         }
         if "legal_mask" in data.files:
             item["legal_mask"] = torch.from_numpy(data["legal_mask"].astype(np.float32))
@@ -57,8 +76,9 @@ class TaikoAudioDiffusionDataset(TaikoDiffusionDataset):
         stats_path: str | Path,
         audio_csv: str | Path,
         audio_stats_path: str | Path,
+        hold_substitution_hint_dir: str | Path | None = None,
     ):
-        super().__init__(split_csv, stats_path)
+        super().__init__(split_csv, stats_path, hold_substitution_hint_dir)
         with Path(audio_csv).open("r", encoding="utf-8-sig", newline="") as file:
             audio_rows = list(csv.DictReader(file))
         self.audio_by_chunk = {row["chunk_id"]: row for row in audio_rows}

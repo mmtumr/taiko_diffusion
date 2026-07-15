@@ -133,6 +133,7 @@ def make_loader(data_cfg: dict, split: str, batch_size: int, num_workers: int, s
         cache_dir / "stats.json",
         audio_cache_dir / f"{split}.csv",
         audio_cache_dir / "stats.json",
+        data_cfg.get("hold_substitution_hint_dir") if split == "train" else None,
     )
     sampler = None
     oversample = data_cfg.get("event_oversample") if split == "train" else None
@@ -144,6 +145,11 @@ def make_loader(data_cfg: dict, split: str, batch_size: int, num_workers: int, s
             chart = np.load(local_path(row["npz_path"]), allow_pickle=False)["chart"]
             weight = 1.0
             for name, multiplier in oversample.items():
+                if name == "hold_substitution_hint":
+                    hint_dir = data_cfg.get("hold_substitution_hint_dir")
+                    if hint_dir and (Path(hint_dir) / f"{row['chunk_id']}.npz").exists():
+                        weight += float(multiplier) - 1.0
+                    continue
                 if name in channel and np.any(chart[:, channel[name]] > 0.5):
                     weight += float(multiplier) - 1.0
             weights.append(weight)
@@ -188,6 +194,7 @@ def run_epoch(
     decoded_positive_loss_weight: float,
     decoded_channel_positive_weights: torch.Tensor | None,
     decoded_loss_type: str,
+    substitution_config: dict | None,
     onset_weight_scale: float,
     use_legal_mask_channel: bool,
     device: torch.device,
@@ -248,6 +255,33 @@ def run_epoch(
                     decoded_loss = torch.nn.functional.mse_loss(decoded_prob, chart, reduction="none")
                 if decoded_x0_loss_weight > 0.0:
                     loss = loss + decoded_x0_loss_weight * (decoded_loss * event_weight).mean()
+                hint = batch.get("hold_substitution_hint")
+                if is_train and substitution_config and hint is not None and hint.any():
+                    hint = hint.to(device) > 0.5
+                    low_pred = model(xt, t, condition, audio_in)
+                    low_x0 = (xt - sqrt_om * low_pred) / torch.clamp(sqrt_ab, min=1e-6)
+                    high_condition = condition.clone()
+                    high_condition[:, int(substitution_config["const_index"])] = float(
+                        substitution_config["high_const_normalized"]
+                    )
+                    high_pred = model(xt, t, high_condition, audio_in)
+                    high_x0 = (xt - sqrt_om * high_pred) / torch.clamp(sqrt_ab, min=1e-6)
+                    if latent_mean is not None and latent_std is not None:
+                        low_x0 = low_x0 * latent_std + latent_mean
+                        high_x0 = high_x0 * latent_std + latent_mean
+                    low_prob = torch.sigmoid(autoencoder.decode(low_x0))
+                    high_prob = torch.sigmoid(autoencoder.decode(high_x0))
+                    low_hold = low_prob[:, int(substitution_config["hold_body_channel"])]
+                    high_hold = high_prob[:, int(substitution_config["hold_body_channel"])]
+                    note_channels = [int(value) for value in substitution_config["note_channels"]]
+                    low_note = low_prob[:, note_channels].amax(dim=1)
+                    high_note = high_prob[:, note_channels].amax(dim=1)
+                    margin = float(substitution_config.get("margin", 0.1))
+                    rank_loss = (
+                        torch.relu(margin - (low_hold[hint] - high_hold[hint])).mean()
+                        + torch.relu(margin - (high_note[hint] - low_note[hint])).mean()
+                    )
+                    loss = loss + float(substitution_config.get("weight", 0.2)) * rank_loss
                 if decoded_onset_loss_weight > 0.0 and raw_onset is not None:
                     onset = raw_onset
                     if onset.shape[-1] != decoded_prob.shape[-1]:
@@ -362,6 +396,7 @@ def main() -> None:
         raise ValueError("decoded_channel_positive_weights must match autoencoder chart_channels")
     onset_weight_scale = float(training.get("onset_weight_scale", 2.0))
     use_legal_mask_channel = bool(config["model"].get("use_legal_mask_channel", False))
+    substitution_config = training.get("hold_substitution_ranking")
     for epoch in range(resume_epoch + 1, epochs + 1):
         train_loss = run_epoch(
             model,
@@ -378,6 +413,7 @@ def main() -> None:
             decoded_positive_loss_weight,
             decoded_channel_positive_weights,
             decoded_loss_type,
+            substitution_config,
             onset_weight_scale,
             use_legal_mask_channel,
             device,
@@ -398,6 +434,7 @@ def main() -> None:
             decoded_positive_loss_weight,
             decoded_channel_positive_weights,
             decoded_loss_type,
+            None,
             onset_weight_scale,
             use_legal_mask_channel,
             device,

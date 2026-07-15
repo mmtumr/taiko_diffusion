@@ -58,6 +58,18 @@ def f1_counts(counts: np.ndarray) -> dict[str, float | int]:
     }
 
 
+def distribution(values: list[float]) -> dict[str, float]:
+    array = np.asarray(values, dtype=np.float32)
+    if array.size == 0:
+        return {"mean": 0.0, "median": 0.0, "p10": 0.0, "p90": 0.0}
+    return {
+        "mean": float(array.mean()),
+        "median": float(np.median(array)),
+        "p10": float(np.quantile(array, 0.1)),
+        "p90": float(np.quantile(array, 0.9)),
+    }
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(description="Evaluate v13 neural holds, balloons, BPM changes, and HS changes.")
     parser.add_argument("--checkpoint", type=Path, required=True)
@@ -71,6 +83,7 @@ def main() -> None:
     parser.add_argument("--batch-size", type=int, default=8)
     parser.add_argument("--sample-steps", type=int, default=30)
     parser.add_argument("--guidance-scale", type=float, default=2.5)
+    parser.add_argument("--variants", type=str, default="base,bpm_off,bpm_high,hs_off,hs_on")
     parser.add_argument("--seed", type=int, default=20260713)
     parser.add_argument("--device", type=str, default="auto")
     args = parser.parse_args()
@@ -107,7 +120,9 @@ def main() -> None:
     latent_shape = infer_latent_shape(autoencoder, len(names), int(stats["window_frames"]), device)
     condition_mean = np.asarray(stats["condition_mean"], dtype=np.float32)
     condition_std = np.asarray(stats["condition_std"], dtype=np.float32)
-    variants = ["base", "bpm_off", "bpm_high", "hs_off", "hs_on"]
+    variants = [value.strip() for value in args.variants.split(",") if value.strip()]
+    if "base" not in variants:
+        raise ValueError("variants must include base")
     records = []
 
     jobs = []
@@ -127,6 +142,10 @@ def main() -> None:
                     changed[condition_index["hs_change_bin"]] = 0.0
                 elif variant == "hs_on":
                     changed[condition_index["hs_change_bin"]] = 1.0
+                elif variant == "const_low":
+                    changed[condition_index["const"]] = 5.0
+                elif variant == "const_high":
+                    changed[condition_index["const"]] = 10.0
                 jobs.append((row_index, seed_offset, variant, changed, item, noise))
 
     for start in range(0, len(jobs), args.batch_size):
@@ -169,13 +188,24 @@ def main() -> None:
                 "target_holds": len(target_spans),
                 "generated_hold_frames": int(sum(end - begin for begin, end in generated_spans)),
                 "target_hold_frames": int(sum(end - begin for begin, end in target_spans)),
+                "generated_hold_durations": [int(end - begin) for begin, end in generated_spans],
+                "target_hold_durations": [int(end - begin) for begin, end in target_spans],
+                "hold_spans": generated_spans,
+                "note_score": np.max(generated[:, [target_index[name] for name in ["don", "ka", "big_don", "big_ka"]]], axis=1).astype(float).tolist(),
+                "onset": item["raw_onset"].numpy().astype(float).tolist(),
                 "balloons": len(balloon_ids),
                 "balloon_hits": balloon_hits,
                 "bpm_counts": event_matches(bpm_mask, target_bpm),
                 "bpm_events": int(bpm_mask.sum()),
+                "target_bpm_events": int(target_bpm.sum()),
+                "generated_bpm_values": (generated[bpm_mask, target_index["bpm_value"]] * 300.0).astype(float).tolist(),
+                "target_bpm_values": (target[target_bpm, target_index["bpm_value"]] * 300.0).astype(float).tolist(),
                 "bpm_value_mae": float(np.abs(generated[target_bpm, target_index["bpm_value"]] - target[target_bpm, target_index["bpm_value"]]).mean() * 300.0) if target_bpm.any() else None,
                 "hs_counts": event_matches(hs_mask, target_hs),
                 "hs_events": int(hs_mask.sum()),
+                "target_hs_events": int(target_hs.sum()),
+                "generated_hs_values": (generated[hs_mask, target_index["scroll_value"]] * 4.0).astype(float).tolist(),
+                "target_hs_values": (target[target_hs, target_index["scroll_value"]] * 4.0).astype(float).tolist(),
                 "hs_value_mae": float(np.abs(generated[target_hs, target_index["scroll_value"]] - target[target_hs, target_index["scroll_value"]]).mean() * 4.0) if target_hs.any() else None,
             })
         print(json.dumps({"completed": min(start + len(batch), len(jobs)), "total": len(jobs)}), flush=True)
@@ -191,6 +221,38 @@ def main() -> None:
         "generated_holds_mean": float(np.mean([record["generated_holds"] for record in base])),
         "target_holds_mean": float(np.mean([record["target_holds"] for record in base])),
         "hold_frame_count_mae": float(np.mean([abs(record["generated_hold_frames"] - record["target_hold_frames"]) for record in base])),
+        "distribution_quality": {
+            "holds_per_window": {
+                "generated": distribution([record["generated_holds"] for record in base]),
+                "target": distribution([record["target_holds"] for record in base]),
+            },
+            "hold_duration_sec": {
+                "generated": distribution([
+                    duration * stats["frame_ms"] / 1000.0
+                    for record in base for duration in record["generated_hold_durations"]
+                ]),
+                "target": distribution([
+                    duration * stats["frame_ms"] / 1000.0
+                    for record in base for duration in record["target_hold_durations"]
+                ]),
+            },
+            "bpm_events_per_window": {
+                "generated": distribution([record["bpm_events"] for record in base]),
+                "target": distribution([record["target_bpm_events"] for record in base]),
+            },
+            "bpm_values": {
+                "generated": distribution([value for record in base for value in record["generated_bpm_values"]]),
+                "target": distribution([value for record in base for value in record["target_bpm_values"]]),
+            },
+            "hs_events_per_window": {
+                "generated": distribution([record["hs_events"] for record in base]),
+                "target": distribution([record["target_hs_events"] for record in base]),
+            },
+            "hs_values": {
+                "generated": distribution([value for record in base for value in record["generated_hs_values"]]),
+                "target": distribution([value for record in base for value in record["target_hs_values"]]),
+            },
+        },
         "bpm_event": f1_counts(np.asarray([record["bpm_counts"] for record in base])),
         "bpm_value_mae": float(np.mean([record["bpm_value_mae"] for record in base if record["bpm_value_mae"] is not None])),
         "hs_event": f1_counts(np.asarray([record["hs_counts"] for record in base])),
@@ -205,6 +267,44 @@ def main() -> None:
         "balloon_formula_valid": all(all(value >= 1 for value in record["balloon_hits"]) for record in base),
         "records": records,
     }
+    if "const_low" in by_variant and "const_high" in by_variant:
+        paired = []
+        high_by_key = {(record["row"], record["seed"]): record for record in by_variant["const_high"]}
+        for low in by_variant["const_low"]:
+            high = high_by_key[(low["row"], low["seed"])]
+            high_score = np.asarray(high["note_score"], dtype=np.float32)
+            onset = np.asarray(low["onset"], dtype=np.float32)
+            threshold = float(np.quantile(high_score, 0.75))
+            covered = np.zeros(len(high_score), dtype=bool)
+            for begin, end in low["hold_spans"]:
+                covered[begin : end + 1] = True
+            paired.append({
+                "low_holds": low["generated_holds"],
+                "high_holds": high["generated_holds"],
+                "low_hold_frames": low["generated_hold_frames"],
+                "high_hold_frames": high["generated_hold_frames"],
+                "covered_frames": int(covered.sum()),
+                "high_dense_fraction_in_low_holds": float((high_score[covered] >= threshold).mean()) if covered.any() else None,
+                "high_note_score_in_low_holds": float(high_score[covered].mean()) if covered.any() else None,
+                "high_note_score_global": float(high_score.mean()),
+                "onset_in_low_holds": float(onset[covered].mean()) if covered.any() else None,
+                "onset_global": float(onset.mean()),
+            })
+        with_holds = [record for record in paired if record["covered_frames"] > 0]
+        summary["const_hold_substitution"] = {
+            "pairs": len(paired),
+            "pairs_with_low_holds": len(with_holds),
+            "low_holds_mean": float(np.mean([record["low_holds"] for record in paired])),
+            "high_holds_mean": float(np.mean([record["high_holds"] for record in paired])),
+            "low_hold_frames_mean": float(np.mean([record["low_hold_frames"] for record in paired])),
+            "high_hold_frames_mean": float(np.mean([record["high_hold_frames"] for record in paired])),
+            "high_dense_fraction_in_low_holds": float(np.mean([record["high_dense_fraction_in_low_holds"] for record in with_holds])) if with_holds else 0.0,
+            "high_note_score_in_low_holds": float(np.mean([record["high_note_score_in_low_holds"] for record in with_holds])) if with_holds else 0.0,
+            "high_note_score_global": float(np.mean([record["high_note_score_global"] for record in with_holds])) if with_holds else 0.0,
+            "onset_in_low_holds": float(np.mean([record["onset_in_low_holds"] for record in with_holds])) if with_holds else 0.0,
+            "onset_global": float(np.mean([record["onset_global"] for record in with_holds])) if with_holds else 0.0,
+            "records": paired,
+        }
     args.output.parent.mkdir(parents=True, exist_ok=True)
     args.output.write_text(json.dumps(summary, ensure_ascii=False, indent=2), encoding="utf-8")
     print(json.dumps({key: value for key, value in summary.items() if key != "records"}, ensure_ascii=False, indent=2))

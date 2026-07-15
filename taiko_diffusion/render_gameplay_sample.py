@@ -69,15 +69,24 @@ def condition_map(sample: np.lib.npyio.NpzFile) -> dict[str, float]:
 
 def masks_from_sample(
     sample: np.lib.npyio.NpzFile,
-    audio_split: Path,
+    audio_split: Path | None,
+    audio_path: Path | None,
     frame_ms: float,
     onset_mix: float,
 ) -> tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray, np.ndarray, list[tuple[int, int, bool]], dict[str, str], np.ndarray]:
-    chunk_id = str(sample["source_chunk_id"][0])
-    audio_rows = read_rows_by_chunk(audio_split)
-    audio_row = audio_rows[chunk_id]
-    audio_data = np.load(local_path(audio_row["audio_npz_path"]), allow_pickle=False)
-    onset = audio_data["audio"].astype(np.float32)[:, -2]
+    if audio_path is not None:
+        if "audio" not in sample.files:
+            raise ValueError("Sample has no audio features for direct-audio rendering")
+        onset = sample["audio"].astype(np.float32)[:, -2]
+        audio_row = {"audio_path": str(audio_path), "start_frame": "0", "offset_seconds": "0"}
+    else:
+        if audio_split is None or "source_chunk_id" not in sample.files:
+            raise ValueError("--audio is required for samples without source_chunk_id")
+        chunk_id = str(sample["source_chunk_id"][0])
+        audio_rows = read_rows_by_chunk(audio_split)
+        audio_row = audio_rows[chunk_id]
+        audio_data = np.load(local_path(audio_row["audio_npz_path"]), allow_pickle=False)
+        onset = audio_data["audio"].astype(np.float32)[:, -2]
 
     probability = sample["probability"].astype(np.float32)
     channel_names = [str(name) for name in sample["target_channels"]]
@@ -273,6 +282,7 @@ def main() -> None:
     parser = argparse.ArgumentParser(description="Render a Taiko gameplay-style MP4 from a generated sample.")
     parser.add_argument("--sample", type=Path, required=True)
     parser.add_argument("--audio-split", type=Path, default=Path("data/cache/audio_v0/test.csv"))
+    parser.add_argument("--audio", type=Path, default=None, help="Original audio for a standalone one-click sample.")
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument("--frame-ms", type=float, default=46.4399)
     parser.add_argument("--onset-mix", type=float, default=0.0)
@@ -283,8 +293,10 @@ def main() -> None:
     args = parser.parse_args()
 
     sample = np.load(args.sample, allow_pickle=False)
-    note, don, ka, big, _, span_frames, audio_row, onset = masks_from_sample(sample, args.audio_split, float(args.frame_ms), float(args.onset_mix))
-    frames = note.shape[0]
+    note, don, ka, big, _, span_frames, audio_row, onset = masks_from_sample(sample, args.audio_split, args.audio, float(args.frame_ms), float(args.onset_mix))
+    active_frames = np.flatnonzero(sample["legal_mask"] > 0.5) if "legal_mask" in sample.files else np.arange(note.shape[0])
+    frames = int(active_frames[-1]) + 1 if active_frames.size else note.shape[0]
+    note, don, ka, big, onset = (values[:frames] for values in (note, don, ka, big, onset))
     duration_sec = frames * float(args.frame_ms) / 1000.0
     total_video_frames = max(1, int(math.ceil(duration_sec * int(args.fps))))
     frame_times = np.arange(frames, dtype=np.float32) * float(args.frame_ms) / 1000.0

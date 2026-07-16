@@ -81,7 +81,9 @@ def density_topk_binary(
         onset = onset / max(float(onset.max()), 1e-6)
         note_score = note_score + float(onset_mix) * onset
     legal_mask = data["legal_mask"].astype(np.float32) if "legal_mask" in data.files and data["legal_mask"].size else None
-    if "measure_indices" in data.files and np.any(data["measure_indices"] >= 0):
+    if "duration_frames" in data.files:
+        active_frames = int(data["duration_frames"][0])
+    elif "measure_indices" in data.files and np.any(data["measure_indices"] >= 0):
         active_frames = int(np.flatnonzero(data["measure_indices"] >= 0)[-1]) + 1
     else:
         active_frames = int((legal_mask > 0.5).sum()) if legal_mask is not None else probability.shape[0]
@@ -270,6 +272,7 @@ def main() -> None:
     condition_names = [str(name) for name in data["condition_names"]]
     raw_condition = data["raw_condition"].astype(np.float32)
     condition = {name: float(raw_condition[index]) for index, name in enumerate(condition_names)}
+    tempo_map = data["tempo_map"].astype(np.float32) if "tempo_map" in data.files else None
     spans = hold_spans(binary, names)
     balloon_indices = balloon_span_indices(len(spans), condition.get("balloon_roll_ratio", 0.0))
     balloon_starts = {spans[index][0] for index in balloon_indices}
@@ -282,6 +285,15 @@ def main() -> None:
         slot_indices = data["slot_indices"].astype(np.int32)
         subdivision_bin = int(round(condition.get("subdivision_bin", condition.get("complex_bin", 2.0))))
         slots_per_measure = 16 if subdivision_bin == 0 else 96
+        tempo_changes: dict[int, float] = {}
+        if condition.get("bpm_rhythm_bin", 0.0) > 0.0 and tempo_map is not None:
+            for frame, next_bpm in tempo_map[1:]:
+                candidates = np.flatnonzero(
+                    (np.arange(measure_indices.shape[0]) >= int(round(float(frame))))
+                    & (measure_indices >= 0)
+                )
+                if candidates.size:
+                    tempo_changes[int(measure_indices[candidates[0]])] = float(next_bpm)
         measures = []
         for measure_index in sorted(set(int(value) for value in measure_indices if value >= 0)):
             chars = ["0"] * slots_per_measure
@@ -296,7 +308,9 @@ def main() -> None:
                     chars[output_slot] = merge_slot_char(chars[output_slot], char)
             commands = []
             channel = {name: index for index, name in enumerate(names)}
-            if condition.get("bpm_rhythm_bin", 0.0) > 0.0 and "bpm_change_event" in channel and "bpm_value" in channel:
+            if measure_index in tempo_changes:
+                commands.append(f"#BPMCHANGE {tempo_changes[measure_index]:.6g}")
+            elif tempo_map is None and condition.get("bpm_rhythm_bin", 0.0) > 0.0 and "bpm_change_event" in channel and "bpm_value" in channel:
                 event_frame = int(frames[np.argmax(probability[frames, channel["bpm_change_event"]])]) if frames.size else -1
                 if event_frame >= 0 and probability[event_frame, channel["bpm_change_event"]] > 0.5:
                     next_bpm = float(probability[event_frame, channel["bpm_value"]] * 300.0)

@@ -28,9 +28,12 @@ Optional `--set-condition NAME=VALUE` values are `const`, `complex_bin`,
 `subdivision_bin`, `hs_change_bin`, `bpm_rhythm_bin`, `note_type_bin`,
 `avg_density_bin`, `peak_density_bin`, `big_note_ratio`,
 `balloon_roll_ratio`, and `ka_ratio`. Use `--bpm VALUE` to override the
-default onset-estimated static BPM. The current full-length model accepts at
-most 8192 frames, approximately 380 seconds; longer input is truncated and
-reported by the command.
+audio tempo detector with a static BPM. Set `bpm_rhythm_bin=0` for a static
+BPM chart. Set `bpm_rhythm_bin=1` or `2` to enable conservative audio tempo
+map detection and `#BPMCHANGE` export: only stable, bar-aligned changes are
+written, while weak tempo evidence falls back to a static BPM. The current
+full-length model accepts at most 8192 frames, approximately 380 seconds;
+longer input is truncated and reported by the command.
 
 Taiko Diffusion is an experimental project for Taiko no Tatsujin chart
 representation learning and future audio-conditioned chart generation.

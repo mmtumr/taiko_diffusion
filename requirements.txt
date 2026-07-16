@@ -5,3 +5,4 @@ pyyaml
 tqdm
 
 # Install PyTorch and torchaudio separately for your CUDA/driver setup before training.
+essentia>=2.1b6.dev1389

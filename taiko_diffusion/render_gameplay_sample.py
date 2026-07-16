@@ -131,19 +131,39 @@ def draw_note(draw: ImageDraw.ImageDraw, x: float, y: float, color: tuple[int, i
     draw.ellipse((x - radius * 0.48, y - radius * 0.48, x + radius * 0.48, y + radius * 0.48), fill=inner)
 
 
+def tempo_beats(times: np.ndarray, tempo_map: np.ndarray, frame_ms: float) -> np.ndarray:
+    """Convert chart seconds to cumulative beats using the generated tempo map."""
+    starts = tempo_map[:, 0].astype(np.float32) * frame_ms / 1000.0
+    bpms = tempo_map[:, 1].astype(np.float32)
+    base = np.zeros_like(starts)
+    if starts.size > 1:
+        base[1:] = np.cumsum((starts[1:] - starts[:-1]) * bpms[:-1] / 60.0)
+    indices = np.clip(np.searchsorted(starts, times, side="right") - 1, 0, len(starts) - 1)
+    return base[indices] + (times - starts[indices]) * bpms[indices] / 60.0
+
+
+def tempo_bpm(times: np.ndarray, tempo_map: np.ndarray, frame_ms: float) -> np.ndarray:
+    starts = tempo_map[:, 0].astype(np.float32) * frame_ms / 1000.0
+    indices = np.clip(np.searchsorted(starts, times, side="right") - 1, 0, len(starts) - 1)
+    return tempo_map[:, 1].astype(np.float32)[indices]
+
+
 def draw_frame(
     path: Path,
     frame_index: int,
     total_frames: int,
-    don_times: np.ndarray,
-    ka_times: np.ndarray,
-    big_times: np.ndarray,
+    don_beats: np.ndarray,
+    ka_beats: np.ndarray,
+    big_beats: np.ndarray,
     spans: list[tuple[float, float, bool]],
     onset: np.ndarray,
+    onset_beats: np.ndarray,
     title: str,
     duration_sec: float,
     fps: int,
-    approach_sec: float,
+    approach_beats: float,
+    current_beat: float,
+    current_bpm: float,
     frame_ms: float,
     condition_text: str,
 ) -> None:
@@ -179,64 +199,64 @@ def draw_frame(
         idx = int(current_frame + offset)
         if idx < 0 or idx >= onset_norm.shape[0]:
             continue
-        x = hit_x + (offset * frame_ms / 1000.0) / approach_sec * (spawn_x - hit_x)
+        x = hit_x + (float(onset_beats[idx]) - current_beat) / approach_beats * (spawn_x - hit_x)
         if 96 <= x <= 1538 and onset_norm[idx] > 0.5:
             h = 10 + int(onset_norm[idx] * 28)
             draw.line((x, lane_y + lane_h // 2 - h, x, lane_y + lane_h // 2 - 8), fill=(77, 146, 116), width=2)
 
     # Notes.
     visible_notes: list[tuple[float, bool]] = []
-    for note_time in don_times:
-        dt = float(note_time - t)
-        if -0.12 <= dt <= approach_sec:
-            visible_notes.append((note_time, False))
-    for note_time in ka_times:
-        dt = float(note_time - t)
-        if -0.12 <= dt <= approach_sec:
-            visible_notes.append((note_time, True))
+    for note_beat in don_beats:
+        delta = float(note_beat - current_beat)
+        if -0.3 <= delta <= approach_beats:
+            visible_notes.append((note_beat, False))
+    for note_beat in ka_beats:
+        delta = float(note_beat - current_beat)
+        if -0.3 <= delta <= approach_beats:
+            visible_notes.append((note_beat, True))
     visible_notes.sort(key=lambda item: item[0], reverse=True)
 
     for span_start, span_end, is_balloon in spans:
-        if span_end < t - 0.12 or span_start > t + approach_sec:
+        if span_end < current_beat - 0.3 or span_start > current_beat + approach_beats:
             continue
-        start_x = hit_x + (span_start - t) / approach_sec * (spawn_x - hit_x)
-        end_x = hit_x + (span_end - t) / approach_sec * (spawn_x - hit_x)
+        start_x = hit_x + (span_start - current_beat) / approach_beats * (spawn_x - hit_x)
+        end_x = hit_x + (span_end - current_beat) / approach_beats * (spawn_x - hit_x)
         left, right = sorted((max(hit_x, start_x), min(spawn_x, end_x)))
         if right > left:
             color = (244, 176, 55) if not is_balloon else (234, 112, 55)
             draw.rounded_rectangle((left, lane_y - 24, right, lane_y + 24), radius=20, fill=color, outline=WHITE, width=3)
 
-    for note_time, is_ka in visible_notes:
-        dt = float(note_time - t)
-        x = hit_x + dt / approach_sec * (spawn_x - hit_x)
-        is_big = bool(np.any(np.isclose(big_times, note_time, atol=1e-5)))
+    for note_beat, is_ka in visible_notes:
+        delta = float(note_beat - current_beat)
+        x = hit_x + delta / approach_beats * (spawn_x - hit_x)
+        is_big = bool(np.any(np.isclose(big_beats, note_beat, atol=1e-5)))
         radius = 52 if is_big else note_radius
-        if dt < 0:
-            scale = max(0.15, 1.0 + dt / 0.12)
+        if delta < 0:
+            scale = max(0.15, 1.0 + delta / 0.3)
             color = KA if is_ka else DON
             draw_note(draw, x, lane_y, color, max(8, int(radius * scale)))
         else:
             draw_note(draw, x, lane_y, KA if is_ka else DON, radius)
 
     # Hit flash.
-    near_hits = np.concatenate([don_times, ka_times])
+    near_hits = np.concatenate([don_beats, ka_beats])
     if near_hits.size:
-        nearest = float(np.min(np.abs(near_hits - t)))
-        if nearest < 0.055:
-            r = int(78 + (0.055 - nearest) / 0.055 * 50)
+        nearest = float(np.min(np.abs(near_hits - current_beat)))
+        if nearest < 0.15:
+            r = int(78 + (0.15 - nearest) / 0.15 * 50)
             draw.ellipse((hit_x - r, lane_y - r, hit_x + r, lane_y + r), outline=(255, 232, 124), width=5)
 
     # Header/status.
     shown_title = title if title else "Generated Taiko Chart"
     draw.text((72, 54), shown_title, font=title_font, fill=WHITE)
-    draw.text((74, 104), "Taiko Diffusion v9 generated play preview", font=small_font, fill=MUTED)
+    draw.text((74, 104), "Taiko Diffusion generated play preview", font=small_font, fill=MUTED)
     draw.text((74, 142), condition_text, font=small_font, fill=(190, 198, 210))
-    draw.text((1220, 62), f"{t:05.2f}s / {duration_sec:05.2f}s", font=count_font, fill=WHITE)
+    draw.text((1170, 62), f"BPM {current_bpm:06.2f}  {t:05.2f}s / {duration_sec:05.2f}s", font=count_font, fill=WHITE)
 
-    combo = int((np.concatenate([don_times, ka_times]) <= t).sum()) if near_hits.size else 0
-    total = int(don_times.size + ka_times.size)
+    combo = int((np.concatenate([don_beats, ka_beats]) <= current_beat).sum()) if near_hits.size else 0
+    total = int(don_beats.size + ka_beats.size)
     draw.text((90, 660), f"COMBO {combo:03d} / {total:03d}", font=count_font, fill=WHITE)
-    draw.text((90, 706), f"DON {don_times.size:03d}   KA {ka_times.size:03d}", font=small_font, fill=MUTED)
+    draw.text((90, 706), f"DON {don_beats.size:03d}   KA {ka_beats.size:03d}", font=small_font, fill=MUTED)
 
     # Progress bar.
     bar_x0, bar_y0, bar_x1, bar_y1 = 90, 812, 1510, 832
@@ -300,19 +320,19 @@ def main() -> None:
     duration_sec = frames * float(args.frame_ms) / 1000.0
     total_video_frames = max(1, int(math.ceil(duration_sec * int(args.fps))))
     frame_times = np.arange(frames, dtype=np.float32) * float(args.frame_ms) / 1000.0
-    don_times = frame_times[don]
-    ka_times = frame_times[ka]
-    big_times = frame_times[big]
-    spans = [(float(frame_times[start]), float(frame_times[end]), is_balloon) for start, end, is_balloon in span_frames]
-    title = str(sample["source_title"][0]) if "source_title" in sample.files else str(sample["source_chunk_id"][0])
     bpm = float(sample["bpm_track"][0]) if "bpm_track" in sample.files and sample["bpm_track"].size else 120.0
+    tempo_map = sample["tempo_map"].astype(np.float32) if "tempo_map" in sample.files else np.asarray([[0.0, bpm]], dtype=np.float32)
+    don_beats = tempo_beats(frame_times[don], tempo_map, float(args.frame_ms))
+    ka_beats = tempo_beats(frame_times[ka], tempo_map, float(args.frame_ms))
+    big_beats = tempo_beats(frame_times[big], tempo_map, float(args.frame_ms))
+    spans = [
+        (float(tempo_beats(np.asarray([frame_times[start]]), tempo_map, float(args.frame_ms))[0]), float(tempo_beats(np.asarray([frame_times[end]]), tempo_map, float(args.frame_ms))[0]), is_balloon)
+        for start, end, is_balloon in span_frames
+    ]
+    onset_beats = tempo_beats(frame_times, tempo_map, float(args.frame_ms))
+    title = str(sample["source_title"][0]) if "source_title" in sample.files else str(sample["source_chunk_id"][0])
     lane_distance = 1510.0 - 260.0
-    sixteenth_sec = 60.0 / max(bpm, 1e-6) / 4.0
-    approach_sec = (
-        float(args.approach_sec)
-        if args.approach_sec is not None
-        else lane_distance * sixteenth_sec / float(args.sixteenth_spacing)
-    )
+    approach_beats = float(args.approach_sec) * bpm / 60.0 if args.approach_sec is not None else lane_distance / float(args.sixteenth_spacing) / 4.0
     conditions = condition_map(sample)
     condition_text = (
         f"const {conditions.get('const', 0):.1f} | complex {conditions.get('complex_bin', 0):.0f} | "
@@ -327,19 +347,25 @@ def main() -> None:
     frames_dir.mkdir(parents=True, exist_ok=True)
 
     for index in range(total_video_frames):
+        current_time = index / int(args.fps)
+        current_beat = float(tempo_beats(np.asarray([current_time]), tempo_map, float(args.frame_ms))[0])
+        current_bpm = float(tempo_bpm(np.asarray([current_time]), tempo_map, float(args.frame_ms))[0])
         draw_frame(
             frames_dir / f"{index:05d}.png",
             index,
             total_video_frames,
-            don_times,
-            ka_times,
-            big_times,
+            don_beats,
+            ka_beats,
+            big_beats,
             spans,
             onset,
+            onset_beats,
             title,
             duration_sec,
             int(args.fps),
-            approach_sec,
+            approach_beats,
+            current_beat,
+            current_bpm,
             float(args.frame_ms),
             condition_text,
         )
@@ -361,8 +387,9 @@ def main() -> None:
                 "don": int(don.sum()),
                 "ka": int(ka.sum()),
                 "bpm": bpm,
-                "approach_sec": approach_sec,
-                "sixteenth_spacing_px": lane_distance * sixteenth_sec / approach_sec,
+                "tempo_map": tempo_map.tolist(),
+                "approach_beats": approach_beats,
+                "sixteenth_spacing_px": float(args.sixteenth_spacing),
             },
             ensure_ascii=False,
             indent=2,

@@ -21,7 +21,31 @@ probabilities and neural hold spans. Default checkpoints are:
 
 ```text
 checkpoints/latent_diffusion_v15_full_catalog/best.pt
+checkpoints/autoencoder_kl_v13_mug_holds/best.pt
+checkpoints/autoencoder_kl_v13_mug_holds/latent_stats.json
 checkpoints/hold_span_v2_deploy/best.pt
+```
+
+## Included Inference Assets
+
+The repository includes the complete v15 inference asset set, approximately
+88 MB in total. No training charts, audio cache samples, or source audio are
+included.
+
+```text
+checkpoints/latent_diffusion_v15_full_catalog/best.pt
+checkpoints/autoencoder_kl_v13_mug_holds/best.pt
+checkpoints/autoencoder_kl_v13_mug_holds/latent_stats.json
+checkpoints/hold_span_v2_deploy/best.pt
+data/cache/diffusion_v15_full_catalog/stats.json
+data/cache/audio_v15_full_catalog/stats.json
+```
+
+Install runtime dependencies and provide FFmpeg on the system `PATH`; no ESE
+dataset, source chart, or cache rebuild is needed for one-click inference:
+
+```bash
+python -m pip install -r requirements.txt
 ```
 
 Optional `--set-condition NAME=VALUE` values are `const`, `complex_bin`,
